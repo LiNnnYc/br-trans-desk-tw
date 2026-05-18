@@ -1,33 +1,53 @@
 ---
-// spec §4.1 — 版本狀態徽章。M1-2 階段為占位呈現，M1-3 接上 changelog 連結與實際資料。
+// spec §4.1 — 版本狀態徽章（頁首）。
+// 顯示：對應原文版本、同步狀態、最後更新日期。
+// 點擊跳轉至 /changelog/。
 import { siteConfig, type SyncStatus } from '../config/site';
 
-const { version, syncStatus, behindCount } = siteConfig.upstream;
+const { version, syncStatus, behindCount, lastSyncedAt } = siteConfig.upstream;
 
-const label: Record<SyncStatus, string> = {
+const statusLabel: Record<SyncStatus, string> = {
   pending: '建置中',
   synced: '已同步',
-  behind: `落後 ${behindCount}`,
+  behind: `落後 ${behindCount} 個 Ballot`,
 };
 
 const tone: Record<SyncStatus, string> = {
-  synced: 'border-emerald-300 bg-emerald-50 text-emerald-800',
-  behind: 'border-amber-300 bg-amber-50 text-amber-900',
-  pending: 'border-slate-300 bg-slate-50 text-slate-700',
+  synced: 'border-emerald-300 bg-emerald-50 text-emerald-800 hover:bg-emerald-100',
+  behind: 'border-amber-300 bg-amber-50 text-amber-900 hover:bg-amber-100',
+  pending: 'border-slate-300 bg-slate-50 text-slate-700 hover:bg-slate-100',
 };
 
 const versionLabel = version === 'tbd' ? '版本待定' : `原文 ${version}`;
+const dateLabel = lastSyncedAt ?? null;
+
+const ariaParts = [
+  `原文版本：${versionLabel}`,
+  `狀態：${statusLabel[syncStatus]}`,
+  dateLabel ? `最後更新：${dateLabel}` : null,
+].filter(Boolean);
 ---
 
-<span
+<a
+  href="/changelog/"
   class:list={[
-    'inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-xs font-medium whitespace-nowrap',
+    'inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-xs font-medium whitespace-nowrap transition',
     tone[syncStatus],
   ]}
-  aria-label={`原文版本：${versionLabel}，狀態：${label[syncStatus]}`}
-  title="點擊查看 changelog（M1-3 啟用）"
+  aria-label={`${ariaParts.join('，')}。點擊查看 changelog`}
+  title="查看 changelog"
 >
   <span>{versionLabel}</span>
-  <span class="opacity-60">·</span>
-  <span>{label[syncStatus]}</span>
-</span>
+  <span aria-hidden="true" class="opacity-60">·</span>
+  <span>{statusLabel[syncStatus]}</span>
+  {
+    dateLabel && (
+      <>
+        <span aria-hidden="true" class="opacity-60">
+          ·
+        </span>
+        <time datetime={dateLabel}>{dateLabel}</time>
+      </>
+    )
+  }
+</a>

@@ -11,8 +11,10 @@ export const siteConfig = {
   repoUrl: '#TODO-github-repo',
   contactEmail: 'linnnyc5252@gmail.com',
   // spec §4.1 版本徽章資料來源。M2 啟動翻譯時填入實際值。
+  // CI 後續可寫腳本覆寫此區塊（例如 Ballot 跟進完成後 bump version + behindCount）。
   upstream: {
     version: 'tbd' as string,
+    // ISO yyyy-mm-dd；null 表示尚未同步
     lastSyncedAt: null as string | null,
     syncStatus: 'pending' as SyncStatus,
     behindCount: 0,
