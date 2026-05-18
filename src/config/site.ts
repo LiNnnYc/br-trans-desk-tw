@@ -9,6 +9,8 @@ export const siteConfig = {
     'CA/Browser Forum Server Certificate Baseline Requirements 的非官方繁體中文翻譯。',
   // M0-1 建立 GitHub repo 後替換
   repoUrl: '#TODO-github-repo',
+  // 引用卡輸出絕對網址用；M0-3 部署網域定案時更新（含或不含 /repo-name 由 astro.config base 決定）
+  siteUrl: 'https://cabr-zh-tw.github.io',
   contactEmail: 'linnnyc5252@gmail.com',
   // spec §4.1 版本徽章資料來源。M2 啟動翻譯時填入實際值。
   // CI 後續可寫腳本覆寫此區塊（例如 Ballot 跟進完成後 bump version + behindCount）。

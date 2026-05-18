@@ -3,6 +3,7 @@
 import '../styles/global.css';
 import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
+import CitationToast from '../components/CitationToast.astro';
 import { siteConfig } from '../config/site';
 
 interface Props {
@@ -67,5 +68,6 @@ const fullTitle = title.includes(siteConfig.name)
 
       <SiteFooter />
     </div>
+    <CitationToast />
   </body>
 </html>

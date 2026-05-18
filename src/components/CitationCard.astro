@@ -1,0 +1,36 @@
+---
+// spec §4.3 — 條款引用卡（整節版按鈕，置於章節標題下方）。
+// 段落 hover 版見 Quotable.astro。
+// 兩者共用 `.citation-copy` class + `data-clipboard-text`，由 CitationToast 的 delegated handler 處理。
+import { buildCitation } from '../lib/citation';
+import { siteConfig } from '../config/site';
+
+interface Props {
+  sectionId: string;
+  title: string;
+  body: string;
+  originalUrl: string;
+  originalVersion: string;
+}
+
+const { sectionId, title, body, originalUrl, originalVersion } = Astro.props;
+
+const citation = buildCitation({
+  sectionId,
+  title,
+  body,
+  originalUrl,
+  originalVersion,
+  siteUrl: siteConfig.siteUrl,
+});
+---
+
+<button
+  type="button"
+  class="citation-copy inline-flex items-center gap-1.5 rounded-md border border-slate-300 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 transition hover:border-slate-500 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2"
+  data-clipboard-text={citation}
+  aria-label={`複製 ${sectionId} 整節引用（含免責聲明）`}
+>
+  <span aria-hidden="true">📋</span>
+  <span>複製引用</span>
+</button>
