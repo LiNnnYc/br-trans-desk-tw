@@ -1,0 +1,49 @@
+---
+// spec §1.2 頁首：站名、版本徽章、中英對照 toggle、搜尋框。
+// M1-2 階段：toggle 與搜尋為占位（disabled），實際行為由 M1-4 / M1-9 接上。
+import { siteConfig } from '../config/site';
+import VersionBadge from './VersionBadge.astro';
+---
+
+<header class="border-b border-slate-200 bg-white">
+  <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+    <div class="flex flex-col gap-3 py-3 md:flex-row md:items-center md:gap-6 md:py-4">
+      <a
+        href="/"
+        class="flex items-center gap-2 text-base font-semibold text-slate-900 hover:text-slate-700 md:text-lg"
+      >
+        <span class="hidden md:inline">{siteConfig.name}</span>
+        <span class="md:hidden">{siteConfig.shortName}</span>
+      </a>
+
+      <div class="flex-1 md:px-4">
+        <label class="relative block">
+          <span class="sr-only">搜尋</span>
+          <input
+            type="search"
+            disabled
+            placeholder="搜尋（即將推出）"
+            aria-label="搜尋（即將推出）"
+            class="w-full rounded-md border border-slate-200 bg-slate-50 px-3 py-1.5 text-sm text-slate-500 placeholder-slate-400 focus:outline-none disabled:cursor-not-allowed"
+          />
+        </label>
+      </div>
+
+      <div class="flex items-center justify-between gap-3 md:justify-end">
+        <VersionBadge />
+        <button
+          type="button"
+          disabled
+          aria-disabled="true"
+          aria-label="中英對照模式切換（即將推出）"
+          title="中英對照（即將推出）"
+          class="inline-flex items-center gap-1 rounded-md border border-slate-200 bg-white px-2.5 py-1 text-xs font-medium text-slate-500 disabled:cursor-not-allowed"
+        >
+          <span>中</span>
+          <span class="opacity-40">/</span>
+          <span>EN</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</header>

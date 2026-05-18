@@ -1,0 +1,48 @@
+---
+// spec §9.1 — 頁尾固定聲明（每頁）。聲明文字逐字遵照 spec，不可調整或省略。
+import { siteConfig } from '../config/site';
+---
+
+<footer class="border-t border-slate-200 bg-white">
+  <div
+    class="mx-auto max-w-6xl px-4 py-6 text-xs leading-relaxed text-slate-600 sm:px-6 sm:text-sm lg:px-8"
+  >
+    <div class="space-y-2">
+      <p>
+        本站為 CA/Browser Forum Baseline Requirements 的<strong class="font-semibold"
+          >非官方中文翻譯</strong
+        >，由社群維護。
+      </p>
+      <p>
+        發生爭議時以 <strong class="font-semibold">CA/Browser Forum 英文原文為準</strong
+        >。本網站內容不構成法律意見。
+      </p>
+      <p>
+        原文採 <a
+          href="https://creativecommons.org/licenses/by/4.0/"
+          class="underline hover:text-slate-900"
+          rel="noopener noreferrer"
+          target="_blank">CC BY 4.0</a
+        > 授權；本站翻譯內容亦採 CC BY 4.0 釋出。
+      </p>
+    </div>
+
+    <div
+      class="mt-5 flex flex-col gap-2 border-t border-slate-100 pt-4 text-xs text-slate-500 sm:flex-row sm:items-center sm:justify-between"
+    >
+      <div class="flex flex-wrap items-center gap-x-4 gap-y-1">
+        <a href={`mailto:${siteConfig.contactEmail}`} class="hover:text-slate-900 hover:underline">
+          勘誤聯絡：{siteConfig.contactEmail}
+        </a>
+        <a
+          href={siteConfig.repoUrl}
+          class="hover:text-slate-900 hover:underline"
+          rel="noopener noreferrer"
+        >
+          GitHub
+        </a>
+      </div>
+      <div>翻譯維護：YCL · 採 CC BY 4.0</div>
+    </div>
+  </div>
+</footer>

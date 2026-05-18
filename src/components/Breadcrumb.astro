@@ -1,0 +1,49 @@
+---
+// spec §1.2 — 全站麵包屑元件。
+// 用法：<Breadcrumb items={[{ label: '首頁', href: '/' }, { label: '目前頁面' }]} />
+// 最後一項不提供 href 即為當前頁。
+
+export interface BreadcrumbItem {
+  label: string;
+  href?: string;
+}
+
+interface Props {
+  items: BreadcrumbItem[];
+}
+
+const { items } = Astro.props;
+---
+
+{
+  items.length > 0 && (
+    <nav aria-label="麵包屑" class="text-sm text-slate-600">
+      <ol class="flex flex-wrap items-center gap-x-1.5 gap-y-1">
+        {items.map((item, i) => {
+          const isLast = i === items.length - 1;
+          return (
+            <li class="flex items-center gap-x-1.5">
+              {item.href && !isLast ? (
+                <a href={item.href} class="hover:text-slate-900 hover:underline">
+                  {item.label}
+                </a>
+              ) : (
+                <span
+                  class={isLast ? 'font-medium text-slate-900' : ''}
+                  aria-current={isLast ? 'page' : undefined}
+                >
+                  {item.label}
+                </span>
+              )}
+              {!isLast && (
+                <span aria-hidden="true" class="text-slate-400">
+                  /
+                </span>
+              )}
+            </li>
+          );
+        })}
+      </ol>
+    </nav>
+  )
+}

@@ -1,0 +1,33 @@
+---
+// spec §4.1 — 版本狀態徽章。M1-2 階段為占位呈現，M1-3 接上 changelog 連結與實際資料。
+import { siteConfig, type SyncStatus } from '../config/site';
+
+const { version, syncStatus, behindCount } = siteConfig.upstream;
+
+const label: Record<SyncStatus, string> = {
+  pending: '建置中',
+  synced: '已同步',
+  behind: `落後 ${behindCount}`,
+};
+
+const tone: Record<SyncStatus, string> = {
+  synced: 'border-emerald-300 bg-emerald-50 text-emerald-800',
+  behind: 'border-amber-300 bg-amber-50 text-amber-900',
+  pending: 'border-slate-300 bg-slate-50 text-slate-700',
+};
+
+const versionLabel = version === 'tbd' ? '版本待定' : `原文 ${version}`;
+---
+
+<span
+  class:list={[
+    'inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-xs font-medium whitespace-nowrap',
+    tone[syncStatus],
+  ]}
+  aria-label={`原文版本：${versionLabel}，狀態：${label[syncStatus]}`}
+  title="點擊查看 changelog（M1-3 啟用）"
+>
+  <span>{versionLabel}</span>
+  <span class="opacity-60">·</span>
+  <span>{label[syncStatus]}</span>
+</span>
