@@ -1,1 +1,16 @@
 @import "tailwindcss";
+
+/* spec §4.2 — 中英對照模式
+   章節內容以 <span data-en-original="..."> 或 <p data-en-original>...</p> 標註英文原文，
+   預設隱藏；當 <html> 帶 .show-bilingual class 時顯示。 */
+[data-en-original] {
+  display: none;
+}
+
+html.show-bilingual [data-en-original] {
+  display: block;
+  margin-top: 0.25rem;
+  color: rgb(100 116 139); /* slate-500 */
+  font-size: 0.95em;
+  line-height: 1.65;
+}

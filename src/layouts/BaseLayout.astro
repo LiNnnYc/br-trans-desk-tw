@@ -31,6 +31,16 @@ const fullTitle = title.includes(siteConfig.name)
     <meta name="generator" content={Astro.generator} />
     <meta name="description" content={description} />
     <title>{fullTitle}</title>
+    {/* spec §4.2 — 在 body 渲染前套用 bilingual class，避免切換時 FOUC */}
+    <script is:inline>
+      try {
+        if (localStorage.getItem('bilingual-mode') === 'on') {
+          document.documentElement.classList.add('show-bilingual');
+        }
+      } catch (_) {
+        /* localStorage 不可用時靜默退回預設（純中文） */
+      }
+    </script>
   </head>
   <body class="min-h-screen bg-slate-50 text-slate-800 antialiased">
     <div class="flex min-h-screen flex-col">

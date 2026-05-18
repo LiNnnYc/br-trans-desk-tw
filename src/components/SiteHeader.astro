@@ -1,6 +1,7 @@
 ---
 // spec §1.2 頁首：站名、版本徽章、中英對照 toggle、搜尋框。
-// M1-2 階段：toggle 與搜尋為占位（disabled），實際行為由 M1-4 / M1-9 接上。
+// 中英對照 toggle 行為見 spec §4.2，狀態存 localStorage('bilingual-mode')。
+// 搜尋為占位（disabled），實際 Pagefind 整合由 M1-9 接上。
 import { siteConfig } from '../config/site';
 import VersionBadge from './VersionBadge.astro';
 ---
@@ -33,11 +34,11 @@ import VersionBadge from './VersionBadge.astro';
         <VersionBadge />
         <button
           type="button"
-          disabled
-          aria-disabled="true"
-          aria-label="中英對照模式切換（即將推出）"
-          title="中英對照（即將推出）"
-          class="inline-flex items-center gap-1 rounded-md border border-slate-200 bg-white px-2.5 py-1 text-xs font-medium text-slate-500 disabled:cursor-not-allowed"
+          id="bilingual-toggle"
+          aria-pressed="false"
+          aria-label="切換中英對照顯示"
+          title="切換中英對照顯示"
+          class="inline-flex items-center gap-1 rounded-md border border-slate-200 bg-white px-2.5 py-1 text-xs font-medium text-slate-600 transition hover:border-slate-400 hover:bg-slate-50 aria-pressed:border-slate-900 aria-pressed:bg-slate-900 aria-pressed:text-white"
         >
           <span>中</span>
           <span class="opacity-40">/</span>
@@ -47,3 +48,29 @@ import VersionBadge from './VersionBadge.astro';
     </div>
   </div>
 </header>
+
+<script>
+  // spec §4.2 — 中英對照 toggle。
+  // 初始狀態由 BaseLayout <head> 的 inline script 套用至 documentElement（避免 FOUC）；
+  // 這支 script 負責同步按鈕 aria-pressed 與處理點擊。
+  const STORAGE_KEY = 'bilingual-mode';
+  const root = document.documentElement;
+  const btn = document.getElementById('bilingual-toggle');
+
+  function syncButton() {
+    if (!btn) return;
+    btn.setAttribute('aria-pressed', root.classList.contains('show-bilingual') ? 'true' : 'false');
+  }
+
+  syncButton();
+
+  btn?.addEventListener('click', () => {
+    const on = root.classList.toggle('show-bilingual');
+    try {
+      localStorage.setItem(STORAGE_KEY, on ? 'on' : 'off');
+    } catch (_) {
+      /* localStorage 不可用時不持久化，僅維持本次切換 */
+    }
+    syncButton();
+  });
+</script>
