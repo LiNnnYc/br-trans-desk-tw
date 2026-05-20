@@ -2,11 +2,12 @@
 // spec §1.2 頁首：banner（站名 + 版本徽章）+ 全寬深色 navbar。
 // 行動端漢堡 collapse 內含搜尋輸入、主選單、Ballot 摘要。
 // 中英對照 toggle 改放至章節頁工具列（M2 時接 Quotable 區）；本元件僅維持站台導覽。
-// 搜尋為占位（modal 預留），實際 Pagefind 整合由 M1-9 接上。
+// 搜尋按鈕（桌面 + 漢堡內輸入）皆透過 window.__openSearchModal 開啟 Pagefind modal（M1-9）。
 import { siteConfig } from '../config/site';
 import VersionBadge from './VersionBadge.astro';
 
 const navItems = [
+  { label: '首頁', href: '/' },
   { label: '基本要求', href: '/server-cert-br/' },
   { label: '術語表', href: '/glossary/' },
   { label: 'FAQ', href: '/faq-for-base-req/' },
@@ -23,78 +24,86 @@ const isActive = (href: string) =>
 <header>
   <div class="hidden lg:block h-4"></div>
 
-  <div class="mx-auto max-w-[1140px] px-3">
-    <div class="bg-white shadow-sm border-t-4 border-b-4 border-bs-primary">
-      <div class="px-4 pt-5 pb-3 flex items-start justify-between gap-4">
-        <a href="/" class="inline-flex items-center gap-3 min-w-0">
-          <div
-            class="flex h-14 w-14 lg:h-16 lg:w-16 items-center justify-center rounded-md bg-bs-primary text-white font-mono font-bold text-2xl shrink-0"
-          >
-            BR
-          </div>
-          <div class="min-w-0">
-            <div class="font-serif-tc text-xl lg:text-2xl font-bold text-slate-900 leading-tight">
-              {siteConfig.name}
-            </div>
-            <div class="text-xs lg:text-sm text-slate-600 mt-0.5">
-              Baseline Requirements 非官方繁體中文翻譯
-            </div>
-          </div>
-        </a>
-
-        <div class="hidden lg:block shrink-0">
-          <VersionBadge />
+  <div class="bg-white shadow-sm border-t-4 border-bs-primary">
+    <div class="px-4 pt-5 pb-3 flex items-start justify-between gap-4">
+      <a href="/" class="inline-flex items-center gap-3 min-w-0">
+        <div
+          class="flex h-14 w-14 lg:h-16 lg:w-16 items-center justify-center rounded-md bg-bs-primary text-white font-mono font-bold text-2xl shrink-0"
+        >
+          BR
         </div>
+        <div class="min-w-0">
+          <div class="font-serif-tc text-xl lg:text-2xl font-bold text-slate-900 leading-tight">
+            {siteConfig.name}
+          </div>
+          <div class="text-xs lg:text-sm text-slate-600 mt-0.5">
+            Baseline Requirements 非官方繁體中文翻譯
+          </div>
+        </div>
+      </a>
+
+      <div class="hidden lg:block shrink-0">
+        <VersionBadge />
       </div>
+    </div>
+  </div>
+</header>
 
-      <nav class="bg-bs-dark text-slate-200 px-3 py-1">
-        <div class="flex flex-wrap items-center">
+{/* 行動裝置上 sticky 於頂端（比照 cabforum.org / Mockup A）；
+    桌面（lg）保持 static，仍嵌於 1140 container 下方。
+    放在 <header> 之外、與主內容平行，sticky 的 containing block 才會是
+    BaseLayout 的長 flex column，而非 shrink-wrap 的 header。 */}
+<div class="sticky top-0 z-40 lg:static bg-bs-dark border-b-4 border-bs-primary shadow-sm lg:shadow-none">
+  <nav class="text-slate-200 px-3 py-1">
+      <div class="flex flex-wrap items-center">
+        <button
+          id="menu-btn"
+          type="button"
+          aria-expanded="false"
+          aria-controls="navbar-collapse"
+          aria-label="開啟選單"
+          class="lg:hidden inline-flex items-center justify-center rounded border border-slate-500 p-1.5 my-1"
+        >
+          <svg
+            width="22"
+            height="22"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <path d="M4 6h16M4 12h16M4 18h16" stroke-linecap="round"></path>
+          </svg>
+        </button>
+        <button
+          id="menu-btn-label"
+          type="button"
+          aria-controls="navbar-collapse"
+          aria-hidden="true"
+          tabindex="-1"
+          class="lg:hidden ml-3 my-1 text-sm text-slate-200 hover:text-white"
+        >
+          ← 開啟選單
+        </button>
+
+        <div
+          id="navbar-collapse"
+          class="hidden lg:flex w-full lg:w-auto lg:flex-1 flex-col lg:flex-row lg:items-center gap-1 lg:gap-0"
+        >
           <button
-            id="menu-btn"
+            id="mobile-search-trigger"
             type="button"
-            aria-expanded="false"
-            aria-controls="navbar-collapse"
-            aria-label="開啟選單"
-            class="lg:hidden inline-flex items-center justify-center rounded border border-slate-500 p-1.5 my-1"
+            class="lg:hidden mt-5 mb-4 flex order-first w-full items-center gap-2 rounded border border-slate-500 bg-black/30 px-4 py-3 text-sm text-slate-300 hover:bg-black/50 hover:text-white"
+            aria-label="開啟搜尋"
           >
-            <svg
-              width="22"
-              height="22"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              viewBox="0 0 24 24"
-              aria-hidden="true"
-            >
-              <path d="M4 6h16M4 12h16M4 18h16" stroke-linecap="round"></path>
-            </svg>
-          </button>
-
-          <div
-            id="navbar-collapse"
-            class="hidden lg:flex w-full lg:w-auto lg:flex-1 flex-col lg:flex-row lg:items-center gap-1 lg:gap-0"
-          >
-            <form
-              id="mobile-search-form"
-              class="lg:hidden mx-2 mt-3 mb-4 flex order-first"
-              role="search"
-            >
-              <label class="sr-only" for="mobile-search">搜尋</label>
-              <input
-                id="mobile-search"
-                type="search"
-                placeholder="輸入以搜尋…（即將推出）"
-                disabled
-                class="flex-1 min-w-0 rounded-l border border-slate-500 bg-black/30 px-3 py-3 text-sm text-slate-100 placeholder-slate-400 focus:outline-none focus:border-bs-primary focus:bg-black/50 disabled:cursor-not-allowed"
-              />
-              <button
-                type="submit"
-                disabled
-                class="rounded-r bg-bs-secondary px-4 py-3 text-sm font-medium text-white hover:brightness-110 disabled:cursor-not-allowed"
-              >
-                搜尋
-              </button>
-            </form>
+              <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
+                <path
+                  d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"
+                ></path>
+              </svg>
+              <span>搜尋翻譯、術語、章節編號…</span>
+            </button>
 
             <div class="lg:hidden mx-2 mb-2 border-t border-slate-700"></div>
 
@@ -135,10 +144,9 @@ const isActive = (href: string) =>
           <button
             id="open-search"
             type="button"
-            disabled
-            aria-label="搜尋（即將推出）"
-            title="搜尋（即將推出）"
-            class="hidden lg:inline-flex ml-auto items-center px-3 py-2 text-slate-400 disabled:cursor-not-allowed"
+            aria-label="搜尋（Ctrl/⌘ + K）"
+            title="搜尋（Ctrl/⌘ + K）"
+            class="hidden lg:inline-flex ml-auto items-center px-3 py-2 text-slate-300 hover:text-white"
           >
             <svg width="18" height="18" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
               <path
@@ -148,19 +156,35 @@ const isActive = (href: string) =>
           </button>
         </div>
       </nav>
-    </div>
   </div>
 
-  <div class="hidden lg:block h-6"></div>
-</header>
+<div class="hidden lg:block h-6"></div>
 
 <script>
   const menuBtn = document.getElementById('menu-btn');
   const collapse = document.getElementById('navbar-collapse');
-  menuBtn?.addEventListener('click', () => {
-    if (!collapse) return;
-    const opened = collapse.classList.toggle('hidden') === false;
+  const menuLabel = document.getElementById('menu-btn-label');
+  const setMenuState = (opened: boolean) => {
+    if (!menuBtn) return;
     menuBtn.setAttribute('aria-expanded', opened ? 'true' : 'false');
     menuBtn.setAttribute('aria-label', opened ? '收合選單' : '開啟選單');
+    if (menuLabel) menuLabel.textContent = opened ? '← 關閉選單' : '← 開啟選單';
+  };
+  const toggleMenu = () => {
+    if (!collapse) return;
+    const opened = collapse.classList.toggle('hidden') === false;
+    setMenuState(opened);
+  };
+  menuBtn?.addEventListener('click', toggleMenu);
+  menuLabel?.addEventListener('click', toggleMenu);
+
+  // M1-9：兩個搜尋入口（桌面 + 漢堡內）皆觸發 SearchModal
+  type OpenSearchWindow = Window & { __openSearchModal?: () => void };
+  const openSearch = () => (window as OpenSearchWindow).__openSearchModal?.();
+  document.getElementById('open-search')?.addEventListener('click', openSearch);
+  document.getElementById('mobile-search-trigger')?.addEventListener('click', () => {
+    collapse?.classList.add('hidden');
+    setMenuState(false);
+    openSearch();
   });
 </script>

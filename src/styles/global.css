@@ -47,12 +47,105 @@ body {
   color: #495057;
 }
 
-.clause-body p {
+/* 章節內文排版（spec §5.1 法律文件閱讀體驗：襯線、寬鬆行距） */
+.clause-body {
+  color: #1f2937; /* slate-800 */
+  font-size: 1rem;
   line-height: 1.85;
+}
+.clause-body > * + * {
   margin-top: 1rem;
 }
-.clause-body p:first-child {
-  margin-top: 0;
+.clause-body h2,
+.clause-body h3,
+.clause-body h4 {
+  font-family: var(--font-serif-tc);
+  color: #0f172a; /* slate-900 */
+  scroll-margin-top: 5rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+.clause-body h2 {
+  font-size: 1.25rem;
+  margin-top: 2rem;
+  padding-bottom: 0.25rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+.clause-body h3 {
+  font-size: 1.125rem;
+  margin-top: 1.5rem;
+}
+.clause-body h4 {
+  font-size: 1rem;
+  margin-top: 1.25rem;
+}
+.clause-body ul,
+.clause-body ol {
+  padding-left: 1.5rem;
+}
+.clause-body ul {
+  list-style: disc;
+}
+.clause-body ol {
+  list-style: decimal;
+}
+.clause-body li + li {
+  margin-top: 0.35rem;
+}
+.clause-body li > p {
+  margin-top: 0.35rem;
+}
+.clause-body a {
+  color: var(--bs-secondary);
+  text-decoration: underline;
+  text-decoration-color: #cbd5e1;
+  text-underline-offset: 2px;
+}
+.clause-body a:hover {
+  text-decoration-color: var(--bs-secondary);
+}
+.clause-body code {
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 0.92em;
+  padding: 0.1em 0.35em;
+  background: #f1f5f9;
+  border-radius: 0.25rem;
+}
+.clause-body pre {
+  background: #0f172a;
+  color: #e2e8f0;
+  padding: 1rem;
+  border-radius: 0.375rem;
+  overflow-x: auto;
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+.clause-body pre code {
+  background: transparent;
+  padding: 0;
+  color: inherit;
+}
+.clause-body blockquote {
+  border-left: 4px solid var(--bs-primary);
+  padding: 0.25rem 0 0.25rem 1rem;
+  color: #475569; /* slate-600 */
+  font-style: normal;
+}
+.clause-body table {
+  width: 100%;
+  font-size: 0.92em;
+  border-collapse: collapse;
+}
+.clause-body th,
+.clause-body td {
+  border: 1px solid #e2e8f0;
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+  vertical-align: top;
+}
+.clause-body th {
+  background: #f8fafc;
+  font-weight: 600;
 }
 
 /* spec §4.2 — 中英對照模式

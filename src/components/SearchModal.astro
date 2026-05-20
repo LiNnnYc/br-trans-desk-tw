@@ -1,0 +1,215 @@
+---
+// SearchModal — Pagefind 搜尋介面（spec §4.5；milestones M1-9）。
+// 由 SiteHeader 的搜尋按鈕觸發；首次開啟才動態載入 `/pagefind/pagefind.js`
+// （該檔案由 `npm run build` 後的 pagefind CLI 產生於 dist/pagefind/）。
+// dev 模式下索引尚未存在，會顯示提示訊息而非報錯。
+//
+// 結果欄位（spec §4.5）：頁面標題、命中片段、所屬區段（由 sub_results 提供）。
+---
+
+<div
+  id="search-modal"
+  class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="search-modal-label"
+>
+  <div class="mx-auto mt-12 max-w-2xl px-4">
+    <div class="rounded-lg bg-white shadow-2xl overflow-hidden">
+      <div class="flex items-center gap-2 border-b border-slate-200 px-4 py-3">
+        <svg
+          width="18"
+          height="18"
+          fill="currentColor"
+          viewBox="0 0 16 16"
+          class="text-slate-500 shrink-0"
+          aria-hidden="true"
+        >
+          <path
+            d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"
+          ></path>
+        </svg>
+        <label id="search-modal-label" class="sr-only" for="search-modal-input"
+          >搜尋翻譯內容</label
+        >
+        <input
+          id="search-modal-input"
+          type="search"
+          autocomplete="off"
+          spellcheck="false"
+          placeholder="搜尋翻譯、術語、章節編號…"
+          class="flex-1 min-w-0 bg-transparent text-sm text-slate-900 placeholder-slate-400 outline-none"
+        />
+        <kbd
+          class="hidden sm:inline-block rounded border border-slate-300 bg-slate-50 px-1.5 py-0.5 text-[10px] font-mono text-slate-500"
+          >Esc</kbd
+        >
+        <button
+          id="search-modal-close"
+          type="button"
+          aria-label="關閉搜尋"
+          class="ml-1 inline-flex h-7 w-7 items-center justify-center rounded text-slate-500 hover:bg-slate-100 hover:text-slate-700"
+        >
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M1 1l12 12M13 1L1 13" stroke-linecap="round" />
+          </svg>
+        </button>
+      </div>
+      <div
+        id="search-modal-results"
+        class="max-h-[60vh] overflow-y-auto text-sm"
+        role="listbox"
+        aria-label="搜尋結果"
+      >
+        <p class="px-4 py-8 text-center text-slate-500">輸入關鍵字開始搜尋。</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  type PagefindModule = {
+    options: (opts: Record<string, unknown>) => Promise<void>;
+    search: (q: string) => Promise<{
+      results: Array<{
+        data: () => Promise<{
+          url: string;
+          excerpt: string;
+          meta: { title?: string };
+          sub_results?: Array<{ title?: string; excerpt?: string; url?: string }>;
+        }>;
+      }>;
+    }>;
+  };
+
+  let pagefind: PagefindModule | null = null;
+  let loading = false;
+  let loadError = false;
+  let searchSeq = 0;
+
+  const modal = document.getElementById('search-modal');
+  const input = document.getElementById('search-modal-input') as HTMLInputElement | null;
+  const results = document.getElementById('search-modal-results');
+  const closeBtn = document.getElementById('search-modal-close');
+
+  if (!modal || !input || !results || !closeBtn) {
+    // 元件未掛上時靜默退出（不應發生）
+  } else {
+    const emptyMsg =
+      '<p class="px-4 py-8 text-center text-slate-500">輸入關鍵字開始搜尋。</p>';
+
+    async function ensurePagefind() {
+      if (pagefind || loading || loadError) return;
+      loading = true;
+      try {
+        // dist/pagefind/pagefind.js 由 `npm run build` 後的 pagefind CLI 產生；
+        // 透過變數字串迴避編譯期模組解析（檔案在 build 後才存在）。
+        const pagefindUrl = '/pagefind/pagefind.js';
+        const mod = (await import(/* @vite-ignore */ /* webpackIgnore: true */ pagefindUrl)) as PagefindModule;
+        await mod.options({ excerptLength: 30 });
+        pagefind = mod;
+      } catch (_err) {
+        loadError = true;
+        results!.innerHTML =
+          '<div class="px-4 py-8 text-center text-sm text-slate-600">' +
+          '<p class="font-medium text-slate-800">搜尋索引尚未建置</p>' +
+          '<p class="mt-2 text-xs text-slate-500">請於本機執行 <code class="font-mono">npm run build</code> 後再開啟，或使用部署後的版本。</p>' +
+          '</div>';
+      } finally {
+        loading = false;
+      }
+    }
+
+    function openModal() {
+      modal!.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+      input!.value = '';
+      results!.innerHTML = emptyMsg;
+      setTimeout(() => input!.focus(), 0);
+      ensurePagefind();
+    }
+    function closeModal() {
+      modal!.classList.add('hidden');
+      document.body.style.overflow = '';
+    }
+
+    (window as unknown as { __openSearchModal?: () => void }).__openSearchModal = openModal;
+
+    closeBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) closeModal();
+    });
+    document.addEventListener('keydown', (e) => {
+      const opened = !modal.classList.contains('hidden');
+      if (opened && e.key === 'Escape') {
+        e.preventDefault();
+        closeModal();
+        return;
+      }
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        opened ? closeModal() : openModal();
+      }
+    });
+
+    let timer: number | undefined;
+    input.addEventListener('input', () => {
+      if (timer) window.clearTimeout(timer);
+      timer = window.setTimeout(runSearch, 160);
+    });
+
+    function escapeHtml(s: string) {
+      return s.replace(/[&<>"']/g, (c) =>
+        ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!,
+      );
+    }
+
+    async function runSearch() {
+      const q = input!.value.trim();
+      const seq = ++searchSeq;
+      if (!q) {
+        results!.innerHTML = emptyMsg;
+        return;
+      }
+      if (!pagefind && !loadError) await ensurePagefind();
+      if (loadError || !pagefind) return;
+
+      const search = await pagefind.search(q);
+      if (seq !== searchSeq) return; // 已被後續輸入取代
+      if (search.results.length === 0) {
+        results!.innerHTML =
+          '<p class="px-4 py-8 text-center text-slate-500">無符合「' +
+          escapeHtml(q) +
+          '」的結果。</p>';
+        return;
+      }
+      const top = await Promise.all(search.results.slice(0, 10).map((r) => r.data()));
+      if (seq !== searchSeq) return;
+      results!.innerHTML = top
+        .map((r) => {
+          const title = escapeHtml(r.meta.title || r.url);
+          const subs = (r.sub_results || [])
+            .slice(0, 3)
+            .map(
+              (s) =>
+                `<div class="mt-1.5 border-l-2 border-slate-200 pl-2"><a href="${escapeHtml(
+                  s.url || r.url,
+                )}" class="text-[11px] font-medium text-bs-secondary hover:underline">${escapeHtml(
+                  s.title || '',
+                )}</a><div class="text-xs text-slate-600 leading-relaxed">${
+                  s.excerpt || ''
+                }</div></div>`,
+            )
+            .join('');
+          return (
+            `<a href="${escapeHtml(r.url)}" class="block px-4 py-3 hover:bg-slate-50 border-b border-slate-100 last:border-0" role="option">` +
+            `<div class="text-sm font-medium text-bs-secondary">${title}</div>` +
+            `<div class="mt-1 text-xs text-slate-600 leading-relaxed">${r.excerpt}</div>` +
+            subs +
+            '</a>'
+          );
+        })
+        .join('');
+    }
+  }
+</script>

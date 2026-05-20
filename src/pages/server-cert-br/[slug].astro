@@ -1,0 +1,236 @@
+---
+// /server-cert-br/{section-id-dashed}/ — Baseline Requirements 章節細項頁模板
+// （spec §1.1 / §2.1 / §3.1 / §4.3；milestones M1-8 章節頁子任務）。
+//
+// 模板職責：
+//   - 由 br collection 內每筆 entry 產生對應靜態頁
+//   - 麵包屑（依 section_id 拆出父鏈）
+//   - 章節標題列 + 工具列（整節引用、跳至原文）
+//   - Markdown 內文（由 entry render() 取得 <Content />）
+//   - 章節後設資料（譯者／更新日／版本／狀態）
+//   - sidebar「本書章節」樹狀導覽（cabf-card 樣式）
+//
+// 中英對照 toggle：M1-4 已實作但 M1-7 改版後尚未重新接上頁面工具列；
+// 待 M2 章節有正式英文原文段落結構時再行佈署，本檔暫不放 toggle 按鈕。
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+import CitationCard from '../../components/CitationCard.astro';
+import { getCollection, render } from 'astro:content';
+import { sectionIdToPath } from '../../lib/citation';
+
+export async function getStaticPaths() {
+  const all = await getCollection('br');
+  return all.map((entry) => ({
+    params: { slug: sectionIdToPath(entry.data.section_id) },
+    props: { entry, all },
+  }));
+}
+
+const { entry, all } = Astro.props;
+const { Content } = await render(entry);
+const d = entry.data;
+
+// 去除標題前若已內含 section_id 前綴（避免麵包屑與 h1 重複顯示編號）
+const cleanTitle = d.title.replace(/^\s*\d+(?:\.\d+)*\s*[、：:.\-—]?\s*/, '').trim() || d.title;
+
+// 由 entry.body 抽出第一個非空、非標題段落作為引用卡 body 用
+function firstParagraph(body: string | undefined): string {
+  if (!body) return '';
+  const blocks = body.split(/\n\s*\n+/).map((b) => b.trim());
+  for (const b of blocks) {
+    if (!b) continue;
+    if (b.startsWith('#') || b.startsWith('<') || b.startsWith('---')) continue;
+    // 去除常見 markdown 標記
+    return b
+      .replace(/!\[[^\]]*\]\([^)]+\)/g, '')
+      .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+      .replace(/[*_`>]+/g, '')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+  return '';
+}
+const citationBody = firstParagraph(entry.body);
+
+// 麵包屑：拆出每層父節（如 3.2.2.4 → 3, 3.2, 3.2.2）
+const parts = d.section_id.split('.');
+const ancestorIds: string[] = [];
+for (let i = 1; i < parts.length; i++) {
+  ancestorIds.push(parts.slice(0, i).join('.'));
+}
+const ancestorEntries = ancestorIds.map((id) => ({
+  id,
+  entry: all.find((e) => e.data.section_id === id),
+}));
+
+const breadcrumbItems = [
+  { label: '首頁', href: '/' },
+  { label: '基本要求', href: '/server-cert-br/' },
+  ...ancestorEntries.map((a) => ({
+    label: a.entry
+      ? `${a.id} ${a.entry.data.title.replace(/^\s*\d+(?:\.\d+)*\s*[、：:.\-—]?\s*/, '').trim()}`
+      : a.id,
+    href: a.entry ? `/server-cert-br/${sectionIdToPath(a.id)}/` : undefined,
+  })),
+  { label: d.section_id },
+];
+
+// sidebar：列出本 top-level 章節下所有節點，外加其他 top-level（僅顯示頂層連結）
+function compareSectionId(a: string, b: string) {
+  const ap = a.split('.').map(Number);
+  const bp = b.split('.').map(Number);
+  const n = Math.max(ap.length, bp.length);
+  for (let i = 0; i < n; i++) {
+    const av = ap[i] ?? -1;
+    const bv = bp[i] ?? -1;
+    if (av !== bv) return av - bv;
+  }
+  return 0;
+}
+const currentTopId = parts[0];
+const sidebarEntries = all
+  .filter((e) => {
+    const top = e.data.section_id.split('.')[0];
+    // 同 top-level：完整展開；其他 top-level：僅頂層
+    return top === currentTopId || e.data.section_id === top;
+  })
+  .sort((a, b) => compareSectionId(a.data.section_id, b.data.section_id));
+
+const statusLabel: Record<typeof d.status, string> = {
+  draft: '草稿',
+  translated: '已翻譯',
+  reviewed: '已校稿',
+  outdated: '過時',
+};
+const statusToneCls: Record<typeof d.status, string> = {
+  draft: 'bg-slate-100 text-slate-700 border-slate-300',
+  translated: 'bg-sky-50 text-sky-800 border-sky-300',
+  reviewed: 'bg-emerald-50 text-emerald-800 border-emerald-300',
+  outdated: 'bg-amber-50 text-amber-800 border-amber-300',
+};
+
+const pageTitle = `${d.section_id} ${cleanTitle}`;
+const isoUpdated =
+  d.last_updated instanceof Date
+    ? d.last_updated.toISOString().slice(0, 10)
+    : String(d.last_updated);
+---
+
+<BaseLayout title={pageTitle} description={`${d.section_id} ${cleanTitle}（CA/Browser Forum Baseline Requirements 非官方繁體中文翻譯）`}>
+  <Breadcrumb slot="breadcrumb" items={breadcrumbItems} />
+
+  <article class="cabf-card bg-white border border-slate-200 rounded p-5 sm:p-7">
+    <header class="border-b border-slate-200 pb-4">
+      <div class="flex flex-wrap items-center gap-2 text-xs">
+        <span class="font-mono font-semibold text-bs-secondary" data-pagefind-meta={`section_id:${d.section_id}`}>{d.section_id}</span>
+        <span
+          class:list={[
+            'inline-flex items-center rounded border px-1.5 py-0.5 font-medium',
+            statusToneCls[d.status],
+          ]}
+          aria-label={`翻譯狀態：${statusLabel[d.status]}`}
+        >
+          {statusLabel[d.status]}
+        </span>
+        <span class="text-slate-500">對應原文版本：<span class="font-mono">{d.original_version}</span></span>
+        {
+          d.ballot_refs.length > 0 && (
+            <span class="text-slate-500">
+              Ballot：
+              {d.ballot_refs.map((b, i) => (
+                <>
+                  {i > 0 && <span aria-hidden="true">, </span>}
+                  <span class="font-mono">{b}</span>
+                </>
+              ))}
+            </span>
+          )
+        }
+      </div>
+
+      <h1 class="mt-2 font-serif-tc text-2xl font-bold text-slate-900 sm:text-3xl leading-tight">
+        {cleanTitle}
+      </h1>
+
+      <div class="mt-4 flex flex-wrap items-center gap-2">
+        <CitationCard
+          sectionId={d.section_id}
+          title={cleanTitle}
+          body={citationBody}
+          originalUrl={d.original_url}
+          originalVersion={d.original_version}
+        />
+        <a
+          href={d.original_url}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center gap-1.5 rounded-md border border-slate-300 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 hover:border-slate-500 hover:bg-slate-50"
+          aria-label={`在新分頁開啟 cabforum.org 原文：${d.section_id}`}
+        >
+          <span aria-hidden="true">↗</span>
+          <span>跳至原文</span>
+        </a>
+      </div>
+    </header>
+
+    <div class="clause-body mt-6">
+      <Content />
+    </div>
+
+    <footer class="mt-8 border-t border-slate-200 pt-4 text-xs text-slate-500">
+      <dl class="grid grid-cols-1 gap-y-1 sm:grid-cols-[6rem_1fr]">
+        <dt class="font-medium text-slate-600">譯者</dt>
+        <dd>{d.translator}</dd>
+        <dt class="font-medium text-slate-600">最後更新</dt>
+        <dd><time datetime={isoUpdated}>{isoUpdated}</time></dd>
+        <dt class="font-medium text-slate-600">原文</dt>
+        <dd>
+          <a
+            href={d.original_url}
+            class="text-bs-secondary underline decoration-slate-300 underline-offset-2 hover:decoration-bs-secondary break-all"
+            target="_blank"
+            rel="noopener noreferrer">{d.original_url}</a>
+        </dd>
+      </dl>
+      <p class="mt-3 text-[11px] leading-relaxed text-slate-500">
+        ⚠️ 本翻譯為非官方翻譯，發生爭議時以 CA/Browser Forum 英文原文為準。
+      </p>
+    </footer>
+  </article>
+
+  <aside slot="sidebar">
+    <nav aria-label="本書章節" class="cabf-card bg-white border border-slate-200 rounded">
+      <div class="border-b border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700">本書章節</div>
+      <ul class="py-2 text-sm">
+        {
+          sidebarEntries.map((e) => {
+            const depth = e.data.section_id.split('.').length - 1;
+            const isCurrent = e.data.section_id === d.section_id;
+            const cleanLabel = e.data.title
+              .replace(/^\s*\d+(?:\.\d+)*\s*[、：:.\-—]?\s*/, '')
+              .trim() || e.data.title;
+            const indent = ['pl-3', 'pl-6', 'pl-9', 'pl-12', 'pl-14'][Math.min(depth, 4)];
+            return (
+              <li>
+                <a
+                  href={`/server-cert-br/${sectionIdToPath(e.data.section_id)}/`}
+                  aria-current={isCurrent ? 'page' : undefined}
+                  class:list={[
+                    'block py-1.5 pr-3 leading-snug border-l-[3px] transition',
+                    indent,
+                    isCurrent
+                      ? 'border-bs-primary bg-sky-50 text-bs-secondary font-medium'
+                      : 'border-transparent text-slate-700 hover:bg-slate-50 hover:text-slate-900',
+                  ]}
+                >
+                  <span class="font-mono text-[11px] text-slate-500 mr-1.5">{e.data.section_id}</span>
+                  <span>{cleanLabel}</span>
+                </a>
+              </li>
+            );
+          })
+        }
+      </ul>
+    </nav>
+  </aside>
+</BaseLayout>
