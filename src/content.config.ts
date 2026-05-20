@@ -32,9 +32,13 @@ const glossary = defineCollection({
     term_zh: z.string().min(1),
     abbreviation: z.string().optional(),
     definition: z.string().min(1),
+    // first_seen_at 在 BR 章節細項未建立前可以缺漏；M2 翻譯過程會逐步補上
     first_seen_at: z
       .string()
-      .regex(/^\/server-cert-br\/.+\/$/, 'first_seen_at 須為 /server-cert-br/ 下的頁面路徑'),
+      .regex(/^\/server-cert-br\/.+\/$/, 'first_seen_at 須為 /server-cert-br/ 下的頁面路徑')
+      .optional(),
+    /** 譯名來源；目前主要為 HiPKICA CP/CPS 附錄 1/2 */
+    source: z.string().optional(),
   }),
 });
 

@@ -1,0 +1,27 @@
+---
+// spec §1.1 + M1-6 — 章節頁首次出現術語時包裹此元件。
+// 視覺：term_zh（含底虛線）+ hover/focus 顯示英文原文與縮寫，並連往 /glossary/#<slug>。
+// 首次出現偵測尚未實作（待 M1-14 章節樣稿階段串入），此處僅提供包裝。
+interface Props {
+  /** 對應 glossary collection 的 entry id（檔名去副檔名），用於錨點 */
+  slug: string;
+  /** 中譯詞，作為實際顯示文字 */
+  termZh: string;
+  /** 英文原文（tooltip 顯示） */
+  termEn: string;
+  /** 可選縮寫，顯示為 "ABC" */
+  abbreviation?: string;
+}
+
+const { slug, termZh, termEn, abbreviation } = Astro.props;
+const tooltip = abbreviation ? `${termEn}（${abbreviation}）` : termEn;
+---
+
+<a
+  href={`/glossary/#${slug}`}
+  class="glossary-term decoration-dotted decoration-slate-400 underline-offset-4 hover:decoration-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-400"
+  style="text-decoration-line: underline;"
+  title={tooltip}
+  aria-label={`術語：${termZh}（${tooltip}）`}
+  ><slot>{termZh}</slot></a
+>
