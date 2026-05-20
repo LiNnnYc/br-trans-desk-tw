@@ -1,53 +1,75 @@
 ---
-// spec §4.1 — 版本狀態徽章（頁首）。
-// 顯示：對應原文版本、同步狀態、最後更新日期。
-// 點擊跳轉至 /changelog/。
+// spec §4.1 — 版本狀態徽章。
+// 兩種外觀：
+//   variant="light"（預設，banner 右上）— 白底淺色，給亮色 banner 用
+//   variant="dark" — 透明深底，給漢堡選單裡的暗色背景用
+// 內容：Ballot 標籤 + 版本 + 同步狀態指示燈 + 最後同步日期 + 完整版本歷程連結。
 import { siteConfig, type SyncStatus } from '../config/site';
+
+interface Props {
+  variant?: 'light' | 'dark';
+}
+
+const { variant = 'light' } = Astro.props;
 
 const { version, syncStatus, behindCount, lastSyncedAt } = siteConfig.upstream;
 
 const statusLabel: Record<SyncStatus, string> = {
   pending: '建置中',
   synced: '已同步',
-  behind: `落後 ${behindCount} 個 Ballot`,
+  behind: `落後 ${behindCount}`,
 };
 
-const tone: Record<SyncStatus, string> = {
-  synced: 'border-emerald-300 bg-emerald-50 text-emerald-800 hover:bg-emerald-100',
-  behind: 'border-amber-300 bg-amber-50 text-amber-900 hover:bg-amber-100',
-  pending: 'border-slate-300 bg-slate-50 text-slate-700 hover:bg-slate-100',
+const statusDot: Record<SyncStatus, string> = {
+  synced: 'bg-emerald-500',
+  behind: 'bg-amber-500',
+  pending: 'bg-slate-400',
 };
 
-const versionLabel = version === 'tbd' ? '版本待定' : `原文 ${version}`;
-const dateLabel = lastSyncedAt ?? null;
+const versionLabel = version === 'tbd' ? '版本待定' : `v${version.replace(/^v/, '')}`;
+const dateLabel = lastSyncedAt;
 
-const ariaParts = [
-  `原文版本：${versionLabel}`,
-  `狀態：${statusLabel[syncStatus]}`,
-  dateLabel ? `最後更新：${dateLabel}` : null,
-].filter(Boolean);
+const isDark = variant === 'dark';
+
+const wrapperCls = isDark
+  ? 'block text-xs text-slate-300'
+  : 'block rounded border border-slate-300 bg-white px-3 py-2 text-xs text-slate-600';
+const labelCls = isDark
+  ? 'font-semibold uppercase tracking-wide text-slate-400'
+  : 'font-semibold uppercase tracking-wide text-slate-500';
+const versionCls = isDark
+  ? 'font-mono font-bold text-bs-primary'
+  : 'font-mono font-bold text-bs-primary';
+const statusTextCls: Record<SyncStatus, string> = isDark
+  ? {
+      synced: 'text-emerald-300 font-medium',
+      behind: 'text-amber-300 font-medium',
+      pending: 'text-slate-300 font-medium',
+    }
+  : {
+      synced: 'text-emerald-700 font-medium',
+      behind: 'text-amber-800 font-medium',
+      pending: 'text-slate-700 font-medium',
+    };
+const dateTextCls = isDark ? 'text-slate-500' : 'text-slate-500';
+const linkCls = 'mt-1 inline-block text-bs-primary hover:underline';
 ---
 
-<a
-  href="/changelog/"
-  class:list={[
-    'inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-xs font-medium whitespace-nowrap transition',
-    tone[syncStatus],
-  ]}
-  aria-label={`${ariaParts.join('，')}。點擊查看 changelog`}
-  title="查看 changelog"
->
-  <span>{versionLabel}</span>
-  <span aria-hidden="true" class="opacity-60">·</span>
-  <span>{statusLabel[syncStatus]}</span>
-  {
-    dateLabel && (
-      <>
-        <span aria-hidden="true" class="opacity-60">
-          ·
+<div class={wrapperCls}>
+  <div class="flex items-baseline justify-between gap-3">
+    <span class={labelCls}>Ballot</span>
+    <span class={versionCls}>{versionLabel}</span>
+  </div>
+  <div class="mt-1 flex items-center gap-1.5">
+    <span class:list={['inline-block h-2 w-2 rounded-full', statusDot[syncStatus]]}></span>
+    <span class={statusTextCls[syncStatus]}>{statusLabel[syncStatus]}</span>
+    {
+      dateLabel && (
+        <span class={dateTextCls}>
+          · <time datetime={dateLabel}>{dateLabel}</time>
         </span>
-        <time datetime={dateLabel}>{dateLabel}</time>
-      </>
-    )
-  }
-</a>
+      )
+    }
+  </div>
+  <a href="/changelog/" class={linkCls}>完整版本歷程 →</a>
+</div>

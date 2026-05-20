@@ -1,76 +1,166 @@
 ---
-// spec §1.2 頁首：站名、版本徽章、中英對照 toggle、搜尋框。
-// 中英對照 toggle 行為見 spec §4.2，狀態存 localStorage('bilingual-mode')。
-// 搜尋為占位（disabled），實際 Pagefind 整合由 M1-9 接上。
+// spec §1.2 頁首：banner（站名 + 版本徽章）+ 全寬深色 navbar。
+// 行動端漢堡 collapse 內含搜尋輸入、主選單、Ballot 摘要。
+// 中英對照 toggle 改放至章節頁工具列（M2 時接 Quotable 區）；本元件僅維持站台導覽。
+// 搜尋為占位（modal 預留），實際 Pagefind 整合由 M1-9 接上。
 import { siteConfig } from '../config/site';
 import VersionBadge from './VersionBadge.astro';
+
+const navItems = [
+  { label: '基本要求', href: '/server-cert-br/' },
+  { label: '術語表', href: '/glossary/' },
+  { label: 'FAQ', href: '/faq-for-base-req/' },
+  { label: '快速參考', href: '/quick-reference/' },
+  { label: '版本歷程', href: '/changelog/' },
+  { label: '關於', href: '/about-this-site/' },
+];
+
+const currentPath = Astro.url.pathname;
+const isActive = (href: string) =>
+  href === '/' ? currentPath === '/' : currentPath.startsWith(href);
 ---
 
-<header class="border-b border-slate-200 bg-white">
-  <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-    <div class="flex flex-col gap-3 py-3 md:flex-row md:items-center md:gap-6 md:py-4">
-      <a
-        href="/"
-        class="flex items-center gap-2 text-base font-semibold text-slate-900 hover:text-slate-700 md:text-lg"
-      >
-        <span class="hidden md:inline">{siteConfig.name}</span>
-        <span class="md:hidden">{siteConfig.shortName}</span>
-      </a>
+<header>
+  <div class="hidden lg:block h-4"></div>
 
-      <div class="flex-1 md:px-4">
-        <label class="relative block">
-          <span class="sr-only">搜尋</span>
-          <input
-            type="search"
+  <div class="mx-auto max-w-[1140px] px-3">
+    <div class="bg-white shadow-sm border-t-4 border-b-4 border-bs-primary">
+      <div class="px-4 pt-5 pb-3 flex items-start justify-between gap-4">
+        <a href="/" class="inline-flex items-center gap-3 min-w-0">
+          <div
+            class="flex h-14 w-14 lg:h-16 lg:w-16 items-center justify-center rounded-md bg-bs-primary text-white font-mono font-bold text-2xl shrink-0"
+          >
+            BR
+          </div>
+          <div class="min-w-0">
+            <div class="font-serif-tc text-xl lg:text-2xl font-bold text-slate-900 leading-tight">
+              {siteConfig.name}
+            </div>
+            <div class="text-xs lg:text-sm text-slate-600 mt-0.5">
+              Baseline Requirements 非官方繁體中文翻譯
+            </div>
+          </div>
+        </a>
+
+        <div class="hidden lg:block shrink-0">
+          <VersionBadge />
+        </div>
+      </div>
+
+      <nav class="bg-bs-dark text-slate-200 px-3 py-1">
+        <div class="flex flex-wrap items-center">
+          <button
+            id="menu-btn"
+            type="button"
+            aria-expanded="false"
+            aria-controls="navbar-collapse"
+            aria-label="開啟選單"
+            class="lg:hidden inline-flex items-center justify-center rounded border border-slate-500 p-1.5 my-1"
+          >
+            <svg
+              width="22"
+              height="22"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
+              <path d="M4 6h16M4 12h16M4 18h16" stroke-linecap="round"></path>
+            </svg>
+          </button>
+
+          <div
+            id="navbar-collapse"
+            class="hidden lg:flex w-full lg:w-auto lg:flex-1 flex-col lg:flex-row lg:items-center gap-1 lg:gap-0"
+          >
+            <form
+              id="mobile-search-form"
+              class="lg:hidden mx-2 mt-3 mb-4 flex order-first"
+              role="search"
+            >
+              <label class="sr-only" for="mobile-search">搜尋</label>
+              <input
+                id="mobile-search"
+                type="search"
+                placeholder="輸入以搜尋…（即將推出）"
+                disabled
+                class="flex-1 min-w-0 rounded-l border border-slate-500 bg-black/30 px-3 py-3 text-sm text-slate-100 placeholder-slate-400 focus:outline-none focus:border-bs-primary focus:bg-black/50 disabled:cursor-not-allowed"
+              />
+              <button
+                type="submit"
+                disabled
+                class="rounded-r bg-bs-secondary px-4 py-3 text-sm font-medium text-white hover:brightness-110 disabled:cursor-not-allowed"
+              >
+                搜尋
+              </button>
+            </form>
+
+            <div class="lg:hidden mx-2 mb-2 border-t border-slate-700"></div>
+
+            <ul class="flex flex-col lg:flex-row text-sm">
+              {
+                navItems.map((item) => {
+                  const active = isActive(item.href);
+                  const baseCls =
+                    'block px-3 py-3 lg:py-2 font-normal border-l-[3px] lg:border-l-0 lg:border-b-[3px]';
+                  const activeCls =
+                    'text-white border-bs-primary bg-white/5';
+                  const idleCls =
+                    'border-transparent text-slate-300 hover:text-white hover:bg-white/5';
+                  return (
+                    <li>
+                      <a
+                        href={item.href}
+                        aria-current={active ? 'page' : undefined}
+                        class={`${baseCls} ${active ? activeCls : idleCls}`}
+                      >
+                        {item.label}
+                      </a>
+                    </li>
+                  );
+                })
+              }
+            </ul>
+
+            <div class="lg:hidden mx-2 mt-3 border-t border-slate-700"></div>
+
+            <div
+              class="lg:hidden mx-2 mt-4 mb-3 rounded border border-slate-600 bg-black/20 px-3 py-3 text-xs text-slate-300"
+            >
+              <VersionBadge variant="dark" />
+            </div>
+          </div>
+
+          <button
+            id="open-search"
+            type="button"
             disabled
-            placeholder="搜尋（即將推出）"
             aria-label="搜尋（即將推出）"
-            class="w-full rounded-md border border-slate-200 bg-slate-50 px-3 py-1.5 text-sm text-slate-500 placeholder-slate-400 focus:outline-none disabled:cursor-not-allowed"
-          />
-        </label>
-      </div>
-
-      <div class="flex items-center justify-between gap-3 md:justify-end">
-        <VersionBadge />
-        <button
-          type="button"
-          id="bilingual-toggle"
-          aria-pressed="false"
-          aria-label="切換中英對照顯示"
-          title="切換中英對照顯示"
-          class="inline-flex items-center gap-1 rounded-md border border-slate-200 bg-white px-2.5 py-1 text-xs font-medium text-slate-600 transition hover:border-slate-400 hover:bg-slate-50 aria-pressed:border-slate-900 aria-pressed:bg-slate-900 aria-pressed:text-white"
-        >
-          <span>中</span>
-          <span class="opacity-40">/</span>
-          <span>EN</span>
-        </button>
-      </div>
+            title="搜尋（即將推出）"
+            class="hidden lg:inline-flex ml-auto items-center px-3 py-2 text-slate-400 disabled:cursor-not-allowed"
+          >
+            <svg width="18" height="18" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
+              <path
+                d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"
+              ></path>
+            </svg>
+          </button>
+        </div>
+      </nav>
     </div>
   </div>
+
+  <div class="hidden lg:block h-6"></div>
 </header>
 
 <script>
-  // spec §4.2 — 中英對照 toggle。
-  // 初始狀態由 BaseLayout <head> 的 inline script 套用至 documentElement（避免 FOUC）；
-  // 這支 script 負責同步按鈕 aria-pressed 與處理點擊。
-  const STORAGE_KEY = 'bilingual-mode';
-  const root = document.documentElement;
-  const btn = document.getElementById('bilingual-toggle');
-
-  function syncButton() {
-    if (!btn) return;
-    btn.setAttribute('aria-pressed', root.classList.contains('show-bilingual') ? 'true' : 'false');
-  }
-
-  syncButton();
-
-  btn?.addEventListener('click', () => {
-    const on = root.classList.toggle('show-bilingual');
-    try {
-      localStorage.setItem(STORAGE_KEY, on ? 'on' : 'off');
-    } catch (_) {
-      /* localStorage 不可用時不持久化，僅維持本次切換 */
-    }
-    syncButton();
+  const menuBtn = document.getElementById('menu-btn');
+  const collapse = document.getElementById('navbar-collapse');
+  menuBtn?.addEventListener('click', () => {
+    if (!collapse) return;
+    const opened = collapse.classList.toggle('hidden') === false;
+    menuBtn.setAttribute('aria-expanded', opened ? 'true' : 'false');
+    menuBtn.setAttribute('aria-label', opened ? '收合選單' : '開啟選單');
   });
 </script>

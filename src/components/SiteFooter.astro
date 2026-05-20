@@ -1,48 +1,84 @@
 ---
 // spec §9.1 — 頁尾固定聲明（每頁）。聲明文字逐字遵照 spec，不可調整或省略。
+// 視覺：cabforum.org 風格深底頁尾。
 import { siteConfig } from '../config/site';
 ---
 
-<footer class="border-t border-slate-200 bg-white">
-  <div
-    class="mx-auto max-w-6xl px-4 py-6 text-xs leading-relaxed text-slate-600 sm:px-6 sm:text-sm lg:px-8"
-  >
-    <div class="space-y-2">
+<footer class="bg-bs-dark text-slate-400 mt-10">
+  <div class="mx-auto max-w-[1140px] px-3 py-8 text-sm">
+    <div class="pt-2 pb-4 flex flex-wrap items-center justify-between gap-4">
+      <a
+        href={siteConfig.repoUrl}
+        class="hover:text-white"
+        aria-label="GitHub repository"
+        rel="noopener noreferrer"
+      >
+        <svg width="20" height="20" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
+          <path
+            d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"
+          ></path>
+        </svg>
+      </a>
+      <a
+        href={`mailto:${siteConfig.contactEmail}`}
+        class="hover:text-white text-xs"
+      >
+        勘誤聯絡：{siteConfig.contactEmail}
+      </a>
+    </div>
+
+    <div class="py-2 text-xs">
+      <a href="/about-this-site/" class="hover:text-white">關於本站</a>
+      <span class="mx-2">|</span>
+      <a href={siteConfig.repoUrl} class="hover:text-white" rel="noopener noreferrer">
+        GitHub
+      </a>
+      <span class="mx-2">|</span>
+      <a href="/changelog/" class="hover:text-white">版本歷程</a>
+      <span class="mx-2">|</span>
+      <a
+        href="https://creativecommons.org/licenses/by/4.0/"
+        class="hover:text-white"
+        rel="noopener noreferrer"
+        target="_blank">CC BY 4.0</a
+      >
+    </div>
+
+    <div class="py-2 text-xs leading-relaxed space-y-1.5">
       <p>
-        本站為 CA/Browser Forum Baseline Requirements 的<strong class="font-semibold"
-          >非官方中文翻譯</strong
+        本站為 CA/Browser Forum Baseline Requirements 的<strong class="font-semibold text-slate-200"
+          >非官方繁體中文翻譯</strong
         >，由社群維護。
       </p>
       <p>
-        發生爭議時以 <strong class="font-semibold">CA/Browser Forum 英文原文為準</strong
+        發生爭議時以 <strong class="font-semibold text-slate-200"
+          >CA/Browser Forum 英文原文為準</strong
         >。本網站內容不構成法律意見。
       </p>
-      <p>
-        原文採 <a
-          href="https://creativecommons.org/licenses/by/4.0/"
-          class="underline hover:text-slate-900"
-          rel="noopener noreferrer"
-          target="_blank">CC BY 4.0</a
-        > 授權；本站翻譯內容亦採 CC BY 4.0 釋出。
-      </p>
+      <p>原文採 CC BY 4.0 授權；本站翻譯內容亦採 CC BY 4.0 釋出。翻譯維護：YCL。</p>
     </div>
 
-    <div
-      class="mt-5 flex flex-col gap-2 border-t border-slate-100 pt-4 text-xs text-slate-500 sm:flex-row sm:items-center sm:justify-between"
-    >
-      <div class="flex flex-wrap items-center gap-x-4 gap-y-1">
-        <a href={`mailto:${siteConfig.contactEmail}`} class="hover:text-slate-900 hover:underline">
-          勘誤聯絡：{siteConfig.contactEmail}
-        </a>
-        <a
-          href={siteConfig.repoUrl}
-          class="hover:text-slate-900 hover:underline"
-          rel="noopener noreferrer"
+    <div class="py-2 text-right">
+      <a
+        href="#top"
+        class="inline-flex items-center gap-1.5 rounded px-2 py-1 text-xs text-slate-300 hover:bg-white/10 hover:text-white"
+        title="回到頂端"
+      >
+        回到頂端
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="14"
+          height="14"
+          fill="currentColor"
+          viewBox="0 0 16 16"
+          aria-hidden="true"
         >
-          GitHub
-        </a>
-      </div>
-      <div>翻譯維護：YCL · 採 CC BY 4.0</div>
+          <path
+            fill-rule="evenodd"
+            d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z"
+          ></path>
+        </svg>
+      </a>
     </div>
   </div>
 </footer>

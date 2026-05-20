@@ -1,5 +1,10 @@
 ---
-// 全站基礎 layout。頁首、麵包屑（透過 named slot）、主內容、頁尾。
+// 全站基礎 layout（Mockup C — cabforum.org 結構）。
+// banner card + 全寬深色 navbar（SiteHeader）→ 主內容 9/3 grid → 深底 footer。
+// 三個 named slot：
+//   breadcrumb — 主欄頂部麵包屑
+//   sidebar    — 右側 3/12 欄（無 sidebar 時主欄佔滿 12 欄）
+//   default    — 主欄內容
 import '../styles/global.css';
 import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
@@ -9,19 +14,21 @@ import { siteConfig } from '../config/site';
 interface Props {
   title: string;
   description?: string;
-  /** 包裹 <main> 的最大寬度 Tailwind class，預設 max-w-3xl（章節閱讀寬度） */
+  /**
+   * 預留 prop，不再控制主欄寬度（已固定為 9/3 grid 或無 sidebar 時 12/12）。
+   * 保留以維持既有頁面相容性，下個 milestone 可清除。
+   */
   mainMaxWidth?: string;
 }
 
-const {
-  title,
-  description = siteConfig.description,
-  mainMaxWidth = 'max-w-3xl',
-} = Astro.props;
+const { title, description = siteConfig.description } = Astro.props;
 
 const fullTitle = title.includes(siteConfig.name)
   ? title
   : `${title}｜${siteConfig.name}`;
+
+const hasSidebar = Astro.slots.has('sidebar');
+const hasBreadcrumb = Astro.slots.has('breadcrumb');
 ---
 
 <!doctype html>
@@ -43,28 +50,35 @@ const fullTitle = title.includes(siteConfig.name)
       }
     </script>
   </head>
-  <body class="min-h-screen bg-slate-50 text-slate-800 antialiased">
+  <body class="min-h-screen bg-white text-slate-900 antialiased" id="top">
     <div class="flex min-h-screen flex-col">
       <SiteHeader />
 
-      {
-        Astro.slots.has('breadcrumb') && (
-          <div class="border-b border-slate-100 bg-white">
-            <div class="mx-auto max-w-6xl px-4 py-2 sm:px-6 lg:px-8">
-              <slot name="breadcrumb" />
-            </div>
-          </div>
-        )
-      }
+      <div class="mx-auto w-full max-w-[1140px] px-3 mt-4 lg:mt-0 flex-1">
+        <div class:list={['lg:grid lg:gap-6', hasSidebar ? 'lg:grid-cols-12' : '']}>
+          <div class:list={[hasSidebar ? 'lg:col-span-9' : '']}>
+            {
+              hasBreadcrumb && (
+                <div class="border-b border-slate-200 pb-1 mb-2 text-xs font-light text-slate-600">
+                  <slot name="breadcrumb" />
+                </div>
+              )
+            }
 
-      <main
-        class:list={[
-          'mx-auto w-full flex-1 px-4 py-8 sm:px-6 sm:py-12 lg:px-8',
-          mainMaxWidth,
-        ]}
-      >
-        <slot />
-      </main>
+            <main>
+              <slot />
+            </main>
+          </div>
+
+          {
+            hasSidebar && (
+              <aside class="lg:col-span-3 space-y-5 mt-8 lg:mt-0">
+                <slot name="sidebar" />
+              </aside>
+            )
+          }
+        </div>
+      </div>
 
       <SiteFooter />
     </div>

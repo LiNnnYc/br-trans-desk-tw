@@ -1,5 +1,60 @@
 @import "tailwindcss";
 
+/* ── 設計 tokens（對齊 Mockup C / cabforum.org SCSS 覆寫）─────────── */
+:root {
+  --bs-primary: #37b8eb;       /* rgb(55,184,235) — 淡天空藍 */
+  --bs-secondary: #105a75;     /* rgb(16,90,117) — 深青藍，CTA / hover */
+  --bs-primary-soft: #e8f6fc;  /* primary 約 10% 底 */
+  --bs-dark: #212529;
+  --bs-body: #333333;
+}
+
+@theme {
+  --color-bs-primary: #37b8eb;
+  --color-bs-secondary: #105a75;
+  --color-bs-primary-soft: #e8f6fc;
+  --color-bs-dark: #212529;
+  --font-serif-tc: "Noto Serif TC", "Source Han Serif TC", serif;
+}
+
+body {
+  font-family: "Noto Sans TC", system-ui, -apple-system, "Segoe UI", sans-serif;
+  color: var(--bs-body);
+}
+
+.font-serif-tc {
+  font-family: var(--font-serif-tc);
+}
+
+/* Bootstrap-like card motif：底部 4px primary 橫條 + 內框線 */
+.cabf-card {
+  background: #fff;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  border-bottom: 4px solid var(--bs-primary);
+}
+.cabf-card-inner {
+  border-top: 1px solid #dee2e6;
+  border-left: 1px solid #dee2e6;
+  border-right: 1px solid #dee2e6;
+}
+.cabf-card-label {
+  background: #e9ecef;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  padding: 0.35rem 0.6rem;
+  color: #495057;
+}
+
+.clause-body p {
+  line-height: 1.85;
+  margin-top: 1rem;
+}
+.clause-body p:first-child {
+  margin-top: 0;
+}
+
 /* spec §4.2 — 中英對照模式
    章節內容以 <span data-en-original="..."> 或 <p data-en-original>...</p> 標註英文原文，
    預設隱藏；當 <html> 帶 .show-bilingual class 時顯示。 */
