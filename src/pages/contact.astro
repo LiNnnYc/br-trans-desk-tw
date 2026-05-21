@@ -1,0 +1,85 @@
+---
+// /contact/ — 勘誤管道、Email、GitHub Issue 入口（spec §1.1、M1-8）。
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
+import { siteConfig } from '../config/site';
+
+const repoIsPlaceholder = siteConfig.repoUrl.startsWith('#');
+---
+
+<BaseLayout
+  title="聯絡方式"
+  description="本站勘誤回報、聯絡 Email、GitHub Issue 模板入口。"
+>
+  <Breadcrumb
+    slot="breadcrumb"
+    items={[{ label: '首頁', href: '/' }, { label: '聯絡方式' }]}
+  />
+
+  <article class="cabf-card bg-white border border-slate-200 rounded p-5 sm:p-7">
+    <header class="border-b border-slate-200 pb-4">
+      <h1 class="font-serif-tc text-2xl font-bold text-slate-900 sm:text-3xl leading-tight">
+        聯絡方式
+      </h1>
+      <p class="mt-2 text-sm text-slate-600">
+        所有勘誤、翻譯建議、Ballot 追蹤回報，皆以下列管道為準。
+      </p>
+    </header>
+
+    <div class="clause-body mt-6">
+      <h2>勘誤回報（建議）</h2>
+      <p>
+        最快、最公開的方式是直接於 GitHub repo 開 Issue，已備妥三種模板：
+      </p>
+      <ul>
+        <li><strong>錯字／誤譯</strong>：指出頁面與段落，附上你建議的譯法。</li>
+        <li><strong>新功能建議</strong>：希望站台補上的功能或資訊。</li>
+        <li><strong>Ballot 跟進</strong>：CA/Browser Forum 發佈新 Ballot，提醒納入待譯佇列。</li>
+      </ul>
+      {
+        repoIsPlaceholder ? (
+          <p class="text-sm text-slate-500">
+            （GitHub repo 尚未公開，將於 M2 翻譯主文件完成後建立並啟用 Issues。）
+          </p>
+        ) : (
+          <p>
+            <a
+              href={`${siteConfig.repoUrl}/issues/new/choose`}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center gap-2 rounded-md border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:border-slate-500 hover:bg-slate-50"
+            >
+              <span aria-hidden="true">↗</span>
+              <span>開 GitHub Issue</span>
+            </a>
+          </p>
+        )
+      }
+
+      <h2>Email</h2>
+      <p>
+        如不便使用 GitHub，可寄信至：
+        <a href={`mailto:${siteConfig.contactEmail}`}>{siteConfig.contactEmail}</a>
+      </p>
+      <p class="text-sm text-slate-500">
+        說明：本信箱為單人維護，回覆時間以「週」為單位；緊急或大量回報請優先走 GitHub Issue。
+      </p>
+
+      <h2>引用本站</h2>
+      <p>
+        歡迎在客服回覆、內部文件、簡報中引用本站翻譯內容（CC BY 4.0 授權）。建議直接使用各章節頁的「複製引用」按鈕，輸出格式已包含必要欄位與免責聲明。
+      </p>
+
+      <h2>不受理項目</h2>
+      <ul>
+        <li>請求協助申請、操作、或評估憑證商品（請洽各 CA 客戶服務）。</li>
+        <li>對 CA/Browser Forum 原文政策的爭議（請循官方公開信件討論）。</li>
+        <li>商業合作、廣告、贊助代購等。</li>
+      </ul>
+    </div>
+
+    <footer class="mt-8 border-t border-slate-200 pt-4 text-[11px] leading-relaxed text-slate-500">
+      ⚠️ 本翻譯為非官方翻譯，發生爭議時以 CA/Browser Forum 英文原文為準。
+    </footer>
+  </article>
+</BaseLayout>

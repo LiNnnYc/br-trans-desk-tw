@@ -1,0 +1,84 @@
+---
+// /about-this-site/ — 關於本站（spec §9.2、PRD §7/§8）。
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
+import { siteConfig } from '../config/site';
+---
+
+<BaseLayout
+  title="關於本站"
+  description="本站的翻譯流程、品質聲明、維護者資訊、授權與引用方式。"
+>
+  <Breadcrumb
+    slot="breadcrumb"
+    items={[{ label: '首頁', href: '/' }, { label: '關於本站' }]}
+  />
+
+  <article class="cabf-card bg-white border border-slate-200 rounded p-5 sm:p-7">
+    <header class="border-b border-slate-200 pb-4">
+      <h1 class="font-serif-tc text-2xl font-bold text-slate-900 sm:text-3xl leading-tight">
+        關於本站
+      </h1>
+      <p class="mt-2 text-sm text-slate-600">
+        本站定位、翻譯流程、品質聲明、授權與維護者資訊。
+      </p>
+    </header>
+
+    <div class="clause-body mt-6">
+      <h2>站台定位</h2>
+      <p>
+        本站為 CA/Browser Forum《Server Certificate Baseline Requirements》之
+        <strong>非官方繁體中文翻譯</strong>，由社群獨立維護，與 CA/Browser Forum 無從屬關係。
+      </p>
+      <p>
+        主要受眾為台灣 CA 客戶服務人員、購買憑證的企業窗口、以及資安／法務人員：在面對「為什麼申請憑證程序這麼繁瑣、為什麼憑證效期越來越短」等問題時，提供可引用的繁體中文翻譯內容。
+      </p>
+
+      <h2>翻譯流程與品質</h2>
+      <ul>
+        <li>每節翻譯流程：AI 初譯 → 隔日重讀校稿 → 公開合併。</li>
+        <li>每頁標註對應的原文版本、Ballot 編號、翻譯狀態（草稿／已翻譯／已校稿）、譯者、最後更新日。</li>
+        <li>術語以中華電信 HiPKICA CP/CPS v1.1 附錄為第一優先來源、臺灣網路認證 TWCA Global CPS v3.1 為第二來源，未統一者於術語表中標註並逐步補齊。</li>
+        <li>原文版本更新後，目標 60 天內完成中譯與上線。</li>
+      </ul>
+
+      <h2>不可動搖的免責聲明</h2>
+      <blockquote>
+        本翻譯為非官方翻譯，發生爭議時以 CA/Browser Forum 英文原文為準。本網站內容不構成法律意見。
+      </blockquote>
+      <p>
+        此聲明於每頁頁尾、每張引用卡輸出格式中皆固定附帶，不可由使用者調整或關閉。
+      </p>
+
+      <h2>授權與引用</h2>
+      <ul>
+        <li>原文採 <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">CC BY 4.0</a> 授權；本站翻譯內容亦以 CC BY 4.0 釋出。</li>
+        <li>引用本站翻譯內容請註明出處：站名 + 翻譯頁網址 + 對應原文版本。</li>
+        <li>各章節頁右上提供「複製引用」按鈕，輸出格式已內含必要欄位與免責聲明。</li>
+      </ul>
+
+      <h2>維護者與聯絡</h2>
+      <p>
+        翻譯維護：YCL（單人作業）。勘誤請以
+        <a href={`mailto:${siteConfig.contactEmail}`}>{siteConfig.contactEmail}</a>
+        或 GitHub Issue 回報，詳見 <a href="/contact/">聯絡方式</a>。
+      </p>
+
+      <h2>死人開關聲明</h2>
+      <p>
+        若本站連續 <strong>6 個月以上無任何更新</strong>，視為停止維護。歡迎社群任意 fork 接手繼續翻譯與維運；原 repo 將保留歷史內容供參考。
+      </p>
+
+      <h2>分析工具</h2>
+      <p>
+        本站採用 <a href="https://www.goatcounter.com/" target="_blank" rel="noopener noreferrer">GoatCounter</a> 進行匿名訪客流量統計，
+        <strong>不使用 cookie、不跨站追蹤、不與 Google Analytics 等第三方共享</strong>；
+        統計資料僅用於評估翻譯內容是否被實際引用。GoatCounter 整合預計於 M1-12 上線（目前未啟用）。
+      </p>
+    </div>
+
+    <footer class="mt-8 border-t border-slate-200 pt-4 text-[11px] leading-relaxed text-slate-500">
+      ⚠️ 本翻譯為非官方翻譯，發生爭議時以 CA/Browser Forum 英文原文為準。
+    </footer>
+  </article>
+</BaseLayout>

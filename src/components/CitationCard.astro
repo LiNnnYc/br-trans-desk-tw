@@ -1,7 +1,7 @@
 ---
 // spec §4.3 — 條款引用卡（整節版按鈕，置於章節標題下方）。
-// 段落 hover 版見 Quotable.astro。
-// 兩者共用 `.citation-copy` class + `data-clipboard-text`，由 CitationToast 的 delegated handler 處理。
+// （段落級 hover 複製版 MVP 階段暫不實作，使用者決議：對長章節不實用。）
+// 配合 CitationToast 的 delegated handler：點擊任何 .citation-copy[data-clipboard-text] 即觸發複製。
 import { buildCitation } from '../lib/citation';
 import { siteConfig } from '../config/site';
 

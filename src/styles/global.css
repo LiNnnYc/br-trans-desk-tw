@@ -162,3 +162,106 @@ html.show-bilingual [data-en-original] {
   font-size: 0.95em;
   line-height: 1.65;
 }
+
+/* ── 列印樣式（spec §5.4、BL-1） ───────────────────────────────────────
+   - 隱藏：頁首 banner/nav、深底 footer、sidebar、搜尋 modal、複製按鈕、中英對照 toggle、回到頂端
+   - 保留：麵包屑、章節標題列、版本／Ballot 資訊、章節內文、譯者資訊、免責聲明
+   - 紙張：A4，雙面友善（margin 由 @page 控制） */
+@media print {
+  @page {
+    size: A4;
+    margin: 18mm 16mm;
+  }
+
+  html,
+  body {
+    background: #fff !important;
+    color: #000 !important;
+    font-size: 11pt;
+  }
+
+  /* container 不要限寬：列印頁面寬度由 @page margin 決定 */
+  body > div.mx-auto {
+    max-width: none !important;
+  }
+
+  /* 站台導覽元素 — 列印時全部隱藏 */
+  header,
+  footer,
+  nav[aria-label="麵包屑"] ~ * nav,
+  .sticky,
+  #navbar-collapse,
+  #menu-btn,
+  #menu-btn-label,
+  #open-search,
+  #mobile-search-trigger,
+  #citation-toast,
+  #search-modal,
+  aside,
+  .citation-copy,
+  #bilingual-toggle,
+  a[href="#top"] {
+    display: none !important;
+  }
+
+  /* 麵包屑保留 — 在內文上方提供來源資訊 */
+  nav[aria-label="麵包屑"] {
+    display: block !important;
+    border-bottom: 1px solid #999;
+    padding-bottom: 4pt;
+    margin-bottom: 12pt;
+    color: #000 !important;
+  }
+
+  /* 章節卡片：去陰影與底色 */
+  .cabf-card {
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+  }
+
+  /* 跳至原文按鈕 → 轉為純文字尾註 */
+  a[href^="http"]::after {
+    content: " <" attr(href) ">";
+    font-size: 9pt;
+    color: #555;
+    word-break: break-all;
+  }
+  /* 但麵包屑內連結不要展開（短而頻繁，會雜亂） */
+  nav[aria-label="麵包屑"] a::after {
+    content: "";
+  }
+
+  /* clause-body：放大行高、強制黑色 */
+  .clause-body {
+    color: #000 !important;
+    font-size: 11pt;
+    line-height: 1.7;
+  }
+  .clause-body h2,
+  .clause-body h3,
+  .clause-body h4 {
+    color: #000 !important;
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+  .clause-body p,
+  .clause-body li {
+    orphans: 3;
+    widows: 3;
+  }
+  .clause-body pre,
+  .clause-body table,
+  .clause-body blockquote {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  /* 中英對照在列印時一律顯示，方便對照 */
+  [data-en-original] {
+    display: block !important;
+    color: #444 !important;
+    font-size: 0.92em;
+    margin-top: 0.2rem;
+  }
+}

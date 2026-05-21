@@ -10,8 +10,9 @@
 //   - 章節後設資料（譯者／更新日／版本／狀態）
 //   - sidebar「本書章節」樹狀導覽（cabf-card 樣式）
 //
-// 中英對照 toggle：M1-4 已實作但 M1-7 改版後尚未重新接上頁面工具列；
-// 待 M2 章節有正式英文原文段落結構時再行佈署，本檔暫不放 toggle 按鈕。
+// 中英對照 toggle：BaseLayout 已在 <head> 預讀 localStorage 設定 html.show-bilingual；
+// 此頁工具列僅負責切換 class 與寫回 localStorage。
+// 樣式機制詳見 global.css 內 `[data-en-original]` 規則。
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Breadcrumb from '../../components/Breadcrumb.astro';
 import CitationCard from '../../components/CitationCard.astro';
@@ -170,6 +171,17 @@ const isoUpdated =
           <span aria-hidden="true">↗</span>
           <span>跳至原文</span>
         </a>
+        <button
+          id="bilingual-toggle"
+          type="button"
+          aria-pressed="false"
+          class="inline-flex items-center gap-1.5 rounded-md border border-slate-300 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 hover:border-slate-500 hover:bg-slate-50 aria-pressed:border-bs-primary aria-pressed:bg-bs-primary-soft aria-pressed:text-bs-secondary"
+          aria-label="切換中英對照模式（顯示英文原文）"
+          title="切換中英對照模式"
+        >
+          <span aria-hidden="true">中／EN</span>
+          <span class="sr-only">切換中英對照</span>
+        </button>
       </div>
     </header>
 
@@ -234,3 +246,25 @@ const isoUpdated =
     </nav>
   </aside>
 </BaseLayout>
+
+<script>
+  // spec §4.2 — 中英對照 toggle：切換 <html>.show-bilingual 並持久化至 localStorage。
+  // BaseLayout 已在 <head> 預讀 localStorage 避免 FOUC；此處只負責使用者主動切換。
+  const btn = document.getElementById('bilingual-toggle');
+  if (btn) {
+    const sync = () => {
+      const on = document.documentElement.classList.contains('show-bilingual');
+      btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    };
+    sync();
+    btn.addEventListener('click', () => {
+      const on = document.documentElement.classList.toggle('show-bilingual');
+      try {
+        localStorage.setItem('bilingual-mode', on ? 'on' : 'off');
+      } catch (_) {
+        /* localStorage 不可用時忽略，僅本頁生效 */
+      }
+      sync();
+    });
+  }
+</script>
