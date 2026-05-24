@@ -5,6 +5,7 @@
 // 搜尋按鈕（桌面 + 漢堡內輸入）皆透過 window.__openSearchModal 開啟 Pagefind modal（M1-9）。
 import { siteConfig } from '../config/site';
 import VersionBadge from './VersionBadge.astro';
+import BrSidebarSubmenu from './BrSidebarSubmenu.astro';
 
 const navItems = [
   { label: '首頁', href: '/' },
@@ -19,6 +20,10 @@ const navItems = [
 const currentPath = Astro.url.pathname;
 const isActive = (href: string) =>
   href === '/' ? currentPath === '/' : currentPath.startsWith(href);
+
+// 規格 web-spec-doc/server-cert-br樣式變更.txt：
+// 只在 /server-cert-br 子頁面才把《基本要求》子選單整合進漢堡選單。
+const showBrSubmenuInMobile = currentPath.startsWith('/server-cert-br');
 ---
 
 <header>
@@ -106,6 +111,13 @@ const isActive = (href: string) =>
             </button>
 
             <div class="lg:hidden mx-2 mb-2 border-t border-slate-700"></div>
+
+            {showBrSubmenuInMobile && (
+              <div class="lg:hidden">
+                <BrSidebarSubmenu currentPath={currentPath} variant="mobile" />
+                <div class="mx-2 mt-2 mb-2 border-t border-slate-700"></div>
+              </div>
+            )}
 
             <ul class="flex flex-col lg:flex-row text-sm">
               {

@@ -1,16 +1,30 @@
 ---
-// /server-cert-br/ — Baseline Requirements 章節目錄頁
-// （spec §1.1；milestones M1-8 章節頁子任務）。
-// 列出 br collection 內所有章節，依 section_id 自然排序、樹狀縮排顯示。
+// /server-cert-br/ — Baseline Requirements 全文頁
+// （2026-05-25 樣式變更後，此頁從章節目錄改為全文呈現；
+//   章節目錄頁搬至 /server-cert-br/table-of-contents/）。
+//
+// 規格：web-spec-doc/server-cert-br樣式變更.txt
+//   - SSR 串接所有 br entries（依 section_id 自然排序）
+//   - 每節 heading 含 cabforum.org 原文錨點與單章節 deep-link
+//   - blockquote 透過 .full-text-only-cn 容器 CSS 隱藏（純中文）
+//   - 加 data-pagefind-ignore 避免與單章節頁雙重索引
+//   - sidebar：BrSidebarSubmenu + BrAnchorNav
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Breadcrumb from '../../components/Breadcrumb.astro';
-import { getCollection } from 'astro:content';
+import BrSidebarSubmenu from '../../components/BrSidebarSubmenu.astro';
+import BrAnchorNav from '../../components/BrAnchorNav.astro';
+import { getCollection, render } from 'astro:content';
 import { sectionIdToPath } from '../../lib/citation';
 import { siteConfig } from '../../config/site';
 
 const all = await getCollection('br');
 
 function compareSectionId(a: string, b: string) {
+  const isAppA = a.startsWith('appendix-');
+  const isAppB = b.startsWith('appendix-');
+  if (isAppA && !isAppB) return 1;
+  if (!isAppA && isAppB) return -1;
+  if (isAppA && isAppB) return a.localeCompare(b);
   const ap = a.split('.').map(Number);
   const bp = b.split('.').map(Number);
   const n = Math.max(ap.length, bp.length);
@@ -24,99 +38,107 @@ function compareSectionId(a: string, b: string) {
 
 const sorted = [...all].sort((a, b) => compareSectionId(a.data.section_id, b.data.section_id));
 
-const totalCount = sorted.length;
-const reviewedCount = sorted.filter((e) => e.data.status === 'reviewed').length;
-const translatedCount = sorted.filter((e) => e.data.status === 'translated').length;
-const draftCount = sorted.filter((e) => e.data.status === 'draft').length;
+// 預先 render 所有 entry 的 <Content />；section_id 深度 ≤ 2 視為 scrollspy 觀察點
+const items = await Promise.all(
+  sorted.map(async (entry) => {
+    const { Content } = await render(entry);
+    const id = entry.data.section_id;
+    const isAppendix = id.startsWith('appendix-');
+    const depth = isAppendix ? 0 : id.split('.').length - 1;
+    const slug = id.replace(/\./g, '-');
+    const cleanTitle =
+      entry.data.title.replace(/^\s*\d+(?:\.\d+)*\s*[、：:.\-—]?\s*/, '').trim() ||
+      entry.data.title;
+    return { entry, Content, depth, slug, cleanTitle, isAnchorTarget: depth <= 1 || isAppendix };
+  })
+);
 
 const { version, lastSyncedAt } = siteConfig.upstream;
 ---
 
 <BaseLayout
-  title="Baseline Requirements 章節目錄"
-  description="CA/Browser Forum Server Certificate Baseline Requirements 各章節中文翻譯目錄。"
+  title="《基本要求》全文"
+  description="CA/Browser Forum Server Certificate Baseline Requirements 非官方繁體中文翻譯（全文）。"
 >
   <Breadcrumb
     slot="breadcrumb"
     items={[{ label: '首頁', href: '/' }, { label: '基本要求' }]}
   />
 
-  <header>
-    <h1 class="font-serif-tc text-2xl font-bold text-slate-900 sm:text-3xl">
-      Baseline Requirements 章節目錄
+  <header class="border-b border-slate-200 pb-4">
+    <h1 class="font-serif-tc text-2xl font-bold text-slate-900 sm:text-3xl leading-tight">
+      《基本要求》全文
     </h1>
     <p class="mt-2 text-sm text-slate-600 leading-relaxed">
-      CA/Browser Forum《Server Certificate Baseline Requirements》非官方繁體中文翻譯。
-      點選任一章節進入詳細翻譯頁；每頁皆提供整節引用按鈕與跳至原文連結。
+      CA/Browser Forum《Server Certificate Baseline Requirements》非官方繁體中文翻譯，
+      對應原文版本 <span class="font-mono">{version === 'tbd' ? '版本待定' : version}</span>
+      {lastSyncedAt && <> · 最後同步 <span class="font-mono">{lastSyncedAt}</span></>}。
+    </p>
+    <p class="mt-2 text-xs text-slate-500 leading-relaxed">
+      本頁僅顯示中文翻譯。若需中英對照與整節引用功能，請點各章節標題旁的「
+      <span class="inline-flex items-center font-mono">›</span>
+      」進入單章節頁。
     </p>
   </header>
 
-  <dl class="mt-6 grid gap-3 rounded-lg border border-slate-200 bg-white p-5 text-sm sm:grid-cols-2 lg:grid-cols-4">
-    <div>
-      <dt class="text-xs font-semibold uppercase tracking-wider text-slate-500">對應原文版本</dt>
-      <dd class="mt-1 font-mono text-slate-900">{version === 'tbd' ? '版本待定' : version}</dd>
-    </div>
-    <div>
-      <dt class="text-xs font-semibold uppercase tracking-wider text-slate-500">最後同步</dt>
-      <dd class="mt-1 text-slate-900">{lastSyncedAt ?? '—'}</dd>
-    </div>
-    <div>
-      <dt class="text-xs font-semibold uppercase tracking-wider text-slate-500">已建立節數</dt>
-      <dd class="mt-1 text-slate-900">{totalCount}</dd>
-    </div>
-    <div>
-      <dt class="text-xs font-semibold uppercase tracking-wider text-slate-500">翻譯狀態</dt>
-      <dd class="mt-1 text-slate-900 text-xs leading-relaxed">
-        已校稿 {reviewedCount}・已翻譯 {translatedCount}・草稿 {draftCount}
-      </dd>
-    </div>
-  </dl>
-
-  {
-    sorted.length === 0 ? (
-      <p class="mt-10 rounded-md border border-dashed border-slate-300 bg-white p-6 text-center text-sm text-slate-500">
-        章節內容尚未建立，將隨 M2 翻譯進度逐步上線。
-      </p>
-    ) : (
-      <nav aria-label="章節列表" class="mt-8 rounded-md border border-slate-200 bg-white">
-        <ul class="divide-y divide-slate-100">
-          {sorted.map((entry) => {
-            const d = entry.data;
-            const depth = d.section_id.split('.').length - 1;
-            const indent = ['pl-4', 'pl-8', 'pl-12', 'pl-16', 'pl-20'][Math.min(depth, 4)];
-            const cleanLabel = d.title
-              .replace(/^\s*\d+(?:\.\d+)*\s*[、：:.\-—]?\s*/, '')
-              .trim() || d.title;
-            const statusLabel = {
-              draft: '草稿',
-              translated: '已翻譯',
-              reviewed: '已校稿',
-              outdated: '過時',
-            }[d.status];
-            const statusCls = {
-              draft: 'text-slate-500',
-              translated: 'text-sky-700',
-              reviewed: 'text-emerald-700',
-              outdated: 'text-amber-700',
-            }[d.status];
-            return (
-              <li>
+  <article class="full-text-only-cn mt-6" data-pagefind-ignore>
+    {
+      items.map(({ entry, Content, depth, slug, cleanTitle, isAnchorTarget }) => {
+        const id = entry.data.section_id;
+        const idAttrs = isAnchorTarget
+          ? { id: `sec-${slug}`, 'data-anchor-target': '' }
+          : { id: `sec-${slug}` };
+        const HeadingTag = (
+          depth === 0 ? 'h2' :
+          depth === 1 ? 'h3' :
+          depth === 2 ? 'h4' :
+          depth === 3 ? 'h5' : 'h6'
+        ) as 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
+        const headingSizeCls =
+          depth === 0
+            ? 'text-2xl sm:text-3xl font-bold mt-12 first:mt-6'
+            : depth === 1
+              ? 'text-xl sm:text-2xl font-bold mt-10'
+              : depth === 2
+                ? 'text-lg sm:text-xl font-semibold mt-8'
+                : 'text-base sm:text-lg font-semibold mt-6';
+        return (
+          <section {...idAttrs} class="full-text-section">
+            <HeadingTag class:list={['font-serif-tc text-slate-900 leading-tight scroll-mt-20 group', headingSizeCls]}>
+              <span class="font-mono text-bs-secondary mr-2">{id}</span>
+              <span>{cleanTitle}</span>
+              <span class="ml-2 inline-flex items-center gap-1 align-middle text-xs font-normal opacity-60 group-hover:opacity-100 transition">
                 <a
-                  href={`/server-cert-br/${sectionIdToPath(d.section_id)}/`}
-                  class:list={[
-                    'flex items-center gap-3 py-2.5 pr-4 text-sm hover:bg-slate-50',
-                    indent,
-                  ]}
+                  href={`/server-cert-br/${sectionIdToPath(id)}/`}
+                  class="inline-flex items-center rounded border border-slate-300 px-1.5 py-0.5 text-slate-600 hover:border-bs-primary hover:text-bs-secondary"
+                  aria-label={`${id} 單章節頁（含中英對照、引用）`}
+                  title="單章節頁（含中英對照、引用）"
                 >
-                  <span class="font-mono text-xs text-slate-500 w-20 shrink-0">{d.section_id}</span>
-                  <span class="flex-1 text-slate-800">{cleanLabel}</span>
-                  <span class:list={['text-[11px] font-medium shrink-0', statusCls]}>{statusLabel}</span>
+                  詳細頁
                 </a>
-              </li>
-            );
-          })}
-        </ul>
-      </nav>
-    )
-  }
+                <a
+                  href={entry.data.original_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="inline-flex items-center rounded border border-slate-300 px-1.5 py-0.5 text-slate-600 hover:border-bs-primary hover:text-bs-secondary"
+                  aria-label={`${id} cabforum.org 原文`}
+                  title="cabforum.org 原文"
+                >
+                  原文 ↗
+                </a>
+              </span>
+            </HeadingTag>
+            <div class="clause-body">
+              <Content />
+            </div>
+          </section>
+        );
+      })
+    }
+  </article>
+
+  <aside slot="sidebar">
+    <BrSidebarSubmenu currentPath="/server-cert-br/" />
+    <BrAnchorNav />
+  </aside>
 </BaseLayout>

@@ -1,0 +1,84 @@
+---
+// 《基本要求》子選單（sidebar 第一區塊；desktop sidebar + mobile 漢堡共用）。
+// 規格：web-spec-doc/server-cert-br樣式變更.txt（2026-05-25）。
+// 6 項固定連結；以 currentPath 標示 active。
+export interface Props {
+  /** 用於 active 高亮判斷；應由呼叫端傳入當前頁面路徑或對應的子選單 URL。 */
+  currentPath?: string;
+  /** 預設為 sidebar 卡片樣式；'mobile' 用於漢堡內整合（無外框、深色 nav 配色）。 */
+  variant?: 'sidebar' | 'mobile';
+}
+
+const { currentPath = '', variant = 'sidebar' } = Astro.props;
+
+const items = [
+  { label: '全文內容', href: '/server-cert-br/' },
+  { label: '章節目錄', href: '/server-cert-br/table-of-contents/' },
+  { label: '《基本要求》官方 FAQ', href: '/faq-for-base-req/' },
+  { label: 'SSL 憑證內容物之基本要求', href: '/cert-contents-for-base/' },
+  { label: '關於《基本要求》', href: '/about-base-req/' },
+  { label: '《基本要求》歷史版本', href: '/changelog/' },
+];
+
+const isActive = (href: string) => {
+  if (!currentPath) return false;
+  // 嚴格相等以避免「全文內容」與其子頁同時亮起。
+  return currentPath === href;
+};
+---
+
+{
+  variant === 'sidebar' ? (
+    <nav aria-label="《基本要求》子選單" class="cabf-card bg-white border border-slate-200 rounded">
+      <div class="border-b border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700">
+        《基本要求》
+      </div>
+      <ul class="py-2 text-sm">
+        {items.map((it) => {
+          const active = isActive(it.href);
+          return (
+            <li>
+              <a
+                href={it.href}
+                aria-current={active ? 'page' : undefined}
+                class:list={[
+                  'block px-4 py-1.5 leading-snug border-l-[3px] transition',
+                  active
+                    ? 'border-bs-primary bg-sky-50 text-bs-secondary font-medium'
+                    : 'border-transparent text-slate-700 hover:bg-slate-50 hover:text-slate-900',
+                ]}
+              >
+                {it.label}
+              </a>
+            </li>
+          );
+        })}
+      </ul>
+    </nav>
+  ) : (
+    <ul class="flex flex-col text-sm">
+      <li class="px-3 pt-3 pb-1 text-[11px] uppercase tracking-wider text-slate-400">
+        《基本要求》
+      </li>
+      {items.map((it) => {
+        const active = isActive(it.href);
+        return (
+          <li>
+            <a
+              href={it.href}
+              aria-current={active ? 'page' : undefined}
+              class:list={[
+                'block px-3 py-2 font-normal border-l-[3px]',
+                active
+                  ? 'text-white border-bs-primary bg-white/5'
+                  : 'border-transparent text-slate-300 hover:text-white hover:bg-white/5',
+              ]}
+            >
+              {it.label}
+            </a>
+          </li>
+        );
+      })}
+    </ul>
+  )
+}

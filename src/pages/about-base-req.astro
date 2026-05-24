@@ -1,0 +1,46 @@
+---
+// /about-base-req/ — 關於《基本要求》中文翻譯（placeholder）。
+// 正式翻譯內容於 M3 階段進行；目前僅放骨架說明。
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
+---
+
+<BaseLayout
+  title="關於《基本要求》"
+  description="CA/Browser Forum《About the Baseline Requirements》非官方繁體中文翻譯（建置中）。"
+>
+  <Breadcrumb
+    slot="breadcrumb"
+    items={[{ label: '首頁', href: '/' }, { label: '關於《基本要求》' }]}
+  />
+
+  <article class="cabf-card bg-white border border-slate-200 rounded p-5 sm:p-7">
+    <header class="border-b border-slate-200 pb-4">
+      <h1 class="font-serif-tc text-2xl font-bold text-slate-900 sm:text-3xl leading-tight">
+        關於《基本要求》
+      </h1>
+      <p class="mt-2 text-sm text-slate-600">
+        CA/Browser Forum 官方「About the Baseline Requirements」頁面繁體中文翻譯。
+      </p>
+    </header>
+
+    <div class="clause-body mt-6">
+      <p>
+        本頁將收錄 CA/Browser Forum 官方
+        <a href="https://cabforum.org/working-groups/server/baseline-requirements/about/" target="_blank" rel="noopener noreferrer">About the Baseline Requirements</a>
+        的繁體中文翻譯，介紹《基本要求》的目的、歷史與適用範圍。
+      </p>
+      <p>
+        翻譯工作預計於 <strong>M3 階段</strong> 進行，待主文件（Baseline Requirements 本文）完成翻譯後展開。
+      </p>
+      <p class="text-sm text-slate-500">
+        目前若有此頁面相關問題，請暫時直接參閱
+        <a href="https://cabforum.org/working-groups/server/baseline-requirements/about/" target="_blank" rel="noopener noreferrer">cabforum.org 上的官方原文</a>。
+      </p>
+    </div>
+
+    <footer class="mt-8 border-t border-slate-200 pt-4 text-[11px] leading-relaxed text-slate-500">
+      ⚠️ 本翻譯為非官方翻譯，發生爭議時以 CA/Browser Forum 英文原文為準。
+    </footer>
+  </article>
+</BaseLayout>

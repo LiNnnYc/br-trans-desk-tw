@@ -16,6 +16,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Breadcrumb from '../../components/Breadcrumb.astro';
 import CitationCard from '../../components/CitationCard.astro';
+import BrSidebarSubmenu from '../../components/BrSidebarSubmenu.astro';
 import { getCollection, render } from 'astro:content';
 import { sectionIdToPath } from '../../lib/citation';
 
@@ -211,6 +212,7 @@ const isoUpdated =
   </article>
 
   <aside slot="sidebar">
+    <BrSidebarSubmenu currentPath="/server-cert-br/" />
     <nav aria-label="本書章節" class="cabf-card bg-white border border-slate-200 rounded">
       <div class="border-b border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700">本書章節</div>
       <ul class="py-2 text-sm">
@@ -267,4 +269,29 @@ const isoUpdated =
       sync();
     });
   }
+
+  // 程式碼區塊「複製」按鈕（由 Shiki transformer 在 SSR 時掛上 .code-figure-copy）。
+  document.querySelectorAll('.code-figure').forEach((fig) => {
+    const btn = fig.querySelector('.code-figure-copy');
+    const pre = fig.querySelector('pre');
+    if (!btn || !pre) return;
+    btn.addEventListener('click', async () => {
+      const text = pre.innerText;
+      try {
+        await navigator.clipboard.writeText(text);
+        btn.setAttribute('data-copy-state', 'copied');
+        const orig = btn.textContent;
+        btn.textContent = '已複製';
+        setTimeout(() => {
+          btn.setAttribute('data-copy-state', 'idle');
+          btn.textContent = orig;
+        }, 1500);
+      } catch (_) {
+        btn.textContent = '複製失敗';
+        setTimeout(() => {
+          btn.textContent = '複製';
+        }, 1500);
+      }
+    });
+  });
 </script>
