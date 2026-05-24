@@ -1,0 +1,122 @@
+---
+// /server-cert-br/ 全文頁的 mobile 錨點入口（浮動按鈕 + 右側 drawer）。
+// 規格：web-spec-doc/server-cert-br樣式變更.txt（2026-05-25）。
+//
+// 必須放在「主內容區（default slot）」而非 sidebar slot — BaseLayout 的
+// <aside> 在 mobile 為 hidden lg:block，display:none 會把所有子元素（含 fixed）
+// 一起隱藏，使本元件失效。故本元件不放在 sidebar 內。
+//
+// drawer 開關 + scrollspy 邏輯由 BrAnchorNav 元件的 <script> 統一處理
+// （透過共用 id 與 [data-anchor-link] 選擇器）。
+import { getCollection } from 'astro:content';
+
+const all = await getCollection('br');
+
+function compareSectionId(a: string, b: string) {
+  const isAppA = a.startsWith('appendix-');
+  const isAppB = b.startsWith('appendix-');
+  if (isAppA && !isAppB) return 1;
+  if (!isAppA && isAppB) return -1;
+  if (isAppA && isAppB) return a.localeCompare(b);
+  const ap = a.split('.').map(Number);
+  const bp = b.split('.').map(Number);
+  const n = Math.max(ap.length, bp.length);
+  for (let i = 0; i < n; i++) {
+    const av = ap[i] ?? -1;
+    const bv = bp[i] ?? -1;
+    if (av !== bv) return av - bv;
+  }
+  return 0;
+}
+
+const topLevel = all.filter((e) => {
+  const id = e.data.section_id;
+  if (id.startsWith('appendix-')) return true;
+  return id.split('.').length <= 2;
+});
+const sorted = topLevel.sort((a, b) => compareSectionId(a.data.section_id, b.data.section_id));
+
+function sectionIdToAnchorSlug(id: string) {
+  return id.replace(/\./g, '-');
+}
+function cleanTitle(t: string) {
+  return t.replace(/^\s*\d+(?:\.\d+)*\s*[、：:.\-—]?\s*/, '').trim() || t;
+}
+---
+
+{/* 浮動按鈕：
+    - 初始位置採 sticky，於主內容區頂端右側（麵包屑同一帶）渲染
+    - 滾動時 sticky 在距 viewport 頂 56px 處（位於 sticky navbar 下方，不被遮）
+    - 外層 wrapper 用 -mb-12 抵消按鈕本身高度，不擠壓後續文章內容
+    - pointer-events 在 wrapper 關閉、僅在按鈕本身開啟，避免擋到文字選取 */}
+<div class="lg:hidden sticky top-[80px] z-30 flex justify-end pr-1 pointer-events-none -mt-10 -mb-2">
+  <button
+    id="anchor-drawer-open"
+    type="button"
+    aria-label="開啟章節錨點"
+    aria-controls="anchor-drawer"
+    aria-expanded="false"
+    class="pointer-events-auto h-12 w-12 inline-flex items-center justify-center rounded-full bg-slate-900/55 text-white shadow-lg backdrop-blur-sm hover:bg-slate-900/75 transition"
+  >
+    {/* 用 SVG chevron 取代 ‹ 字符，字符在多數字型中於 glyph box 中偏低，
+        以 SVG 可精準對中於按鈕圓心。 */}
+    <svg
+      aria-hidden="true"
+      width="22"
+      height="22"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2.5"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    >
+      <polyline points="15 6 9 12 15 18"></polyline>
+    </svg>
+  </button>
+</div>
+
+<div id="anchor-drawer" class="lg:hidden fixed inset-0 z-50 hidden" aria-hidden="true">
+  <div data-anchor-backdrop class="absolute inset-0 bg-black/40"></div>
+  <aside
+    role="dialog"
+    aria-label="章節錨點"
+    aria-modal="true"
+    class="absolute right-0 top-0 h-full w-[78%] max-w-[20rem] bg-white shadow-xl flex flex-col"
+  >
+    <div class="flex items-center justify-between border-b border-slate-200 px-4 py-3">
+      <h2 class="text-sm font-semibold text-slate-700">本頁章節</h2>
+      <button
+        id="anchor-drawer-close"
+        type="button"
+        aria-label="關閉錨點"
+        class="inline-flex h-8 w-8 items-center justify-center rounded text-slate-500 hover:bg-slate-100 hover:text-slate-700"
+      >
+        <span aria-hidden="true" class="text-xl leading-none">×</span>
+      </button>
+    </div>
+    <ul class="py-2 text-sm overflow-y-auto">
+      {sorted.map((e) => {
+        const id = e.data.section_id;
+        const depth = id.startsWith('appendix-') ? 0 : id.split('.').length - 1;
+        const indent = depth === 0 ? 'pl-4' : 'pl-8';
+        const slug = sectionIdToAnchorSlug(id);
+        return (
+          <li>
+            <a
+              href={`#sec-${slug}`}
+              data-anchor-link={`sec-${slug}`}
+              class:list={[
+                'block py-1.5 pr-3 leading-snug border-l-[3px] border-transparent text-slate-700 hover:bg-slate-50 hover:text-slate-900',
+                indent,
+              ]}
+            >
+              <span class="font-mono text-[11px] text-slate-500 mr-1.5">{id}</span>
+              <span>{cleanTitle(e.data.title)}</span>
+            </a>
+          </li>
+        );
+      })}
+    </ul>
+  </aside>
+</div>

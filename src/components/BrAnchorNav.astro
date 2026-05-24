@@ -1,56 +1,50 @@
 ---
-// /server-cert-br/ 全文頁的錨點導覽（sidebar 第二區塊）。
+// /server-cert-br/ 全文頁的桌面錨點導覽（sidebar 第二區塊）。
 // 規格：web-spec-doc/server-cert-br樣式變更.txt（2026-05-25）。
 // - 顯示階層最多到第二層（如 7.2、appendix-a）
 // - desktop：sticky 於右欄上方
-// - mobile：縮為右上角半透明「<」按鈕，點開為右側 drawer
-// - scrollspy（IntersectionObserver）：當前可視 heading 高亮
+// - mobile：本元件不渲染（mobile 入口由 BrAnchorNavMobile 提供）
+// - scrollspy 與 drawer 控制 script 一併放於此元件，可同時更新桌面卡片與
+//   mobile drawer 的高亮（透過共用的 [data-anchor-link] 選擇器）。
 import { getCollection } from 'astro:content';
 
 const all = await getCollection('br');
 
 function compareSectionId(a: string, b: string) {
-  const ap = a.split('.').map((p) => (Number.isFinite(Number(p)) ? Number(p) : p));
-  const bp = b.split('.').map((p) => (Number.isFinite(Number(p)) ? Number(p) : p));
-  // 附錄（appendix-x）排在數字之後
-  const isAppendixA = a.startsWith('appendix-');
-  const isAppendixB = b.startsWith('appendix-');
-  if (isAppendixA && !isAppendixB) return 1;
-  if (!isAppendixA && isAppendixB) return -1;
-  if (isAppendixA && isAppendixB) return a.localeCompare(b);
+  const isAppA = a.startsWith('appendix-');
+  const isAppB = b.startsWith('appendix-');
+  if (isAppA && !isAppB) return 1;
+  if (!isAppA && isAppB) return -1;
+  if (isAppA && isAppB) return a.localeCompare(b);
+  const ap = a.split('.').map(Number);
+  const bp = b.split('.').map(Number);
   const n = Math.max(ap.length, bp.length);
   for (let i = 0; i < n; i++) {
-    const av = (ap[i] as number) ?? -1;
-    const bv = (bp[i] as number) ?? -1;
+    const av = ap[i] ?? -1;
+    const bv = bp[i] ?? -1;
     if (av !== bv) return av - bv;
   }
   return 0;
 }
 
-// 只保留第一層與第二層（含附錄頂層）
 const topLevel = all.filter((e) => {
   const id = e.data.section_id;
   if (id.startsWith('appendix-')) return true;
-  const depth = id.split('.').length;
-  return depth <= 2;
+  return id.split('.').length <= 2;
 });
-
 const sorted = topLevel.sort((a, b) => compareSectionId(a.data.section_id, b.data.section_id));
 
 function sectionIdToAnchorSlug(id: string) {
   return id.replace(/\./g, '-');
 }
-
 function cleanTitle(t: string) {
   return t.replace(/^\s*\d+(?:\.\d+)*\s*[、：:.\-—]?\s*/, '').trim() || t;
 }
 ---
 
-{/* Desktop sidebar 卡片（sticky） */}
 <nav
   aria-label="章節錨點"
-  class="hidden lg:block cabf-card bg-white border border-slate-200 rounded sticky top-4"
-  data-anchor-nav
+  class="cabf-card bg-white border border-slate-200 rounded sticky top-4"
 >
   <div class="border-b border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700">
     本頁章節
@@ -80,70 +74,8 @@ function cleanTitle(t: string) {
   </ul>
 </nav>
 
-{/* Mobile 半透明浮動按鈕 */}
-<button
-  id="anchor-drawer-open"
-  type="button"
-  aria-label="開啟章節錨點"
-  aria-controls="anchor-drawer"
-  aria-expanded="false"
-  class="lg:hidden fixed right-2 top-[72px] z-30 inline-flex h-9 w-9 items-center justify-center rounded-full bg-slate-900/55 text-white shadow backdrop-blur-sm hover:bg-slate-900/75 transition"
->
-  <span aria-hidden="true" class="text-lg leading-none">‹</span>
-</button>
-
-{/* Mobile drawer overlay */}
-<div
-  id="anchor-drawer"
-  class="lg:hidden fixed inset-0 z-50 hidden"
-  aria-hidden="true"
->
-  <div data-anchor-backdrop class="absolute inset-0 bg-black/40"></div>
-  <aside
-    role="dialog"
-    aria-label="章節錨點"
-    aria-modal="true"
-    class="absolute right-0 top-0 h-full w-[78%] max-w-[20rem] bg-white shadow-xl flex flex-col"
-  >
-    <div class="flex items-center justify-between border-b border-slate-200 px-4 py-3">
-      <h2 class="text-sm font-semibold text-slate-700">本頁章節</h2>
-      <button
-        id="anchor-drawer-close"
-        type="button"
-        aria-label="關閉錨點"
-        class="inline-flex h-8 w-8 items-center justify-center rounded text-slate-500 hover:bg-slate-100 hover:text-slate-700"
-      >
-        <span aria-hidden="true" class="text-xl leading-none">×</span>
-      </button>
-    </div>
-    <ul class="py-2 text-sm overflow-y-auto" data-anchor-nav-mobile>
-      {sorted.map((e) => {
-        const id = e.data.section_id;
-        const depth = id.startsWith('appendix-') ? 0 : id.split('.').length - 1;
-        const indent = depth === 0 ? 'pl-4' : 'pl-8';
-        const slug = sectionIdToAnchorSlug(id);
-        return (
-          <li>
-            <a
-              href={`#sec-${slug}`}
-              data-anchor-link={`sec-${slug}`}
-              class:list={[
-                'block py-1.5 pr-3 leading-snug border-l-[3px] border-transparent text-slate-700 hover:bg-slate-50 hover:text-slate-900',
-                indent,
-              ]}
-            >
-              <span class="font-mono text-[11px] text-slate-500 mr-1.5">{id}</span>
-              <span>{cleanTitle(e.data.title)}</span>
-            </a>
-          </li>
-        );
-      })}
-    </ul>
-  </aside>
-</div>
-
 <script>
-  // Drawer open/close
+  // Drawer open/close（drawer 元素由 BrAnchorNavMobile 渲染；若不存在則為 no-op）
   const openBtn = document.getElementById('anchor-drawer-open');
   const drawer = document.getElementById('anchor-drawer');
   const closeBtn = document.getElementById('anchor-drawer-close');
@@ -169,7 +101,7 @@ function cleanTitle(t: string) {
     }
   });
 
-  // Scrollspy via IntersectionObserver
+  // Scrollspy via IntersectionObserver（同時更新桌面卡片與 mobile drawer 高亮）
   const allLinks = document.querySelectorAll<HTMLAnchorElement>('a[data-anchor-link]');
   const activeCls = ['border-bs-primary', 'bg-sky-50', 'text-bs-secondary', 'font-medium'];
   const idleCls = ['border-transparent', 'text-slate-700'];
@@ -183,9 +115,7 @@ function cleanTitle(t: string) {
     });
   };
 
-  const targets = Array.from(
-    document.querySelectorAll<HTMLElement>('[data-anchor-target]')
-  );
+  const targets = Array.from(document.querySelectorAll<HTMLElement>('[data-anchor-target]'));
   if (targets.length > 0) {
     const visibility = new Map<string, number>();
     const observer = new IntersectionObserver(
@@ -195,13 +125,10 @@ function cleanTitle(t: string) {
           if (!id) return;
           visibility.set(id, entry.isIntersecting ? entry.intersectionRatio : 0);
         });
-        // 選最頂端可見、若無則最後一個經過的；用 boundingClientRect.top 排序
         const visible = targets
           .filter((t) => (visibility.get(t.id) ?? 0) > 0)
           .sort((a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top);
-        if (visible[0]) {
-          setActive(visible[0].id);
-        }
+        if (visible[0]) setActive(visible[0].id);
       },
       { rootMargin: '-80px 0px -60% 0px', threshold: [0, 0.1, 0.5, 1] }
     );

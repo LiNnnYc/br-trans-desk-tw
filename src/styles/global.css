@@ -211,6 +211,26 @@ body {
 .full-text-only-cn .clause-body :not(blockquote) + blockquote:has(.code-figure) {
   margin-top: 0;
 }
+/* 全文頁防呆：任何寬於父容器的元素（多欄表格、長程式行、長 URL）
+   不得撐寬 article，否則所有段落會在 mobile 被視覺壓縮。
+   表格改 display:block 以便 overflow-x:auto 生效；長字元在 word-break。 */
+.full-text-only-cn,
+.full-text-only-cn .clause-body {
+  max-width: 100%;
+  min-width: 0;
+}
+.full-text-only-cn .clause-body table {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+}
+.full-text-only-cn .clause-body pre {
+  max-width: 100%;
+}
+.full-text-only-cn .clause-body {
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
 .clause-body table {
   width: 100%;
   font-size: 0.92em;
