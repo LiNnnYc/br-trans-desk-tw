@@ -8,10 +8,13 @@ const br = defineCollection({
     title: z.string().min(1),
     section_id: z
       .string()
-      .regex(/^\d+(\.\d+)*$/, 'section_id 須為點分數字，例如 "3.2.2.4"'),
+      .regex(
+        /^(\d+(\.\d+)*|appendix-[a-z])$/,
+        'section_id 須為點分數字（如 "3.2.2.4"）或附錄識別碼（如 "appendix-a"）',
+      ),
     parent: z
       .string()
-      .regex(/^\d+(\.\d+)*$/)
+      .regex(/^(\d+(\.\d+)*|appendix-[a-z])$/)
       .optional(),
     order: z.number().int().nonnegative(),
     original_url: z.string().url(),

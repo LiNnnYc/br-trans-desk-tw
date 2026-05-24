@@ -23,6 +23,7 @@
     "pagefind": "^1.5.2",
     "prettier": "^3.4.2",
     "prettier-plugin-astro": "^0.14.1",
+    "remark-cjk-friendly": "^2.0.1",
     "typescript": "^5.9.2"
   }
 }

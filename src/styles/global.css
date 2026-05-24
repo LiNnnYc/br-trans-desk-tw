@@ -115,21 +115,89 @@ body {
   background: #0f172a;
   color: #e2e8f0;
   padding: 1rem;
-  border-radius: 0.375rem;
   overflow-x: auto;
   font-size: 0.875rem;
   line-height: 1.6;
+  /* 角度由 .code-figure 控制（pre 被包進 figure），這裡只把 pre 自身上方圓角拿掉 */
+  border-radius: 0 0 0.375rem 0.375rem;
+  margin: 0;
 }
 .clause-body pre code {
   background: transparent;
   padding: 0;
   color: inherit;
 }
+/* 程式碼區塊外框（由 Shiki transformer 在 SSR 時把 <pre> 包進 <figure>） */
+.clause-body .code-figure {
+  margin: 0;
+  border-radius: 0.375rem;
+  overflow: hidden;
+  border: 1px solid #1e293b; /* slate-800：與 pre 背景銜接 */
+  background: #0f172a; /* slate-900 */
+}
+.clause-body .code-figure-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.4rem 0.75rem;
+  background: #1e293b; /* slate-800 */
+  border-bottom: 1px solid #334155; /* slate-700 */
+  font-size: 0.78rem;
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+}
+.clause-body .code-figure-lang {
+  color: #94a3b8; /* slate-400 */
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+}
+.clause-body .code-figure-copy {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: transparent;
+  color: #cbd5e1; /* slate-300 */
+  border: 1px solid #475569; /* slate-600 */
+  border-radius: 0.25rem;
+  padding: 0.15rem 0.55rem;
+  font-size: 0.72rem;
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+.clause-body .code-figure-copy:hover {
+  background: #334155; /* slate-700 */
+  color: #f1f5f9; /* slate-100 */
+  border-color: #64748b; /* slate-500 */
+}
+.clause-body .code-figure-copy[data-copy-state='copied'] {
+  background: #166534; /* green-800 */
+  color: #f0fdf4; /* green-50 */
+  border-color: #16a34a; /* green-600 */
+}
+/* 列印時隱藏複製按鈕 */
+@media print {
+  .clause-body .code-figure-copy {
+    display: none;
+  }
+}
 .clause-body blockquote {
   border-left: 4px solid var(--bs-primary);
   padding: 0.25rem 0 0.25rem 1rem;
   color: #475569; /* slate-600 */
   font-style: normal;
+}
+/* 中英對照可讀性：每一組（英文 blockquote + 中文段落）之間留出較大空隙。
+   做法：當 blockquote（新一組英文）出現於任何非 blockquote 元素之後（通常是 <p>/<ol>/<ul>/<table>，
+   也就是上一組的中文段落）時，加大上方間距至 2.5rem。
+   程式碼區塊增量：若「下一組的英文 blockquote」自身內含 code-figure，視覺密度較高，再加到 3.5rem，
+   讓 code 區塊與上一組維持足夠呼吸感。 */
+.clause-body :not(blockquote) + blockquote {
+  margin-top: 2.5rem;
+}
+.clause-body :not(blockquote):has(.code-figure) + blockquote,
+.clause-body :not(blockquote) + blockquote:has(.code-figure) {
+  margin-top: 3.5rem;
 }
 .clause-body table {
   width: 100%;

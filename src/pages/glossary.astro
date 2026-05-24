@@ -49,7 +49,7 @@ const letters = [...groups.keys()].sort();
       <>
         <nav
           aria-label="字母索引"
-          class="mt-6 flex flex-wrap gap-1 rounded-md border border-slate-200 bg-white p-2 text-sm"
+          class="mt-6 flex flex-wrap items-center gap-1 rounded-md border border-slate-200 bg-white p-2 text-sm"
         >
           {letters.map((l) => (
             <a
@@ -59,6 +59,13 @@ const letters = [...groups.keys()].sort();
               {l}
             </a>
           ))}
+          <span aria-hidden="true" class="mx-1 h-5 w-px bg-slate-200"></span>
+          <a
+            href="#rfc-2119"
+            class="inline-flex h-8 items-center justify-center rounded px-2 font-mono font-medium text-slate-700 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-slate-400"
+          >
+            RFC 2119
+          </a>
         </nav>
 
         <div class="mt-8 space-y-10">
@@ -107,6 +114,59 @@ const letters = [...groups.keys()].sort();
             </section>
           ))}
         </div>
+
+        <section id="rfc-2119" aria-labelledby="heading-rfc-2119" class="mt-10">
+          <h2
+            id="heading-rfc-2119"
+            class="border-b border-slate-200 pb-1 font-mono text-lg font-semibold text-slate-800"
+          >
+            RFC 2119
+          </h2>
+          <p class="mt-3 text-sm text-slate-600 leading-relaxed">
+            CA/Browser Forum BR 全文使用 <a href="https://datatracker.ietf.org/doc/html/rfc2119" target="_blank" rel="noopener noreferrer" class="text-bs-secondary underline decoration-slate-300 underline-offset-2 hover:decoration-bs-secondary">RFC 2119</a> 定義的規範詞表達義務強度。本翻譯統一採下列譯名（與中華電信 HiPKICA、TWCA 業界慣例一致）：
+          </p>
+          <div class="mt-4 overflow-x-auto rounded-md border border-slate-200">
+            <table class="w-full text-sm">
+              <thead class="bg-slate-50 text-left text-xs uppercase tracking-wider text-slate-500">
+                <tr>
+                  <th scope="col" class="px-4 py-2 font-semibold">英文（同義詞）</th>
+                  <th scope="col" class="px-4 py-2 font-semibold">強度</th>
+                  <th scope="col" class="px-4 py-2 font-semibold">中譯</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100 text-slate-700">
+                <tr>
+                  <td class="px-4 py-3 font-mono"><strong>MUST</strong> = <strong>SHALL</strong> = REQUIRED</td>
+                  <td class="px-4 py-3">絕對要求</td>
+                  <td class="px-4 py-3 font-medium text-slate-900">應</td>
+                </tr>
+                <tr>
+                  <td class="px-4 py-3 font-mono"><strong>MUST NOT</strong> = <strong>SHALL NOT</strong></td>
+                  <td class="px-4 py-3">絕對禁止</td>
+                  <td class="px-4 py-3 font-medium text-slate-900">不得</td>
+                </tr>
+                <tr>
+                  <td class="px-4 py-3 font-mono"><strong>SHOULD</strong> = RECOMMENDED</td>
+                  <td class="px-4 py-3">強烈建議</td>
+                  <td class="px-4 py-3 font-medium text-slate-900">宜</td>
+                </tr>
+                <tr>
+                  <td class="px-4 py-3 font-mono"><strong>SHOULD NOT</strong> = NOT RECOMMENDED</td>
+                  <td class="px-4 py-3">強烈不建議</td>
+                  <td class="px-4 py-3 font-medium text-slate-900">不宜</td>
+                </tr>
+                <tr>
+                  <td class="px-4 py-3 font-mono"><strong>MAY</strong> = OPTIONAL</td>
+                  <td class="px-4 py-3">可選</td>
+                  <td class="px-4 py-3 font-medium text-slate-900">得</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="mt-3 text-xs text-slate-500 leading-relaxed">
+            章節內文中規範詞以粗體標示，例如「<strong>應（MUST）</strong>」、「<strong>不得（MUST NOT）</strong>」。括號內保留英文原詞便於與 cabforum.org 原文對照；MUST 與 SHALL 在 RFC 2119 中完全等同，譯文一律譯為「應」。
+          </p>
+        </section>
 
         <footer class="mt-12 border-t border-slate-200 pt-6 text-sm text-slate-500">
           <p class="mb-2">翻譯參考來源：</p>
