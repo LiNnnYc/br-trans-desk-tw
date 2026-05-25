@@ -37,9 +37,10 @@
 
 1. 在 `src/content/br/` 建立 `<section-id-dashed>.md`（例：`3-2-2-4.md`）。
 2. 前置欄位依 [`src/content.config.ts`](./src/content.config.ts) 的 Zod schema 填入：必填 `section_id`、`original_url`、`original_version`、`status`、`translator`、`last_updated`、`order` 等。
-3. `npm run check` 確認 schema 通過。
-4. `npm run build && npm run preview` 確認頁面渲染、引用卡、段落 quotable、中英對照、Pagefind 搜尋命中。
-5. commit；翻譯主文件穩定前**只做本地 commit**，不 push 不建 remote（見 memory `feedback_local_only_until_content_ready`）。
+3. 譯稿格式、術語譯名、RFC 2119 規範詞加粗、表格／清單寫法等慣例見 [`TRANSLATION_CONVENTIONS.md`](./TRANSLATION_CONVENTIONS.md)。
+4. `npm run check` 確認 schema 通過。
+5. `npm run build && npm run preview` 確認頁面渲染、引用卡、段落 quotable、中英對照、Pagefind 搜尋命中。
+6. commit；翻譯主文件穩定前**只做本地 commit**，不 push 不建 remote（見 memory `feedback_local_only_until_content_ready`）。
 
 ### 2.2 新增術語
 
