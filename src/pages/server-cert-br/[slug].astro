@@ -211,9 +211,9 @@ const isoUpdated =
     </footer>
   </article>
 
-  <aside slot="sidebar">
+  <Fragment slot="sidebar">
     <BrSidebarSubmenu currentPath="/server-cert-br/" />
-    <nav aria-label="本書章節" class="cabf-card bg-white border border-slate-200 rounded">
+    <nav aria-label="本書章節" class="cabf-card bg-white border border-slate-200 rounded lg:sticky lg:top-6 lg:max-h-[calc(100vh-3rem)] lg:overflow-y-auto">
       <div class="border-b border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700">本書章節</div>
       <ul class="py-2 text-sm">
         {
@@ -246,7 +246,7 @@ const isoUpdated =
         }
       </ul>
     </nav>
-  </aside>
+  </Fragment>
 </BaseLayout>
 
 <script>

@@ -1,0 +1,47 @@
+---
+// 全域「回到頂端」浮動按鈕。
+// - fixed 於 viewport 右下；捲動超過 ~400px 才顯示
+// - 點擊平滑捲回 #top（BaseLayout body 的 id）
+// - 列印與 reduced-motion 友善
+---
+
+<button
+  type="button"
+  id="back-to-top"
+  aria-label="回到頂端"
+  title="回到頂端"
+  class="fixed bottom-6 right-6 z-40 hidden h-11 w-11 items-center justify-center rounded-full border border-slate-300 bg-white text-slate-700 shadow-md transition hover:border-bs-primary hover:text-bs-secondary focus:outline-none focus:ring-2 focus:ring-bs-primary focus:ring-offset-2 print:hidden"
+>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 20 20"
+    fill="currentColor"
+    class="h-5 w-5"
+    aria-hidden="true"
+  >
+    <path
+      fill-rule="evenodd"
+      d="M14.78 12.78a.75.75 0 01-1.06 0L10 9.06l-3.72 3.72a.75.75 0 11-1.06-1.06l4.25-4.25a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06z"
+      clip-rule="evenodd"
+    />
+  </svg>
+</button>
+
+<script>
+  const btn = document.getElementById('back-to-top');
+  if (btn) {
+    const THRESHOLD = 400;
+    const update = () => {
+      const show = window.scrollY > THRESHOLD;
+      btn.classList.toggle('hidden', !show);
+      btn.classList.toggle('flex', show);
+    };
+    update();
+    window.addEventListener('scroll', update, { passive: true });
+
+    btn.addEventListener('click', () => {
+      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      window.scrollTo({ top: 0, behavior: prefersReduced ? 'auto' : 'smooth' });
+    });
+  }
+</script>
