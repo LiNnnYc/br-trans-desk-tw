@@ -59,7 +59,7 @@ const { version, lastSyncedAt } = siteConfig.upstream;
 
 <BaseLayout
   title="《基本要求》全文"
-  description="CA/Browser Forum Server Certificate Baseline Requirements 非官方繁體中文翻譯（全文）。"
+  description="CA/Browser Forum (Server Cert) Baseline Requirements 非官方繁體中文翻譯（全文）。"
 >
   <Breadcrumb
     slot="breadcrumb"
@@ -68,6 +68,7 @@ const { version, lastSyncedAt } = siteConfig.upstream;
 
   <BrAnchorNavMobile />
 
+  <div class="cabf-card bg-white border border-slate-200 rounded p-5 sm:p-7">
   <header class="border-b border-slate-200 pb-4">
     <h1 class="font-serif-tc text-2xl font-bold text-slate-900 sm:text-3xl leading-tight">
       《基本要求》全文
@@ -139,6 +140,7 @@ const { version, lastSyncedAt } = siteConfig.upstream;
       })
     }
   </article>
+  </div>
 
   <aside slot="sidebar">
     <BrSidebarSubmenu currentPath="/server-cert-br/" />

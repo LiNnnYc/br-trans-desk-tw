@@ -6,7 +6,7 @@ export const siteConfig = {
   name: 'CA/Browser BR 翻譯',
   shortName: 'BR 翻譯',
   description:
-    'CA/Browser Forum Server Certificate Baseline Requirements 的非官方繁體中文翻譯。',
+    'CA/Browser Forum (Server Cert) Baseline Requirements 的非官方繁體中文翻譯',
   // M0-1 建立 GitHub repo 後替換
   repoUrl: '#TODO-github-repo',
   // 引用卡輸出絕對網址用；M0-3 部署網域定案時更新（含或不含 /repo-name 由 astro.config base 決定）

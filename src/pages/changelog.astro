@@ -14,9 +14,10 @@ const { version, syncStatus, lastSyncedAt, behindCount } = siteConfig.upstream;
     items={[{ label: '首頁', href: '/' }, { label: '版本歷程' }]}
   />
 
+  <article class="cabf-card bg-white border border-slate-200 rounded p-5 sm:p-7">
   <h1 class="text-2xl font-semibold text-slate-900 sm:text-3xl">版本歷程</h1>
 
-  <dl class="mt-6 grid gap-3 rounded-lg border border-slate-200 bg-white p-5 text-sm sm:grid-cols-2">
+  <dl class="mt-6 grid gap-3 rounded-lg border border-slate-200 bg-slate-50 p-5 text-sm sm:grid-cols-2">
     <div>
       <dt class="text-xs font-semibold tracking-wider text-slate-500 uppercase">對應原文版本</dt>
       <dd class="mt-1 text-slate-900">{version === 'tbd' ? '版本待定' : version}</dd>
@@ -38,4 +39,5 @@ const { version, syncStatus, lastSyncedAt, behindCount } = siteConfig.upstream;
   <p class="mt-6 text-sm text-slate-600">
     詳細的版本歷程時間軸將於 M1-8 補齊（每次 Ballot 跟進與翻譯更新會記錄一筆）。
   </p>
+  </article>
 </BaseLayout>

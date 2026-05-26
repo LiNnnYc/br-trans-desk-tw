@@ -1,6 +1,6 @@
 # CA/Browser BR 中文化（zh-TW）
 
-CA/Browser Forum **Server Certificate Baseline Requirements** 的非官方繁體中文翻譯，由社群維護。
+CA/Browser Forum **(Server Cert) Baseline Requirements** 的非官方繁體中文翻譯，由社群維護。
 
 > ⚠️ 本翻譯為非官方翻譯，發生爭議時以 [CA/Browser Forum 英文原文](https://cabforum.org/working-groups/server/baseline-requirements/requirements/)為準。本翻譯不構成法律意見。
 
