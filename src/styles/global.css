@@ -67,17 +67,22 @@ body {
 }
 .clause-body h2 {
   font-size: 1.25rem;
-  margin-top: 2rem;
+  margin-top: 3rem;
   padding-bottom: 0.25rem;
   border-bottom: 1px solid #e2e8f0;
 }
 .clause-body h3 {
   font-size: 1.125rem;
-  margin-top: 1.5rem;
+  margin-top: 2.25rem;
 }
 .clause-body h4 {
   font-size: 1rem;
-  margin-top: 1.25rem;
+  margin-top: 1.75rem;
+}
+/* 標題「上鬆下緊」：上方留白已由各 margin-top 拉開（離前段），
+   下方則收緊讓標題貼住自己的內文，強化段落起點的視覺判讀。 */
+.clause-body :is(h2, h3, h4) + * {
+  margin-top: 0.5rem;
 }
 .clause-body ul,
 .clause-body ol {
@@ -104,11 +109,26 @@ body {
 .clause-body a:hover {
   text-decoration-color: var(--bs-secondary);
 }
+/* 粗體（語料中幾乎都是 RFC 2119 規範詞與「注意」標籤）：
+   預設 700 黑體在 CJK 內文密度過高、視覺一直被打斷。改為 600 + 品牌深青色，
+   讓規範詞讀起來像「法律文件關鍵詞」而非雜亂加粗。 */
+.clause-body strong {
+  font-weight: 600;
+  color: var(--bs-secondary); /* #105a75 */
+}
+/* 表格深色 header 內的粗體（如 **Field**）與 inline code 維持白字，
+   避免深青／深玫瑰字落在深底上看不清。 */
+.clause-body thead th strong,
+.clause-body thead th code {
+  color: inherit;
+  font-weight: 600;
+}
 .clause-body code {
   font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
-  /* cabforum.org（Bootstrap 5）的 inline code 樣式：粉紅字色 + 無底色 + 無框 */
+  /* 沿用 cabforum 的「無底色 + 無框」結構，但把螢光粉 #d63384 改為同色系
+     沉穩的深玫瑰 #9d174d：降低 code 密集段落的「剪貼感」，仍保留欄位名掃讀辨識度。 */
   font-size: 0.875em;
-  color: #d63384;
+  color: #9d174d;
   padding: 0;
   background: transparent;
   border-radius: 0;
@@ -247,7 +267,9 @@ body {
   font-size: 0.92em;
   border-collapse: collapse;
   table-layout: auto;
-  margin-top: 1.6em;
+  /* 與段落間距一致（沿用 .clause-body > * + * 的 1rem），避免表格前的空白
+     看起來像「另起一段大內容」/ header 跳空。原本 1.6em ≈ 24px 偏突兀。 */
+  margin-top: 1em;
 }
 .clause-body th,
 .clause-body td {
