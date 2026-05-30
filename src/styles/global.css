@@ -14,7 +14,11 @@
   --color-bs-secondary: #105a75;
   --color-bs-primary-soft: #e8f6fc;
   --color-bs-dark: #212529;
-  --font-serif-tc: "Noto Serif TC", "Source Han Serif TC", serif;
+  /* 章節標題字型 stack：Latin 用 sans、CJK 用 serif（CJK 排版常見做法）。
+     原理：Helvetica Neue / Arial 不含 CJK glyph，瀏覽器自動 fallback 到下一個
+     字型，所以「CA 憑證授權資訊存取」這類混合字串會自動分流——
+     「CA」走 Helvetica Neue / Arial（sans），「憑證授權…」走 Noto Serif TC（serif）。 */
+  --font-serif-tc: "Helvetica Neue", Arial, "Noto Serif TC", "Source Han Serif TC", serif;
 }
 
 body {
