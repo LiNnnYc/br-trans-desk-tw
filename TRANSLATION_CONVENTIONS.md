@@ -38,7 +38,7 @@ tags: []
 
 每個英文段落／清單／表格用 `> ` blockquote 引用，緊接著對應中文翻譯（不加 `> `）。
 
-**例外**：定義條目（§1.6.1）、縮寫表（§1.6.2 內表格）等內容單元，英文行已直接嵌入中文版本（例如 `**Term（中譯）**：說明`），不再另做 quote 對照。
+**例外**：§1.6.1 定義條目雖屬「術語表」性質，仍採 Style A（每條 `> **Term**: 英文釋義` + 中文 `**中譯**：釋義`）；中文行粗體只放中譯（無中文名者如 `Linting`／`WHOIS`／`P-Label`／`XN-Label`／`Requirements` 保留英文粗體）。此區由 `scripts/add_en_to_definitions_1_6_1.py` 從 BR.md 一次性產生（見 §11）。§1.6.2 縮寫表同樣補了英文 quoted 表對照。
 
 ---
 
@@ -178,6 +178,11 @@ WebTrust 等他家文件名（如「SSL Baseline」）**不加** 《》。
    b. 中文子項目 b
 ```
 
+**字母（`a.` `b.`）／羅馬數字（`i.` `ii.` `iii.`）子清單**：直接照 BR.md 的 Pandoc 寫法寫即可，`scripts/remark-fancy-lists.mjs` 會在 build 時重建成 `<ol type="a">` / `<ol type="i">`（對齊 cabforum.org）。規則：
+
+- 一律從 `a.` 或 `i.` 起算；巢狀關係由標記類型推斷（字母為上層、其後羅馬數字為其子層，最深兩層）。
+- **同一份清單的所有項目要連續寫在同一個語言區塊內**——英文 a/b/c/d 全放進同一個 `> ` blockquote，中文 a/b/c/d 全放進緊接的段落。**不要**逐項交錯（EN-a, CN-a, EN-b, CN-b…），否則同語言的項目不相鄰，plugin 會拆成多個 `<ol start=N>` 碎片。歷史上 §3.2.2.3／§3.2.2.5.1／§3.2.2.9 曾因此 bug 修補過。
+
 不要把英文與中文逐項交錯（同表格規則）。
 
 ---
@@ -236,9 +241,44 @@ SubjectPublicKeyInfo  ::=  SEQUENCE  {
 
 ## 11. 工具腳本參考
 
+常駐 remark plugins（`astro.config.mjs` 掛載，每次 build 自動生效）：
+
+- `scripts/remark-code-figure.mjs` — 為 code block 加語言標籤與複製按鈕 toolbar
+- `scripts/remark-table-nowrap.mjs` — 表格短 token／章節參照 nowrap、整欄收緊（col-shrink）
+- `scripts/remark-fancy-lists.mjs` — 字母（`a.`）／羅馬數字（`i.`）子清單重建成 `<ol type>`（見 §6）
+
+一次性轉換腳本：
+
 - `scripts/unify_headings.py` — 統一三波翻譯的標題格式為 Style A
 - `scripts/split_to_collection.py` — 把潤稿主檔拆成單節 `.md`
 - `scripts/interleave_wave1_paragraphs.py` — 把全 EN→全 CN 改為逐段交錯
-- `scripts/remark-code-figure.mjs` — Remark plugin，為 code block 加 toolbar
+- `scripts/preserve_table_indent.py` — 把 BR.md 表格儲存格前導空白轉成 U+2007 對齊縮排
+- `scripts/add_en_to_definitions_1_6_1.py` — 從 BR.md 把 §1.6.1 定義改成 Style A（補英文原文）；BR 版本升級時若 §1.6.1 定義有增減，調整後可重跑（會重寫整個 `1-6-1.md`）
 
 不在 repo 中的 hot-fix 腳本（補英文表 blockquote、移除 Pandoc `Table:` caption 等）已在歷史 commit 訊息中說明做法，未來如需重做可參考 commit `13558e3`、`17e34ed`、本檔對應的整理 commit。
+
+---
+
+## 12. 為何不採 Pandoc（targeted-plugin 策略）
+
+cabforum.org 用 Pandoc 渲染 BR 原文，並為此調整過 markdown 語法。本站**刻意不改用 Pandoc**，而是維持 Astro 的 remark/CommonMark 流程 + 針對性 plugin。決策理由：
+
+1. **技術上沒有「Pandoc 模式」可切。** Astro content collection 一律走 unified/remark。要「用 Pandoc」只能：(a) 先用 Pandoc 把整份文件渲染成 HTML 再嵌入 → 會失去每節 frontmatter／模板、中英對照 toggle、引用卡、Pagefind 子章節命中、Shiki 高亮、`.clause-body` 樣式鉤子（大倒退）；或 (b) 保留 remark、針對每個 Pandoc 功能加 plugin → **這正是現行做法**。
+2. **本站原始檔不是 Pandoc 文件。** `src/content/br/*.md` 是重構過的「每節一檔 + Style A 中英對照」自訂方言，與 Pandoc 的唯一接觸點是逐字複製 BR.md 的英文片段。
+3. **實際缺口幾乎是零。** BR.md 用到的 Pandoc 專屬語法很少，且已全部覆蓋：
+
+| Pandoc 構件 | BR.md 用量 | 本站對應 |
+|---|---|---|
+| fancy lists（`a.`／`i.`） | 55 | `remark-fancy-lists.mjs`（§6） |
+| `Table:` caption | 41 | 拆檔時移除（§2.2） |
+| 表格儲存格縮排 | 多處 | `preserve_table_indent.py`（U+2007） |
+| footnotes `[^x]` | 22 | `remark-gfm` 原生支援 |
+| pipe tables | 大量 | `remark-gfm` |
+| grid tables `+---+` | 0 | — |
+| definition lists（`: 釋義`） | 0 | — |
+| attribute blocks `{.class}` `{#id}` | 0 | — |
+| fenced div `:::` | 0 | — |
+
+**結論**：「支援 Pandoc」在 remark 生態裡的正確翻譯，就是「針對用到的 Pandoc 功能加 plugin」——而這已是現行策略。撞到新的 Pandoc-ism 時，加一支對應 plugin 即可，不需整體改造。
+
+**可選的中間路線（backlog，暫不做）**：Pandoc definition list（`<dl><dt><dd>`）語意上最適合 §1.6.1／glossary，無障礙性較佳，可用 `remark-definition-list`。但 §1.6.1 剛統一為 Style A、與全站一致，為語意再翻一次不划算；等 a11y 或術語表體驗有實際需求再評估。

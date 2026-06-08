@@ -98,6 +98,15 @@ body {
 .clause-body ol {
   list-style: decimal;
 }
+/* 字母／羅馬數字清單（remark-fancy-lists 產生 <ol type="a"|"i">）：
+   list-style 簡寫會覆蓋 HTML type 屬性，故以 list-style-type 明確對應，
+   對齊 cabforum.org（Pandoc）的 lower-alpha / lower-roman 標記。 */
+.clause-body ol[type='a'] {
+  list-style-type: lower-alpha;
+}
+.clause-body ol[type='i'] {
+  list-style-type: lower-roman;
+}
 .clause-body li + li {
   margin-top: 0.35rem;
 }

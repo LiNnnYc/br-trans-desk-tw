@@ -4,6 +4,7 @@ import tailwindcss from '@tailwindcss/vite';
 import remarkCjkFriendly from 'remark-cjk-friendly';
 import { remarkCodeFigure } from './scripts/remark-code-figure.mjs';
 import { remarkTableNowrap } from './scripts/remark-table-nowrap.mjs';
+import { remarkFancyLists } from './scripts/remark-fancy-lists.mjs';
 
 // https://astro.build/config
 export default defineConfig({
@@ -22,7 +23,9 @@ export default defineConfig({
     // 標籤＋複製按鈕）；必須在 remark 階段而非 Shiki transformer 完成，因 Astro
     // 會在 Shiki 處理前把未知語言（如 ASN.1）改成 plaintext，transformer 內已抓
     // 不到原始 fence 標籤。複製按鈕的點擊行為由章節頁 client-side script 接管。
-    remarkPlugins: [remarkCjkFriendly, remarkCodeFigure, remarkTableNowrap],
+    // remarkFancyLists：補上 CommonMark 不支援的字母（a. b.）／羅馬數字（i. ii.）
+    // 巢狀清單，使排版對齊 cabforum.org 的 <ol type="a"> / <ol type="i">。
+    remarkPlugins: [remarkCjkFriendly, remarkCodeFigure, remarkTableNowrap, remarkFancyLists],
   },
   vite: {
     // tailwind 4.3 的 vite plugin 與 Astro 內建 vite 型別有 skew，build 正常；
