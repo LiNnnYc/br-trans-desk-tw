@@ -246,6 +246,41 @@ body {
 .full-text-only-cn .clause-body :not(blockquote) + blockquote:has(.code-figure) {
   margin-top: 0;
 }
+/* 範例聲明條款框（仿 cabforum.org §2.2 唯一一處原文 blockquote）。
+   BR.md 全文僅此一處為真正的引言：CA 可逐字抄入自家 CP/CPS 的樣板。
+   因 Style A 已把所有英文原文佔用 blockquote，這裡改用 .sample-clause 容器
+   把中英兩版一起框成獨立樣板框，避免與一般對照 blockquote 混淆。
+   內含的英文 blockquote 仍受全文頁隱藏規則控制（全文頁只剩中文留在框內）。 */
+.clause-body .sample-clause {
+  margin: 2rem 0;
+  padding: 0.75rem 1.5rem 1rem;
+  background: #f8fafc; /* slate-50 */
+  border: 1px solid #e2e8f0; /* slate-200 */
+  border-radius: 0.375rem;
+}
+.clause-body .sample-clause::before {
+  content: "\201C"; /* 大型左雙引號，仿 cabforum.org 引言樣式 */
+  display: block;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 3.5rem;
+  line-height: 1;
+  margin-bottom: -0.75rem;
+  color: #0f172a; /* slate-900，近黑 */
+}
+/* 框內的英文 blockquote 不再重複藍色左框（框本身已有左側強調邊）。 */
+.clause-body .sample-clause blockquote {
+  margin: 0 0 0.75rem;
+  border-left: none;
+  padding: 0;
+}
+.clause-body .sample-clause > p:last-child {
+  margin-bottom: 0;
+}
+/* 全文頁只剩中文時，移除框內英文隱藏後殘留的下邊距。 */
+.full-text-only-cn .clause-body .sample-clause blockquote {
+  margin: 0;
+}
+
 /* 全文頁防呆：任何寬於父容器的元素（多欄表格、長程式行、長 URL）
    不得撐寬 article，否則所有段落會在 mobile 被視覺壓縮。
    表格改 display:block 以便 overflow-x:auto 生效；長字元在 word-break。 */
