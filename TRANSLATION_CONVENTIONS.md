@@ -106,7 +106,42 @@ Pandoc 會把 `Table:` 那行轉成 `<caption>` 元素。但 **Astro / remark �
 
 原文若是小寫 `shall` / `may` / `must` / `should` / `optional` 等，**屬於一般描述用詞**（如 "shall be interpreted"、"this method may only be used"、"CAA checking is optional"），中譯只用「應／得／必須」等普通動詞，**不加粗**、**不括註英文**。
 
-歷史誤判修補：§1.5、§1.6.4、§2.4、§3.2.2.4、§3.2.2.4.12、§3.2.2.8 共修過 9 處。
+歷史誤判修補：§1.5、§1.6.4、§2.4、§3.2.2.4、§3.2.2.4.12、§3.2.2.8 共修過 9 處。2026-06-21 以 `scripts/lint_rfc2119.py` 全文對照，再修 8 處 over-bold（小寫 `shall`/`may`/`must`/`required` 被誤標，含 §1.5.2、§3.2.2.4.16/.17、§3.2.2.9、§7.1.4.1、§7.1.4.3、§7.1.2.11.2 等）。
+
+### 3.3 大寫動詞形也是關鍵字
+
+`RECOMMENDS` / `RECOMMEND`（如 "This Profile RECOMMENDS that…"、"These Baseline Requirements RECOMMEND…"）是 `RECOMMENDED` 的大寫動詞形，**仍屬規範詞**，中譯標 `**建議（RECOMMENDED）**`（用標準關鍵字形）。`REQUIRES` 同理對應 `**必要（REQUIRED）**`。
+
+### 3.4 「大寫關鍵字 + 小寫 not」：否定來自大寫詞，不另標 NOT 變體
+
+原文若為 `SHALL not use` / `MUST respect … and not issue`（大寫 `SHALL`/`MUST` 統轄一個小寫 `not`），否定的規範力來自前面那個大寫詞，**不要**把它標成完整的 `**不得（SHALL NOT）**` / `**不得（MUST NOT）**`（那會無中生有一個原文沒有的全大寫關鍵字）。
+
+- `… SHALL not use …` → `**應（SHALL）**……不再使用`（或保留「不得」但不加 NOT 括註）
+- `… MUST respect … and not issue …` → `**應（MUST）**遵守……且……不簽發`（單一 MUST 分配到兩個動詞）
+
+歷史修補：§3.2.2.8（2026-06-21 改）。§3.2.2.4.7／§3.2.2.5.1 的 `SHALL not use` 暫保留「不得（SHALL NOT）」（語意忠實），如日後求嚴謹再依此規則調整。
+
+### 3.5 非 RFC 2119 的同形詞，不加粗
+
+下列情境的字詞與 RFC 2119 關鍵字同形，但**不是**規範詞，保留原文純文字、不加粗：
+
+- **ASN.1 關鍵字**：`OPTIONAL` 欄位、`DEFAULT` 值（如 §7.1.2.8.4 "DEFAULT values within OPTIONAL fields"）——屬 ASN.1 語法，非規範動詞。
+- §1.6.4 列舉關鍵字本身（"the key words MUST, SHALL, … are to be interpreted"）為定義引用，非該句的規範語氣。
+
+### 3.6 同段重複關鍵字：首次標英文，其餘僅加粗
+
+同一段落內相同關鍵字重複出現時，**第一次**標完整 `**應（SHALL）**`，後續同詞只加粗 `**應**`（省略英文括註以免雜亂）；規範力仍由粗體呈現。並列「A 得 X，或 Y」結構中，`得` 可分配到「或」之後而不重複。
+
+> 注意：`scripts/lint_rfc2119.py` 以「英文大寫關鍵字數 vs 中文 `（關鍵字）` 括註數」對照，故本風格會使中文括註數偏低而被列入 under-bold（疑似漏標）——**屬預期內的雜訊，非錯誤**。判斷漏標時須看該處中文是否「完全未加粗」，而非只看括註。
+
+### 3.7 機械校驗：`scripts/lint_rfc2119.py`
+
+對照 `src/content/br/*.md` 各檔的英文 blockquote 大寫關鍵字數與中文括註數：
+
+- **over-bold**（中文 > 英文）＝原文無大寫關鍵字卻被誤標，**須逐處核對修正**（本檔 §3.2 之主要用途）。
+- **under-bold**（英文 > 中文）＝參考用，多為 §3.6 的首次標註風格或 §3.5 同形詞，須人工確認是否真漏標。
+
+腳本已知限制：不解析註腳（`[^x]:`，無英文對照、已跳過）、不處理 §3.4 的「大寫詞 + 小寫 not」（會同時出現在 over/under 兩側）。BR 版本升級後可重跑做回歸對照。
 
 ---
 
@@ -130,6 +165,7 @@ Pandoc 會把 `Table:` 那行轉成 `<caption>` 元素。但 **Astro / remark �
 | Publicly-Trusted | **公開信賴** | 公眾信任、公共可信 |
 | CA/Browser Forum 文件名引用 | `《基本要求》`（中文加書名號簡稱） | 純英文書名 |
 | Multi-Perspective Issuance Corroboration | **多視角簽發佐證**（MPIC） | 多視角驗證 |
+| No stipulation（空白章節標記） | **不作規定** | 無規定、未作規定 |
 
 ### 4.3 使用者面向用詞
 
@@ -246,6 +282,10 @@ SubjectPublicKeyInfo  ::=  SEQUENCE  {
 - `scripts/remark-code-figure.mjs` — 為 code block 加語言標籤與複製按鈕 toolbar
 - `scripts/remark-table-nowrap.mjs` — 表格短 token／章節參照 nowrap、整欄收緊（col-shrink）
 - `scripts/remark-fancy-lists.mjs` — 字母（`a.`）／羅馬數字（`i.`）子清單重建成 `<ol type>`（見 §6）
+
+校驗 lint（手動執行，`python scripts/<name>.py`）：
+
+- `scripts/lint_rfc2119.py` — RFC 2119 加粗對照：英文 blockquote 大寫關鍵字 vs 中文 `（關鍵字）` 括註（見 §3.7）
 
 一次性轉換腳本：
 
