@@ -86,33 +86,43 @@ const srcShort = (s: string) => SOURCE_SHORT[s] ?? s;
                   {letter}
                 </h2>
                 <dl class="mt-4 divide-y divide-slate-100">
-                  {groups.get(letter)!.map((entry) => (
-                    <div class="py-3 sm:grid sm:grid-cols-[16rem_1fr] sm:gap-6">
-                      <dt class="font-medium">
-                        <a
-                          href={`/glossary/${entry.id}/`}
-                          class="text-bs-secondary underline decoration-slate-300 underline-offset-2 hover:decoration-bs-secondary"
-                        >
-                          {entry.data.recommended_zh}
-                        </a>
-                      </dt>
-                      <dd class="mt-1 text-sm text-slate-600 sm:mt-0">
-                        <span class="text-slate-700">{entry.data.term_en}</span>
-                        {entry.data.abbreviation && (
-                          <span class="ml-1 font-mono text-slate-500">
-                            ({entry.data.abbreviation})
-                          </span>
-                        )}
-                        <span class="ml-2 inline-flex flex-wrap gap-1 align-middle">
-                          {entry.data.sources.map((s) => (
-                            <span class="inline-flex items-center rounded bg-slate-100 px-1.5 py-0.5 text-[11px] font-medium text-slate-500">
-                              {srcShort(s.source)}
-                            </span>
-                          ))}
-                        </span>
-                      </dd>
-                    </div>
-                  ))}
+                  {groups.get(letter)!.map((entry) => {
+                    const recDef =
+                      entry.data.sources.find(
+                        (s) => s.source === entry.data.recommended_source,
+                      )?.definition ?? entry.data.sources[0].definition;
+                    return (
+                      <div class="py-4 sm:grid sm:grid-cols-[16rem_1fr] sm:gap-x-12">
+                        <dt class="font-medium text-slate-900 sm:pr-4">
+                          <a
+                            href={`/glossary/${entry.id}/`}
+                            class="text-bs-secondary underline decoration-slate-300 underline-offset-2 hover:decoration-bs-secondary"
+                          >
+                            {entry.data.recommended_zh}
+                          </a>
+                          <div class="mt-0.5 text-sm text-slate-500">
+                            {entry.data.term_en}
+                            {entry.data.abbreviation && (
+                              <span class="ml-1 font-mono text-slate-600">
+                                ({entry.data.abbreviation})
+                              </span>
+                            )}
+                          </div>
+                        </dt>
+                        <dd class="mt-2 text-sm leading-relaxed text-slate-700 sm:mt-0">
+                          <p class="whitespace-pre-line">{recDef}</p>
+                          <p class="mt-2 flex flex-wrap items-center gap-1 text-xs text-slate-500">
+                            <span>來源：</span>
+                            {entry.data.sources.map((s) => (
+                              <span class="inline-flex items-center rounded bg-slate-100 px-1.5 py-0.5 font-medium text-slate-500">
+                                {srcShort(s.source)}
+                              </span>
+                            ))}
+                          </p>
+                        </dd>
+                      </div>
+                    );
+                  })}
                 </dl>
               </section>
             ))}
