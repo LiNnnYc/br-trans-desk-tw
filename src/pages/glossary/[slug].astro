@@ -1,0 +1,145 @@
+---
+// /glossary/<slug>/ — 單一術語詳細頁（多來源一字多義）。
+// 推薦譯名置頂 + 各來源並列譯名與定義 + schema.org/DefinedTerm 結構化資料。
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+import { getCollection } from 'astro:content';
+import { siteConfig } from '../../config/site';
+
+export async function getStaticPaths() {
+  const all = await getCollection('glossary');
+  return all.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+const d = entry.data;
+
+const SOURCE_LABELS: Record<string, string> = {
+  BR: 'CA/Browser Forum 基本要求（§1.6）',
+  HiPKICA: '中華電信 HiPKI CA（CP/CPS）',
+  TWCA: '臺灣網路認證 TWCA（CPS）',
+};
+const sourceLabel = (s: string) => SOURCE_LABELS[s] ?? s;
+
+const title = `${d.recommended_zh}（${d.term_en}）`;
+const firstDef = d.sources[0]?.definition ?? '';
+const description = `${d.term_en}${d.abbreviation ? `（${d.abbreviation}）` : ''}的繁體中文翻譯與定義：${firstDef}`.slice(0, 150);
+
+// 其他來源的譯名（與推薦不同者）作為 alternateName，利於 SEO/GEO 長尾比對
+const altNames = Array.from(
+  new Set([
+    d.term_en,
+    ...(d.abbreviation ? [d.abbreviation] : []),
+    ...d.sources.map((s) => s.term_zh).filter((zh) => zh !== d.recommended_zh),
+  ]),
+);
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'DefinedTerm',
+  name: d.recommended_zh,
+  alternateName: altNames,
+  description: firstDef,
+  inDefinedTermSet: {
+    '@type': 'DefinedTermSet',
+    name: `${siteConfig.shortName}術語表`,
+    url: `${siteConfig.siteUrl}/glossary/`,
+  },
+  url: `${siteConfig.siteUrl}/glossary/${entry.id}/`,
+};
+
+const isPath = (ref?: string) => !!ref && ref.startsWith('/');
+---
+
+<BaseLayout title={title} description={description} mainMaxWidth="max-w-4xl">
+  <Breadcrumb
+    slot="breadcrumb"
+    items={[
+      { label: '首頁', href: '/' },
+      { label: '術語表', href: '/glossary/' },
+      { label: d.recommended_zh },
+    ]}
+  />
+
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+
+  <article class="cabf-card bg-white border border-slate-200 rounded p-5 sm:p-7">
+    <header class="border-b border-slate-200 pb-5">
+      <p class="font-mono text-sm text-slate-500">
+        {d.term_en}
+        {d.abbreviation && <span class="ml-1 text-slate-600">({d.abbreviation})</span>}
+      </p>
+      <h1 class="mt-1 text-2xl font-semibold text-slate-900 sm:text-3xl">
+        {d.recommended_zh}
+      </h1>
+      <p class="mt-2 text-sm text-slate-600">
+        推薦譯名
+        {d.recommended_source && (
+          <span class="ml-1 inline-flex items-center rounded bg-bs-secondary/10 px-2 py-0.5 text-xs font-medium text-bs-secondary">
+            採自 {sourceLabel(d.recommended_source)}
+          </span>
+        )}
+      </p>
+    </header>
+
+    <section class="mt-6">
+      <h2 class="text-sm font-semibold uppercase tracking-wider text-slate-500">
+        各來源譯名與定義
+      </h2>
+      <div class="mt-4 space-y-5">
+        {d.sources.map((s) => (
+          <div class="rounded-md border border-slate-200 bg-slate-50 p-4">
+            <div class="flex flex-wrap items-baseline justify-between gap-2">
+              <h3 class="text-base font-semibold text-slate-900">
+                {s.term_zh}
+                {s.term_zh === d.recommended_zh && s.source === d.recommended_source && (
+                  <span class="ml-2 align-middle text-xs font-normal text-bs-secondary">★ 推薦</span>
+                )}
+              </h3>
+              <span class="text-xs text-slate-500">{sourceLabel(s.source)}</span>
+            </div>
+            <p class="mt-2 whitespace-pre-line text-sm leading-relaxed text-slate-700">
+              {s.definition}
+            </p>
+            {s.ref && (
+              <p class="mt-2 text-xs text-slate-500">
+                來源：
+                {isPath(s.ref) ? (
+                  <a
+                    href={s.ref}
+                    class="text-slate-700 underline decoration-slate-300 underline-offset-2 hover:decoration-slate-700"
+                  >
+                    {s.ref}
+                  </a>
+                ) : (
+                  <span>{s.ref}</span>
+                )}
+              </p>
+            )}
+          </div>
+        ))}
+      </div>
+    </section>
+
+    {d.first_seen_at && (
+      <p class="mt-6 text-xs text-slate-500">
+        於《基本要求》首次出現：
+        <a
+          href={d.first_seen_at}
+          class="text-slate-700 underline decoration-slate-300 underline-offset-2 hover:decoration-slate-700"
+        >
+          {d.first_seen_at}
+        </a>
+      </p>
+    )}
+
+    <footer class="mt-8 border-t border-slate-200 pt-5 text-sm">
+      <a
+        href="/glossary/"
+        class="text-bs-secondary underline decoration-slate-300 underline-offset-2 hover:decoration-bs-secondary"
+      >
+        ← 回術語表總覽
+      </a>
+    </footer>
+  </article>
+</BaseLayout>

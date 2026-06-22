@@ -27,21 +27,34 @@ const br = defineCollection({
   }),
 });
 
-// spec §3.2 — 術語表
+// spec §3.2 — 術語表（多來源一字多義；見 memory project_glossary_multisource）
+// 一個英文詞一個檔，sources[] 裝多來源譯名/定義；recommended_zh 為總覽頁顯示的推薦譯名。
+const glossarySource = z.object({
+  /** 來源代碼：BR｜HiPKICA｜TWCA｜（未來）NCSSR / Root Program 等 */
+  source: z.string().min(1),
+  term_zh: z.string().min(1),
+  definition: z.string().min(1),
+  /** 站內路徑（/server-cert-br/...）或外部文件引用字串（如「HiPKICA CP/CPS v1.1 附錄 2」） */
+  ref: z.string().optional(),
+});
+
 const glossary = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/glossary' }),
   schema: z.object({
     term_en: z.string().min(1),
-    term_zh: z.string().min(1),
     abbreviation: z.string().optional(),
-    definition: z.string().min(1),
-    // first_seen_at 在 BR 章節細項未建立前可以缺漏；M2 翻譯過程會逐步補上
+    /** 推薦譯名（總覽頁顯示）；BR 有的詞預設＝§1.6.1/§1.6.2 定版 */
+    recommended_zh: z.string().min(1),
+    /** 推薦譯名採自哪個來源 */
+    recommended_source: z.string().optional(),
+    /** 各來源的譯名與定義；至少一筆 */
+    sources: z.array(glossarySource).min(1),
+    // 此詞在 BR 章節細項首次出現的頁面路徑（若已知）
     first_seen_at: z
       .string()
       .regex(/^\/server-cert-br\/.+\/$/, 'first_seen_at 須為 /server-cert-br/ 下的頁面路徑')
       .optional(),
-    /** 譯名來源；目前主要為 HiPKICA CP/CPS 附錄 1/2 */
-    source: z.string().optional(),
+    tags: z.array(z.string()).default([]),
   }),
 });
 

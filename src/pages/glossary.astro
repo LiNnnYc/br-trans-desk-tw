@@ -1,6 +1,6 @@
 ---
-// /glossary/ — 術語表（spec §1.1, §3.2；milestones M1-6）。
-// 以 term_en 第一字母分組、提供頂部字母索引。
+// /glossary/ — 術語表總覽（spec §1.1, §3.2）。
+// 每詞只顯示「推薦譯名」，點入 /glossary/<slug>/ 看各來源譯名與定義。
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Breadcrumb from '../components/Breadcrumb.astro';
 import { getCollection } from 'astro:content';
@@ -19,13 +19,19 @@ for (const entry of sorted) {
   if (!groups.has(key)) groups.set(key, []);
   groups.get(key)!.push(entry);
 }
-
 const letters = [...groups.keys()].sort();
+
+const SOURCE_SHORT: Record<string, string> = {
+  BR: 'BR',
+  HiPKICA: 'HiPKI CA',
+  TWCA: 'TWCA',
+};
+const srcShort = (s: string) => SOURCE_SHORT[s] ?? s;
 ---
 
 <BaseLayout
   title="術語表"
-  description="CA/Browser BR 中譯使用的術語對照表，含英文原文、縮寫與定義。"
+  description="台灣憑證 PKI 與網路基礎建設譯名參考：每個英文術語對照多來源（CA/Browser Forum 基本要求、中華電信 HiPKI CA、TWCA）的翻譯與定義。"
   mainMaxWidth="max-w-4xl"
 >
   <Breadcrumb
@@ -34,150 +40,147 @@ const letters = [...groups.keys()].sort();
   />
 
   <article class="cabf-card bg-white border border-slate-200 rounded p-5 sm:p-7">
-  <header>
-    <h1 class="text-2xl font-semibold text-slate-900 sm:text-3xl">術語表</h1>
-    <p class="mt-2 text-sm text-slate-600">
-      本表收錄翻譯中採用的標準譯名與定義，章節內首次出現之術語會連結至此。
-    </p>
-  </header>
-
-  {
-    letters.length === 0 ? (
-      <p class="mt-10 rounded-md border border-dashed border-slate-300 bg-white p-6 text-center text-sm text-slate-500">
-        術語表內容尚未填入，將隨 M2 翻譯進度逐步累積（目標 ≥ 30 條）。
+    <header>
+      <h1 class="text-2xl font-semibold text-slate-900 sm:text-3xl">術語表</h1>
+      <p class="mt-2 text-sm text-slate-600">
+        台灣憑證 PKI 與網路基礎建設譯名參考。每個英文術語列出本站推薦譯名，點入可比較
+        CA/Browser Forum 基本要求、中華電信 HiPKI CA、TWCA 等不同來源的翻譯與定義。
       </p>
-    ) : (
-      <>
-        <nav
-          aria-label="字母索引"
-          class="mt-6 flex flex-wrap items-center gap-1 rounded-md border border-slate-200 bg-white p-2 text-sm"
-        >
-          {letters.map((l) => (
-            <a
-              href={`#letter-${l}`}
-              class="inline-flex h-8 w-8 items-center justify-center rounded font-mono font-medium text-slate-700 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-slate-400"
-            >
-              {l}
-            </a>
-          ))}
-          <span aria-hidden="true" class="mx-1 h-5 w-px bg-slate-200"></span>
-          <a
-            href="#rfc-2119"
-            class="inline-flex h-8 items-center justify-center rounded px-2 font-mono font-medium text-slate-700 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-slate-400"
-          >
-            RFC 2119
-          </a>
-        </nav>
+    </header>
 
-        <div class="mt-8 space-y-10">
-          {letters.map((letter) => (
-            <section id={`letter-${letter}`} aria-labelledby={`heading-${letter}`}>
-              <h2
-                id={`heading-${letter}`}
-                class="border-b border-slate-200 pb-1 font-mono text-lg font-semibold text-slate-800"
+    {
+      letters.length === 0 ? (
+        <p class="mt-10 rounded-md border border-dashed border-slate-300 bg-white p-6 text-center text-sm text-slate-500">
+          術語表內容尚未填入。
+        </p>
+      ) : (
+        <>
+          <nav
+            aria-label="字母索引"
+            class="mt-6 flex flex-wrap items-center gap-1 rounded-md border border-slate-200 bg-white p-2 text-sm"
+          >
+            {letters.map((l) => (
+              <a
+                href={`#letter-${l}`}
+                class="inline-flex h-8 w-8 items-center justify-center rounded font-mono font-medium text-slate-700 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-slate-400"
               >
-                {letter}
-              </h2>
-              <dl class="mt-4 divide-y divide-slate-100">
-                {groups.get(letter)!.map((entry) => (
-                  <div id={entry.id} class="py-4 sm:grid sm:grid-cols-[14rem_1fr] sm:gap-6">
-                    <dt class="font-medium text-slate-900">
-                      <div>{entry.data.term_zh}</div>
-                      <div class="mt-0.5 text-sm text-slate-500">
-                        {entry.data.term_en}
+                {l}
+              </a>
+            ))}
+            <span aria-hidden="true" class="mx-1 h-5 w-px bg-slate-200"></span>
+            <a
+              href="#rfc-2119"
+              class="inline-flex h-8 items-center justify-center rounded px-2 font-mono font-medium text-slate-700 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-slate-400"
+            >
+              RFC 2119
+            </a>
+          </nav>
+
+          <div class="mt-8 space-y-10">
+            {letters.map((letter) => (
+              <section id={`letter-${letter}`} aria-labelledby={`heading-${letter}`}>
+                <h2
+                  id={`heading-${letter}`}
+                  class="border-b border-slate-200 pb-1 font-mono text-lg font-semibold text-slate-800"
+                >
+                  {letter}
+                </h2>
+                <dl class="mt-4 divide-y divide-slate-100">
+                  {groups.get(letter)!.map((entry) => (
+                    <div class="py-3 sm:grid sm:grid-cols-[16rem_1fr] sm:gap-6">
+                      <dt class="font-medium">
+                        <a
+                          href={`/glossary/${entry.id}/`}
+                          class="text-bs-secondary underline decoration-slate-300 underline-offset-2 hover:decoration-bs-secondary"
+                        >
+                          {entry.data.recommended_zh}
+                        </a>
+                      </dt>
+                      <dd class="mt-1 text-sm text-slate-600 sm:mt-0">
+                        <span class="text-slate-700">{entry.data.term_en}</span>
                         {entry.data.abbreviation && (
-                          <>
-                            {' '}
-                            <span class="font-mono text-slate-600">
-                              ({entry.data.abbreviation})
-                            </span>
-                          </>
+                          <span class="ml-1 font-mono text-slate-500">
+                            ({entry.data.abbreviation})
+                          </span>
                         )}
-                      </div>
-                    </dt>
-                    <dd class="mt-2 text-sm leading-relaxed text-slate-700 sm:mt-0">
-                      <p class="whitespace-pre-line">{entry.data.definition}</p>
-                      {entry.data.first_seen_at && (
-                        <p class="mt-2 text-xs text-slate-500">
-                          首次出現於：
-                          <a
-                            href={entry.data.first_seen_at}
-                            class="text-slate-700 underline decoration-slate-300 underline-offset-2 hover:decoration-slate-700"
-                          >
-                            {entry.data.first_seen_at}
-                          </a>
-                        </p>
-                      )}
-                    </dd>
-                  </div>
-                ))}
-              </dl>
-            </section>
-          ))}
-        </div>
-
-        <section id="rfc-2119" aria-labelledby="heading-rfc-2119" class="mt-10">
-          <h2
-            id="heading-rfc-2119"
-            class="border-b border-slate-200 pb-1 font-mono text-lg font-semibold text-slate-800"
-          >
-            RFC 2119
-          </h2>
-          <p class="mt-3 text-sm text-slate-600 leading-relaxed">
-            CA/Browser Forum BR 全文使用 <a href="https://datatracker.ietf.org/doc/html/rfc2119" target="_blank" rel="noopener noreferrer" class="text-bs-secondary underline decoration-slate-300 underline-offset-2 hover:decoration-bs-secondary">RFC 2119</a> 定義的規範詞表達義務強度。本翻譯統一採下列譯名（與中華電信 HiPKICA、TWCA 業界慣例一致）：
-          </p>
-          <div class="mt-4 overflow-x-auto rounded-md border border-slate-200">
-            <table class="w-full text-sm">
-              <thead class="bg-slate-50 text-left text-xs uppercase tracking-wider text-slate-500">
-                <tr>
-                  <th scope="col" class="px-4 py-2 font-semibold">英文（同義詞）</th>
-                  <th scope="col" class="px-4 py-2 font-semibold">強度</th>
-                  <th scope="col" class="px-4 py-2 font-semibold">中譯</th>
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-slate-100 text-slate-700">
-                <tr>
-                  <td class="px-4 py-3 font-mono"><strong>MUST</strong> = <strong>SHALL</strong> = REQUIRED</td>
-                  <td class="px-4 py-3">絕對要求</td>
-                  <td class="px-4 py-3 font-medium text-slate-900">應</td>
-                </tr>
-                <tr>
-                  <td class="px-4 py-3 font-mono"><strong>MUST NOT</strong> = <strong>SHALL NOT</strong></td>
-                  <td class="px-4 py-3">絕對禁止</td>
-                  <td class="px-4 py-3 font-medium text-slate-900">不得</td>
-                </tr>
-                <tr>
-                  <td class="px-4 py-3 font-mono"><strong>SHOULD</strong> = RECOMMENDED</td>
-                  <td class="px-4 py-3">強烈建議</td>
-                  <td class="px-4 py-3 font-medium text-slate-900">宜</td>
-                </tr>
-                <tr>
-                  <td class="px-4 py-3 font-mono"><strong>SHOULD NOT</strong> = NOT RECOMMENDED</td>
-                  <td class="px-4 py-3">強烈不建議</td>
-                  <td class="px-4 py-3 font-medium text-slate-900">不宜</td>
-                </tr>
-                <tr>
-                  <td class="px-4 py-3 font-mono"><strong>MAY</strong> = OPTIONAL</td>
-                  <td class="px-4 py-3">可選</td>
-                  <td class="px-4 py-3 font-medium text-slate-900">得</td>
-                </tr>
-              </tbody>
-            </table>
+                        <span class="ml-2 inline-flex flex-wrap gap-1 align-middle">
+                          {entry.data.sources.map((s) => (
+                            <span class="inline-flex items-center rounded bg-slate-100 px-1.5 py-0.5 text-[11px] font-medium text-slate-500">
+                              {srcShort(s.source)}
+                            </span>
+                          ))}
+                        </span>
+                      </dd>
+                    </div>
+                  ))}
+                </dl>
+              </section>
+            ))}
           </div>
-          <p class="mt-3 text-xs text-slate-500 leading-relaxed">
-            章節內文中規範詞以粗體標示，例如「<strong>應（MUST）</strong>」、「<strong>不得（MUST NOT）</strong>」。括號內保留英文原詞便於與 cabforum.org 原文對照；MUST 與 SHALL 在 RFC 2119 中完全等同，譯文一律譯為「應」。
-          </p>
-        </section>
 
-        <footer class="mt-12 border-t border-slate-200 pt-6 text-sm text-slate-500">
-          <p class="mb-2">翻譯參考來源：</p>
-          <ul class="list-disc space-y-1 pl-6">
-            <li>中華電信 HiPKICA CP/CPS v1.1（附錄 1：縮寫及定義、附錄 2：名詞解釋）</li>
-            <li>臺灣網路認證 TWCA Global CPS v3.1（附錄一：詞彙）</li>
-          </ul>
-        </footer>
-      </>
-    )
-  }
+          <section id="rfc-2119" aria-labelledby="heading-rfc-2119" class="mt-10">
+            <h2
+              id="heading-rfc-2119"
+              class="border-b border-slate-200 pb-1 font-mono text-lg font-semibold text-slate-800"
+            >
+              RFC 2119
+            </h2>
+            <p class="mt-3 text-sm text-slate-600 leading-relaxed">
+              CA/Browser Forum 基本要求全文使用 <a href="https://datatracker.ietf.org/doc/html/rfc2119" target="_blank" rel="noopener noreferrer" class="text-bs-secondary underline decoration-slate-300 underline-offset-2 hover:decoration-bs-secondary">RFC 2119</a> 定義的規範詞表達義務強度。本翻譯統一採下列譯名（與中華電信 HiPKI CA、TWCA 業界慣例一致）：
+            </p>
+            <div class="mt-4 overflow-x-auto rounded-md border border-slate-200">
+              <table class="w-full text-sm">
+                <thead class="bg-slate-50 text-left text-xs uppercase tracking-wider text-slate-500">
+                  <tr>
+                    <th scope="col" class="px-4 py-2 font-semibold">英文（同義詞）</th>
+                    <th scope="col" class="px-4 py-2 font-semibold">強度</th>
+                    <th scope="col" class="px-4 py-2 font-semibold">翻譯</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100 text-slate-700">
+                  <tr>
+                    <td class="px-4 py-3 font-mono"><strong>MUST</strong> = <strong>SHALL</strong> = REQUIRED</td>
+                    <td class="px-4 py-3">絕對要求</td>
+                    <td class="px-4 py-3 font-medium text-slate-900">應</td>
+                  </tr>
+                  <tr>
+                    <td class="px-4 py-3 font-mono"><strong>MUST NOT</strong> = <strong>SHALL NOT</strong></td>
+                    <td class="px-4 py-3">絕對禁止</td>
+                    <td class="px-4 py-3 font-medium text-slate-900">不得</td>
+                  </tr>
+                  <tr>
+                    <td class="px-4 py-3 font-mono"><strong>SHOULD</strong> = RECOMMENDED</td>
+                    <td class="px-4 py-3">強烈建議</td>
+                    <td class="px-4 py-3 font-medium text-slate-900">宜</td>
+                  </tr>
+                  <tr>
+                    <td class="px-4 py-3 font-mono"><strong>SHOULD NOT</strong> = NOT RECOMMENDED</td>
+                    <td class="px-4 py-3">強烈不建議</td>
+                    <td class="px-4 py-3 font-medium text-slate-900">不宜</td>
+                  </tr>
+                  <tr>
+                    <td class="px-4 py-3 font-mono"><strong>MAY</strong> = OPTIONAL</td>
+                    <td class="px-4 py-3">可選</td>
+                    <td class="px-4 py-3 font-medium text-slate-900">得</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <p class="mt-3 text-xs text-slate-500 leading-relaxed">
+              章節內文中規範詞以粗體標示，例如「<strong>應（MUST）</strong>」、「<strong>不得（MUST NOT）</strong>」。括號內保留英文原詞便於與 cabforum.org 原文對照；MUST 與 SHALL 在 RFC 2119 中完全等同，譯文一律譯為「應」。
+            </p>
+          </section>
+
+          <footer class="mt-12 border-t border-slate-200 pt-6 text-sm text-slate-500">
+            <p class="mb-2">翻譯參考來源：</p>
+            <ul class="list-disc space-y-1 pl-6">
+              <li>CA/Browser Forum 基本要求（§1.6 名詞定義與縮寫）</li>
+              <li>中華電信 HiPKI CA CP/CPS v1.1（附錄 1：縮寫及定義、附錄 2：名詞解釋）</li>
+              <li>臺灣網路認證 TWCA Global CPS v3.1（附錄一：詞彙）</li>
+            </ul>
+          </footer>
+        </>
+      )
+    }
   </article>
 </BaseLayout>
