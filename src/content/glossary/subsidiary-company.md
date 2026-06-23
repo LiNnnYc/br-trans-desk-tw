@@ -1,9 +1,12 @@
 ---
 term_en: "Subsidiary Company"
 recommended_zh: "子公司"
+recommended_definition: |
+  受母公司控制之公司。
 recommended_source: "BR"
 sources:
   - source: "BR"
+    version: "v2.2.7"
     term_zh: "子公司"
     definition: |
       受母公司控制之公司。

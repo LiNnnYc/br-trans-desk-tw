@@ -1,14 +1,18 @@
 ---
 term_en: "Key Pair"
 recommended_zh: "金鑰對"
+recommended_definition: |
+  私密金鑰與其對應之公開金鑰。
 recommended_source: "BR"
 sources:
   - source: "BR"
+    version: "v2.2.7"
     term_zh: "金鑰對"
     definition: |
       私密金鑰與其對應之公開金鑰。
     ref: "/server-cert-br/1-6-1/"
   - source: "HiPKICA"
+    version: "v1.1"
     term_zh: "金鑰對"
     definition: |
       兩把數學上有相關性的金鑰，具有下列特性：

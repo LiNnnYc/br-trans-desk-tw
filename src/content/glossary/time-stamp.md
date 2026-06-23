@@ -1,9 +1,12 @@
 ---
 term_en: "Time-stamp"
 recommended_zh: "時戳"
+recommended_definition: |
+  由可信賴的權威機構以數位方式簽署，證明某特定數位物件在某特別時間之存在。
 recommended_source: "HiPKICA"
 sources:
   - source: "HiPKICA"
+    version: "v1.1"
     term_zh: "時戳"
     definition: |
       由可信賴的權威機構以數位方式簽署，證明某特定數位物件在某特別時間之存在。

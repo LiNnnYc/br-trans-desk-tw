@@ -32,6 +32,8 @@ const br = defineCollection({
 const glossarySource = z.object({
   /** 來源代碼：BR｜HiPKICA｜TWCA｜（未來）NCSSR / Root Program 等 */
   source: z.string().min(1),
+  /** 來源文件版本（如 "v2.2.7"、"v1.1"）；同一來源可能有不同版本各佔一筆 */
+  version: z.string().optional(),
   term_zh: z.string().min(1),
   definition: z.string().min(1),
   /** 站內路徑（/server-cert-br/...）或外部文件引用字串（如「HiPKICA CP/CPS v1.1 附錄 2」） */
@@ -45,7 +47,9 @@ const glossary = defineCollection({
     abbreviation: z.string().optional(),
     /** 推薦譯名（總覽頁顯示）；BR 有的詞預設＝§1.6.1/§1.6.2 定版 */
     recommended_zh: z.string().min(1),
-    /** 推薦譯名採自哪個來源 */
+    /** 推薦解釋（總覽頁顯示）；與 sources 解耦、可獨立編輯，不綁定任一來源 */
+    recommended_definition: z.string().min(1),
+    /** 推薦譯名「參考自」哪個來源（僅標示出處用，內容不由此推導） */
     recommended_source: z.string().optional(),
     /** 各來源的譯名與定義；至少一筆 */
     sources: z.array(glossarySource).min(1),

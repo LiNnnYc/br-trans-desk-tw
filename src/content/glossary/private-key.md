@@ -1,14 +1,18 @@
 ---
 term_en: "Private Key"
 recommended_zh: "私密金鑰"
+recommended_definition: |
+  金鑰對中由持有人保密持有之金鑰，用以建立數位簽章及／或解密其對應公開金鑰所加密之電子紀錄或檔案。
 recommended_source: "BR"
 sources:
   - source: "BR"
+    version: "v2.2.7"
     term_zh: "私密金鑰"
     definition: |
       金鑰對中由持有人保密持有之金鑰，用以建立數位簽章及／或解密其對應公開金鑰所加密之電子紀錄或檔案。
     ref: "/server-cert-br/1-6-1/"
   - source: "HiPKICA"
+    version: "v1.1"
     term_zh: "私密金鑰"
     definition: |
       （1）在簽章金鑰對中，用以產生數位簽章的金鑰。

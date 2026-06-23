@@ -1,9 +1,12 @@
 ---
 term_en: "Key Generation Script"
 recommended_zh: "金鑰產製腳本"
+recommended_definition: |
+  用於產製憑證機構（CA）金鑰對之書面程序計畫。
 recommended_source: "BR"
 sources:
   - source: "BR"
+    version: "v2.2.7"
     term_zh: "金鑰產製腳本"
     definition: |
       用於產製憑證機構（CA）金鑰對之書面程序計畫。

@@ -87,10 +87,7 @@ const srcShort = (s: string) => SOURCE_SHORT[s] ?? s;
                 </h2>
                 <dl class="mt-4 divide-y divide-slate-100">
                   {groups.get(letter)!.map((entry) => {
-                    const recDef =
-                      entry.data.sources.find(
-                        (s) => s.source === entry.data.recommended_source,
-                      )?.definition ?? entry.data.sources[0].definition;
+                    const recDef = entry.data.recommended_definition;
                     return (
                       <div class="py-4 sm:grid sm:grid-cols-[16rem_1fr] sm:gap-x-12">
                         <dt class="font-medium text-slate-900 sm:pr-4">

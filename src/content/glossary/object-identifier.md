@@ -2,14 +2,18 @@
 term_en: "Object Identifier"
 abbreviation: "OID"
 recommended_zh: "物件識別碼"
+recommended_definition: |
+  於國際標準化組織（ISO）適用標準下，為特定物件或物件類別所註冊之唯一英數字或數字識別碼。
 recommended_source: "BR"
 sources:
   - source: "BR"
+    version: "v2.2.7"
     term_zh: "物件識別碼"
     definition: |
       於國際標準化組織（ISO）適用標準下，為特定物件或物件類別所註冊之唯一英數字或數字識別碼。
     ref: "/server-cert-br/1-6-1/"
   - source: "HiPKICA"
+    version: "v1.1"
     term_zh: "物件識別碼"
     definition: |
       （1）一種以字母或數字組成之唯一識別碼，該識別碼必須依國際標準組織所訂定之註冊標準加以註冊，並可被用以識別唯一與之對應之憑證政策。

@@ -1,14 +1,18 @@
 ---
 term_en: "Certificate"
 recommended_zh: "憑證"
+recommended_definition: |
+  係指以數位簽章連結公開金鑰與特定身分之電子文件。
 recommended_source: "BR"
 sources:
   - source: "BR"
+    version: "v2.2.7"
     term_zh: "憑證"
     definition: |
       係指以數位簽章連結公開金鑰與特定身分之電子文件。
     ref: "/server-cert-br/1-6-1/"
   - source: "HiPKICA"
+    version: "v1.1"
     term_zh: "憑證"
     definition: |
       （1）指載有簽章驗證資料，用以確認簽署人身分、資格之電子形式證明。[電子簽章法第 2 條第 6 款]

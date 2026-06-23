@@ -1,9 +1,12 @@
 ---
 term_en: "Bugzilla"
 recommended_zh: "Bugzilla"
+recommended_definition: |
+  由 Mozilla 維護之瀏覽器問題的追蹤管理網路程式，當 CA 發生重大缺失時，必須回報於此處。位於 https://bugzilla.mozilla.org/home。
 recommended_source: "TWCA"
 sources:
   - source: "TWCA"
+    version: "v3.1"
     term_zh: "Bugzilla"
     definition: |
       由 Mozilla 維護之瀏覽器問題的追蹤管理網路程式，當 CA 發生重大缺失時，必須回報於此處。位於 https://bugzilla.mozilla.org/home。

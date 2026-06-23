@@ -1,9 +1,12 @@
 ---
 term_en: "Audit Data"
 recommended_zh: "稽核紀錄"
+recommended_definition: |
+  依照發生時間順序之系統活動紀錄，可用以重建或調查事件發生的順序及某個事件中的變化。
 recommended_source: "HiPKICA"
 sources:
   - source: "HiPKICA"
+    version: "v1.1"
     term_zh: "稽核紀錄"
     definition: |
       依照發生時間順序之系統活動紀錄，可用以重建或調查事件發生的順序及某個事件中的變化。

@@ -1,9 +1,12 @@
 ---
 term_en: "Validation Specialist"
 recommended_zh: "驗證專員"
+recommended_definition: |
+  執行本文件所規定之資訊驗證作業的人員。
 recommended_source: "BR"
 sources:
   - source: "BR"
+    version: "v2.2.7"
     term_zh: "驗證專員"
     definition: |
       執行本文件所規定之資訊驗證作業的人員。

@@ -2,9 +2,12 @@
 term_en: "Personal Identification Number"
 abbreviation: "PIN"
 recommended_zh: "個人識別碼"
+recommended_definition: |
+  用於辨識個人身分的數字密碼。
 recommended_source: "HiPKICA"
 sources:
   - source: "HiPKICA"
+    version: "v1.1"
     term_zh: "個人識別碼"
     definition: |
       用於辨識個人身分的數字密碼。

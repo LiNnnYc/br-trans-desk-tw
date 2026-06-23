@@ -22,8 +22,8 @@ const SOURCE_LABELS: Record<string, string> = {
 const sourceLabel = (s: string) => SOURCE_LABELS[s] ?? s;
 
 const title = `${d.recommended_zh}（${d.term_en}）`;
-const firstDef = d.sources[0]?.definition ?? '';
-const description = `${d.term_en}${d.abbreviation ? `（${d.abbreviation}）` : ''}的繁體中文翻譯與定義：${firstDef}`.slice(0, 150);
+const recDef = d.recommended_definition;
+const description = `${d.term_en}${d.abbreviation ? `（${d.abbreviation}）` : ''}的繁體中文翻譯與定義：${recDef}`.slice(0, 150);
 
 // 其他來源的譯名（與推薦不同者）作為 alternateName，利於 SEO/GEO 長尾比對
 const altNames = Array.from(
@@ -39,7 +39,7 @@ const jsonLd = {
   '@type': 'DefinedTerm',
   name: d.recommended_zh,
   alternateName: altNames,
-  description: firstDef,
+  description: recDef,
   inDefinedTermSet: {
     '@type': 'DefinedTermSet',
     name: `${siteConfig.shortName}術語表`,
@@ -73,12 +73,15 @@ const isPath = (ref?: string) => !!ref && ref.startsWith('/');
         {d.recommended_zh}
       </h1>
       <p class="mt-2 text-sm text-slate-600">
-        推薦譯名
+        本站推薦譯名
         {d.recommended_source && (
           <span class="ml-1 inline-flex items-center rounded bg-bs-secondary/10 px-2 py-0.5 text-xs font-medium text-bs-secondary">
-            採自 {sourceLabel(d.recommended_source)}
+            參考自 {sourceLabel(d.recommended_source)}
           </span>
         )}
+      </p>
+      <p class="mt-3 whitespace-pre-line text-sm leading-relaxed text-slate-700">
+        {recDef}
       </p>
     </header>
 
@@ -92,11 +95,11 @@ const isPath = (ref?: string) => !!ref && ref.startsWith('/');
             <div class="flex flex-wrap items-baseline justify-between gap-2">
               <h3 class="text-base font-semibold text-slate-900">
                 {s.term_zh}
-                {s.term_zh === d.recommended_zh && s.source === d.recommended_source && (
-                  <span class="ml-2 align-middle text-xs font-normal text-bs-secondary">★ 推薦</span>
-                )}
               </h3>
-              <span class="text-xs text-slate-500">{sourceLabel(s.source)}</span>
+              <span class="text-xs text-slate-500">
+                {sourceLabel(s.source)}
+                {s.version && <span class="ml-1 font-mono text-slate-400">{s.version}</span>}
+              </span>
             </div>
             <p class="mt-2 whitespace-pre-line text-sm leading-relaxed text-slate-700">
               {s.definition}

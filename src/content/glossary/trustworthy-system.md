@@ -1,14 +1,18 @@
 ---
 term_en: "Trustworthy System"
 recommended_zh: "可信賴系統"
+recommended_definition: |
+  具有下列性質之電腦硬體、軟體與程序：對於入侵與誤用有合理地保護；提供合理水準之可用性、可靠性與正確運作；合理適當地執行其預定功能；並落實適用的安全政策。
 recommended_source: "BR"
 sources:
   - source: "BR"
+    version: "v2.2.7"
     term_zh: "可信賴系統"
     definition: |
       具有下列性質之電腦硬體、軟體與程序：對於入侵與誤用有合理地保護；提供合理水準之可用性、可靠性與正確運作；合理適當地執行其預定功能；並落實適用的安全政策。
     ref: "/server-cert-br/1-6-1/"
   - source: "HiPKICA"
+    version: "v1.1"
     term_zh: "可信賴系統"
     definition: |
       具有下列性質之電腦硬體、軟體及程序：

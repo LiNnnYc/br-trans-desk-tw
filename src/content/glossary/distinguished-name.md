@@ -2,9 +2,12 @@
 term_en: "Distinguished Name"
 abbreviation: "DN"
 recommended_zh: "唯一識別名稱"
+recommended_definition: |
+  X.500 命名規範下唯一識別某個目錄項目的名稱結構。
 recommended_source: "HiPKICA"
 sources:
   - source: "HiPKICA"
+    version: "v1.1"
     term_zh: "唯一識別名稱"
     definition: |
       X.500 命名規範下唯一識別某個目錄項目的名稱結構。

@@ -2,14 +2,18 @@
 term_en: "Authorization Domain Name"
 abbreviation: "ADN"
 recommended_zh: "經授權網域名稱"
+recommended_definition: |
+  係指用以證明有權將指定完全吻合網域名稱（FQDN）納入憑證之 FQDN。憑證機構（CA）可將 DNS CNAME 查詢所回覆之 FQDN 作為網域驗證目的之 FQDN。若擬將萬用網域名稱（Wildcard Domain Name）納入憑證內容，則 CA **應（MUST）**移除萬用網域名稱最左端之「*.」，以產生符合規定之 FQDN。CA 可自左至右刪除該 FQDN 之零個或多個網域標籤（Domain Labels），直至遇到基礎網域名稱（Base Domain Name）為止，也可使用刪除過程中所產生之任一值（包括基礎網域名稱本身）作為網域驗證之用。
 recommended_source: "BR"
 sources:
   - source: "BR"
+    version: "v2.2.7"
     term_zh: "經授權網域名稱"
     definition: |
       係指用以證明有權將指定完全吻合網域名稱（FQDN）納入憑證之 FQDN。憑證機構（CA）可將 DNS CNAME 查詢所回覆之 FQDN 作為網域驗證目的之 FQDN。若擬將萬用網域名稱（Wildcard Domain Name）納入憑證內容，則 CA **應（MUST）**移除萬用網域名稱最左端之「*.」，以產生符合規定之 FQDN。CA 可自左至右刪除該 FQDN 之零個或多個網域標籤（Domain Labels），直至遇到基礎網域名稱（Base Domain Name）為止，也可使用刪除過程中所產生之任一值（包括基礎網域名稱本身）作為網域驗證之用。
     ref: "/server-cert-br/1-6-1/"
   - source: "HiPKICA"
+    version: "v1.1"
     term_zh: "經授權網域名稱"
     definition: |
       用於取得對某一個特定完全吻合網域名稱之憑證簽發的授權之網域名稱。
