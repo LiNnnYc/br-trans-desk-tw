@@ -47,8 +47,6 @@ const jsonLd = {
   },
   url: `${siteConfig.siteUrl}/glossary/${entry.id}/`,
 };
-
-const isPath = (ref?: string) => !!ref && ref.startsWith('/');
 ---
 
 <BaseLayout title={title} description={description} mainMaxWidth="max-w-4xl">
@@ -92,33 +90,16 @@ const isPath = (ref?: string) => !!ref && ref.startsWith('/');
       <div class="mt-4 space-y-5">
         {d.sources.map((s) => (
           <div class="rounded-md border border-slate-200 bg-slate-50 p-4">
-            <div class="flex flex-wrap items-baseline justify-between gap-2">
-              <h3 class="text-base font-semibold text-slate-900">
-                {s.term_zh}
-              </h3>
-              <span class="text-xs text-slate-500">
-                {sourceLabel(s.source)}
-                {s.version && <span class="ml-1 font-mono text-slate-400">{s.version}</span>}
-              </span>
-            </div>
+            <h3 class="text-base font-semibold text-slate-900">
+              {s.term_zh}
+            </h3>
             <p class="mt-2 whitespace-pre-line text-sm leading-relaxed text-slate-700">
               {s.definition}
             </p>
-            {s.ref && (
-              <p class="mt-2 text-xs text-slate-500">
-                來源：
-                {isPath(s.ref) ? (
-                  <a
-                    href={s.ref}
-                    class="text-slate-700 underline decoration-slate-300 underline-offset-2 hover:decoration-slate-700"
-                  >
-                    {s.ref}
-                  </a>
-                ) : (
-                  <span>{s.ref}</span>
-                )}
-              </p>
-            )}
+            <p class="mt-2 text-xs text-slate-500">
+              來源：{sourceLabel(s.source)}
+              {s.version && <span class="ml-1 font-mono text-slate-400">{s.version}</span>}
+            </p>
           </div>
         ))}
       </div>
