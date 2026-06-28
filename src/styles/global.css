@@ -289,10 +289,10 @@ body {
   max-width: 100%;
   min-width: 0;
 }
+/* 水平捲動改由 .table-wrap 包裝處理（見下方 caption 區塊）；此處不再對
+   table 設 display:block，否則 <caption> 的 caption-side: bottom 會失效。 */
 .full-text-only-cn .clause-body table {
-  display: block;
   max-width: 100%;
-  overflow-x: auto;
 }
 .full-text-only-cn .clause-body pre {
   max-width: 100%;
@@ -374,6 +374,33 @@ body {
 .clause-body td:first-child,
 .clause-body th:first-child {
   padding-right: 1.25rem;
+}
+
+/* 表格底端 caption（由 rehype-table-caption 生成；對齊 cabforum.org 經 Pandoc
+   渲染的 <caption>）。caption-side: bottom 讓說明文字顯示於表格下方，灰色小字。 */
+.clause-body caption.table-caption {
+  caption-side: bottom;
+  padding: 0.5rem 0 0.25rem;
+  color: #6c757d; /* Bootstrap --bs-secondary-color */
+  font-size: 0.85em;
+  line-height: 1.5;
+  text-align: left;
+}
+.clause-body caption.table-caption code {
+  color: inherit; /* caption 內識別碼不套粉紅，維持灰調一致 */
+}
+/* 表格捲動包裝（rehype-table-caption 把每個 <table> 包進 .table-wrap）：
+   讓寬表在窄螢幕水平捲動，同時 <table> 維持 display:table，使
+   caption-side: bottom 在全文頁與單章節頁皆生效。
+   （先前作法是對 .full-text-only-cn table 設 display:block，但那會讓
+     caption-side 失效、caption 落到表格頂端。） */
+.clause-body .table-wrap {
+  overflow-x: auto;
+  max-width: 100%;
+  margin-top: 1em; /* 沿用原 table margin-top，維持表格前間距 */
+}
+.clause-body .table-wrap > table {
+  margin-top: 0; /* 間距改由 .table-wrap 承擔 */
 }
 
 /* spec §4.2 — 中英對照模式

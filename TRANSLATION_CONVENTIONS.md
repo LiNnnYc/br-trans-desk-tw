@@ -62,9 +62,9 @@ tags: []
 
 **禁止**：將 EN 列與 CN 列逐列交錯（會破壞 markdown 表格的「header → separator → row 連續」要求，渲染為純文字）。歷史上 §3.2.2.9、§4.2.1 曾發生此 bug。
 
-### 2.2 不要寫 `Table:` caption
+### 2.2 表格 caption：保留並緊鄰表格上方
 
-BR.md 原文使用 **Pandoc 風格** 的表格 caption：
+BR.md 原文使用 **Pandoc 風格** 的表格 caption，Pandoc 會渲染成表格底端的 `<caption>`：
 
 ```markdown
 Table: My caption
@@ -73,11 +73,28 @@ Table: My caption
 | ---- | ---- |
 ```
 
-Pandoc 會把 `Table:` 那行轉成 `<caption>` 元素。但 **Astro / remark 預設不支援此擴充**，會把 `Table: ...` 渲染為一般段落純文字，看起來像 bug。
+本站以 **`scripts/rehype-table-caption.mjs`**（rehype plugin）支援之：把緊鄰 `<table>` 上方的 `Table:`／`表：` 段落轉成 `<caption>` 並置於表格內，由 `global.css` 的 `caption-side: bottom` 顯示在表格底端，對齊 cabforum.org（Pandoc）的渲染。
 
-**做法**：拆檔時把 BR.md 的 `Table: ...` 行（與翻譯的「表：...」行）一併移除。表頭的粗體標籤已足以說明用途。
+> **沿革**：早期（commit `237ce19`）因 remark 不認 Pandoc caption、`Table:` 被當純文字而**整批移除**；2026-06 改為「保留＋plugin 轉 `<caption>`」（本節即新慣例），caption 由 `scripts/restore_table_captions.py` 從 BR.md（英文）＋ git `237ce19^`（已譯中文）回填。
 
-若未來真有需要顯示 caption，請改用 remark plugin 或手動寫 `<figure><figcaption>...</figcaption><table>...</table></figure>`，不要保留裸 `Table:`。
+**做法**（plugin 依賴的格式，務必遵守）：caption 段落須**緊鄰**其表格的上方（中間僅一個空白行），中英各自貼著自己的表格：
+
+```markdown
+> Table: My caption
+>
+> | EN col | ... |
+> | ----   | --- |
+
+表：我的表格說明
+
+| 中文欄 | ... |
+| ----   | --- |
+```
+
+- 英文 caption 寫在 blockquote 內（`> Table: ...` 後接 `>` 空行再接表格），與英文表同屬一個 blockquote。
+- 中文 caption 寫 `表：...`（全形冒號）後接一個空白行再接中文表。
+- caption 內可含 inline `` `code` ``（如 `` `policyQualifiers` ``），plugin 會保留。
+- 每個 `<table>` 另會被 plugin 包進 `<div class="table-wrap">`（水平捲動），表格維持 `display:table` 以確保 `caption-side: bottom` 在全文頁也生效。
 
 ---
 
@@ -277,11 +294,12 @@ SubjectPublicKeyInfo  ::=  SEQUENCE  {
 
 ## 11. 工具腳本參考
 
-常駐 remark plugins（`astro.config.mjs` 掛載，每次 build 自動生效）：
+常駐 remark／rehype plugins（`astro.config.mjs` 掛載，每次 build 自動生效）：
 
 - `scripts/remark-code-figure.mjs` — 為 code block 加語言標籤與複製按鈕 toolbar
 - `scripts/remark-table-nowrap.mjs` — 表格短 token／章節參照 nowrap、整欄收緊（col-shrink）
 - `scripts/remark-fancy-lists.mjs` — 字母（`a.`）／羅馬數字（`i.`）子清單重建成 `<ol type>`（見 §6）
+- `scripts/rehype-table-caption.mjs` — 把表格上方 `Table:`／`表：` 段落轉成表格底端 `<caption>`，並把每個 `<table>` 包進 `.table-wrap`（見 §2.2）
 
 校驗 lint（手動執行，`python scripts/<name>.py`）：
 
@@ -294,8 +312,9 @@ SubjectPublicKeyInfo  ::=  SEQUENCE  {
 - `scripts/interleave_wave1_paragraphs.py` — 把全 EN→全 CN 改為逐段交錯
 - `scripts/preserve_table_indent.py` — 把 BR.md 表格儲存格前導空白轉成 U+2007 對齊縮排
 - `scripts/add_en_to_definitions_1_6_1.py` — 從 BR.md 把 §1.6.1 定義改成 Style A（補英文原文）；BR 版本升級時若 §1.6.1 定義有增減，調整後可重跑（會重寫整個 `1-6-1.md`）
+- `scripts/restore_table_captions.py` — 把 BR.md 的 `Table:` caption（英文）與 git `237ce19^` 的「表：」（中文）以「緊鄰表格上方」格式回填各章節檔，供 `rehype-table-caption.mjs` 轉 `<caption>`（見 §2.2）。以表格內容簽章比對、idempotent，BR 升版後可重跑；`--write` 才實際寫入。
 
-不在 repo 中的 hot-fix 腳本（補英文表 blockquote、移除 Pandoc `Table:` caption 等）已在歷史 commit 訊息中說明做法，未來如需重做可參考 commit `13558e3`、`17e34ed`、本檔對應的整理 commit。
+不在 repo 中的 hot-fix 腳本（補英文表 blockquote 等）已在歷史 commit 訊息中說明做法，未來如需重做可參考 commit `13558e3`、`17e34ed`、本檔對應的整理 commit。
 
 ---
 
@@ -310,7 +329,7 @@ cabforum.org 用 Pandoc 渲染 BR 原文，並為此調整過 markdown 語法。
 | Pandoc 構件 | BR.md 用量 | 本站對應 |
 |---|---|---|
 | fancy lists（`a.`／`i.`） | 55 | `remark-fancy-lists.mjs`（§6） |
-| `Table:` caption | 41 | 拆檔時移除（§2.2） |
+| `Table:` caption | 41 | `rehype-table-caption.mjs` → 底端 `<caption>`（§2.2） |
 | 表格儲存格縮排 | 多處 | `preserve_table_indent.py`（U+2007） |
 | footnotes `[^x]` | 22 | `remark-gfm` 原生支援 |
 | pipe tables | 大量 | `remark-gfm` |
