@@ -6,7 +6,7 @@ original_url: "https://cabforum.org/working-groups/server/baseline-requirements/
 original_version: "2.2.7"
 ballot_refs: []
 translator: "免費 AI 初譯 + Claude (Opus) 潤稿"
-last_updated: 2026-05-24
+last_updated: 2026-06-27
 status: draft
 tags: []
 ---
@@ -75,7 +75,7 @@ tags: []
 
 > The Random Value SHALL remain valid for use in a confirming response for no more than 30 days from its creation. The CPS MAY specify a shorter validity period for Random Values.
 
-隨機值（Random Value）自建立起最多 30 日內**應（SHALL）**可用於確認回應。CPS **得（MAY）**為隨機值指定更短的效期。
+隨機值自建立之日起，用於確認回覆的有效期限**應（SHALL）**不超過 30 日。憑證業務作業基準（Certification Practice Statement，CPS）**得（MAY）**規定更短的隨機值有效期限。
 
 > Once the FQDN has been validated using this method, the CA MAY also issue Certificates for other FQDNs that end with all the labels of the validated FQDN. This method is suitable for validating Wildcard Domain Names.
 
