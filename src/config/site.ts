@@ -3,10 +3,10 @@
 export type SyncStatus = 'synced' | 'behind' | 'pending';
 
 export const siteConfig = {
-  name: 'BRs 翻譯小站',
+  name: 'BR 翻譯小站',
   shortName: 'BR 小站',
   description:
-    'CA/Browser Forum Baseline Requirements 的非官方繁體中文翻譯',
+    'WebPKI 相關文件的非官方繁體中文翻譯',
   // M0-1 建立 GitHub repo 後替換
   repoUrl: '#TODO-github-repo',
   // 引用卡輸出絕對網址用；M0-3 部署網域定案時更新（含或不含 /repo-name 由 astro.config base 決定）
