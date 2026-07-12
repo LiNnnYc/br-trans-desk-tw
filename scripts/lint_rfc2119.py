@@ -37,6 +37,54 @@ KEYWORDS = [
 CN_PATTERNS = {kw: re.compile(r"（" + re.escape(kw) + r"）") for kw, _ in KEYWORDS}
 EN_PATTERNS = {kw: re.compile(rgx) for kw, rgx in KEYWORDS}
 
+# ── bare / 畸形括註偵測（2026-07-12 新增）────────────────────────────
+# 慣例改為「每個 RFC 2119 規範詞出現都要帶英文括註」（TRANSLATION_CONVENTIONS §3.6），
+# 故 bare 粗體（**得**、**應** 等無括註）一律視為漏標；括註內若非全大寫標準關鍵字
+# （如 **應（shall）**）視為畸形。
+BARE_ZH = ["不建議", "非必要", "不得", "不宜", "建議", "必要", "選用", "應", "宜", "得"]
+BARE_SET = set(BARE_ZH)
+CANONICAL_EN = {
+    "MUST", "MUST NOT", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT",
+    "REQUIRED", "RECOMMENDED", "NOT RECOMMENDED", "MAY", "OPTIONAL", "NOT REQUIRED",
+}
+BOLD_RE = re.compile(r"\*\*([^*]+?)\*\*")
+# 粗體內容 = 關鍵字（英文），全形括號；擷取關鍵字與括註內英文
+ANNOT_RE = re.compile(r"^(不建議|非必要|不得|不宜|建議|必要|選用|應|宜|得)（([^）]*)）$")
+
+
+def scan_bold_anomalies(text):
+    """回傳 (bare, malformed)：
+    bare      = [(lineno, zh, ctx)]  bare 粗體 RFC 2119 詞（無括註）
+    malformed = [(lineno, content, ctx)]  括註內非標準全大寫關鍵字
+    僅掃 CN 行（跳過 frontmatter、blockquote、註腳定義行）。
+    """
+    bare, malformed = [], []
+    in_frontmatter = False
+    for i, line in enumerate(text.splitlines(), 1):
+        s = line.strip()
+        if i == 1 and s == "---":
+            in_frontmatter = True
+            continue
+        if in_frontmatter:
+            if s == "---":
+                in_frontmatter = False
+            continue
+        if s.startswith(">") or re.match(r"^\[\^[^\]]+\]:", s):
+            continue
+        for m in BOLD_RE.finditer(line):
+            c = m.group(1).strip()
+            st, en = max(0, m.start() - 12), min(len(line), m.end() + 12)
+            ctx = line[st:en]
+            if c in BARE_SET:
+                bare.append((i, c, ctx))
+                continue
+            am = ANNOT_RE.match(c)
+            if am and am.group(2) not in CANONICAL_EN:
+                # 允許尾隨全形冒號的標籤形（如 **應（MUST）：**）不進此判斷，
+                # 因其不符 ANNOT_RE（結尾非 ）），本來就不會匹配。
+                malformed.append((i, c, ctx))
+    return bare, malformed
+
 
 def split_lines(text):
     """回傳 (english_text, chinese_text)。英文 = blockquote 行；中文 = 其餘。"""
@@ -82,6 +130,8 @@ def count_cn(cn_text):
 def main():
     over = []   # (file, kw, cn, en)  中文 > 英文 = 疑似誤判
     under = []  # (file, kw, cn, en)  英文 > 中文 = 疑似漏標
+    bare_all = []       # (file, lineno, zh, ctx)
+    malformed_all = []  # (file, lineno, content, ctx)
     for path in sorted(BR_DIR.glob("*.md")):
         text = path.read_text(encoding="utf-8")
         en_text, cn_text = split_lines(text)
@@ -93,6 +143,11 @@ def main():
                 over.append((path.name, kw, c, e))
             elif e > c:
                 under.append((path.name, kw, c, e))
+        bare, malformed = scan_bold_anomalies(text)
+        for ln, zh, ctx in bare:
+            bare_all.append((path.name, ln, zh, ctx))
+        for ln, cont, ctx in malformed:
+            malformed_all.append((path.name, ln, cont, ctx))
 
     print("=" * 70)
     print("疑似誤判（中文標註 > 英文大寫關鍵字）— over-bold")
@@ -112,7 +167,26 @@ def main():
         print(f"  {f:18}  {kw:16}  中文標註 {c}  英文大寫 {e}")
 
     print()
-    print(f"over-bold {len(over)} 處 / under-bold {len(under)} 處")
+    print("=" * 70)
+    print("bare 粗體 RFC 2119 詞（無英文括註）— 依 §3.6「每次都標」須補括註")
+    print("=" * 70)
+    if not bare_all:
+        print("（無）")
+    for f, ln, zh, ctx in bare_all:
+        print(f"  {f:18}  L{ln:<4}  **{zh}**   …{ctx}…")
+
+    print()
+    print("=" * 70)
+    print("畸形括註（括號內非標準全大寫關鍵字，如 **應（shall）**）")
+    print("=" * 70)
+    if not malformed_all:
+        print("（無）")
+    for f, ln, cont, ctx in malformed_all:
+        print(f"  {f:18}  L{ln:<4}  **{cont}**   …{ctx}…")
+
+    print()
+    print(f"over-bold {len(over)} 處 / under-bold {len(under)} 處 / "
+          f"bare {len(bare_all)} 處 / 畸形括註 {len(malformed_all)} 處")
     return 0
 
 
