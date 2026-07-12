@@ -35,6 +35,7 @@ CURATED = [
     (r"運營", "營運", "operate 陸味用詞；台灣定版「營運」"),
     (r"數據", "資料", "data 陸味用詞；台灣定版「資料」"),
     (r"公開信任", "公開信賴", "Publicly-Trusted 定版「公開信賴」"),
+    (r"培訓", "訓練", "train 陸味用詞；台灣定版「訓練」"),
     (r"授權的 OCSP 回應", "具權威性的 OCSP 回應", "authoritative 誤譯為「授權」（≠authorized）"),
 ]
 
