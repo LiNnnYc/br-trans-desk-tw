@@ -29,13 +29,16 @@ CURATED = [
     (r"網域授權或控制", "網域授權或控管", "Domain Authorization or Control 定版為「網域授權或控管權」（§3）"),
     (r"模式", "方法／方式", "method 常被免費 AI 誤譯為「模式」；前三章一律「方法」，請對照原文確認"),
     # ── 2026-07-12 Phase B ch4 揪出的系統性同形誤譯／陸味詞 ──
-    (r"擴充套件", "延伸欄位", "extension 誤譯為「套件」（=軟體套件）；定版「延伸欄位」"),
-    (r"擴充元件", "延伸欄位", "extension 誤譯為「元件」（=component）；定版「延伸欄位」"),
+    (r"擴充套件", "擴充欄位", "extension 誤譯為「套件」（=軟體套件）；定版「擴充欄位」"),
+    (r"擴充元件", "擴充欄位", "extension 誤譯為「元件」（=component）；定版「擴充欄位」"),
+    (r"延伸欄位", "擴充欄位", "extension 定版統一為「擴充欄位」（對齊 ch1-3 審閱定版，2026-07-12）"),
+    (r"延伸金鑰使用", "擴充金鑰使用", "Extended Key Usage 定版「擴充金鑰使用」（同 extension→擴充）"),
     (r"授權資訊存取", "憑證機構資訊存取", "Authority Information Access：Authority=憑證機構，非 authorization"),
     (r"運營", "營運", "operate 陸味用詞；台灣定版「營運」"),
     (r"數據", "資料", "data 陸味用詞；台灣定版「資料」"),
     (r"公開信任", "公開信賴", "Publicly-Trusted 定版「公開信賴」"),
     (r"培訓", "訓練", "train 陸味用詞；台灣定版「訓練」"),
+    (r"預憑證", "預簽憑證", "Precertificate 定版「預簽憑證」（對齊 ch1-3；預備憑證→預簽憑證）"),
     (r"授權的 OCSP 回應", "具權威性的 OCSP 回應", "authoritative 誤譯為「授權」（≠authorized）"),
 ]
 
