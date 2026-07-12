@@ -309,7 +309,9 @@ SubjectPublicKeyInfo  ::=  SEQUENCE  {
 
 校驗 lint（手動執行，`python scripts/<name>.py`）：
 
-- `scripts/lint_rfc2119.py` — RFC 2119 加粗對照：英文 blockquote 大寫關鍵字 vs 中文 `（關鍵字）` 括註（見 §3.7）
+- `scripts/lint_rfc2119.py` — RFC 2119 加粗對照：英文 blockquote 大寫關鍵字 vs 中文 `（關鍵字）` 括註（見 §3.7）；另含 bare 粗體與畸形括註檢查
+- `scripts/lint_term_consistency.py` — 譯名一致性：以 §1.6.1/§1.6.2 定版掃 chapter ≥ 3 的 `變體（English）` 分歧
+- `scripts/lint_translation_style.py` — 翻譯風格 lint（審閱加速器 Phase A）：以 §1.6/glossary/CURATED 為基準掃 chapter ≥ 4 的譯名分歧與機翻 artifact；報告寫 `web-spec-doc/翻譯工作區/風格審查_PhaseA報告.md`。逐節語意審查（Phase B）由 Claude 對照英文執行，產出 `PhaseB_ch<N>_worklist.md`
 
 一次性轉換腳本：
 
