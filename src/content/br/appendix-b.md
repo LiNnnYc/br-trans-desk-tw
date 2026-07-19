@@ -75,7 +75,7 @@ tags: []
 
 > The Random Value SHALL remain valid for use in a confirming response for no more than 30 days from its creation. The CPS MAY specify a shorter validity period for Random Values.
 
-隨機值自建立之日起，用於確認回覆的有效期限**應（SHALL）**不超過 30 日。憑證業務作業基準（Certification Practice Statement，CPS）**得（MAY）**規定更短的隨機值有效期限。
+隨機值自建立之日起，用於確認回覆的有效期限**應（SHALL）**不超過 30 日。憑證實務作業基準（Certification Practice Statement，CPS）**得（MAY）**規定更短的隨機值有效期限。
 
 > Once the FQDN has been validated using this method, the CA MAY also issue Certificates for other FQDNs that end with all the labels of the validated FQDN. This method is suitable for validating Wildcard Domain Names.
 
