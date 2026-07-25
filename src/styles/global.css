@@ -108,10 +108,17 @@ body {
   list-style-type: lower-roman;
 }
 .clause-body li + li {
-  margin-top: 0.35rem;
+  margin-top: 0.5rem;
 }
 .clause-body li > p {
-  margin-top: 0.35rem;
+  margin-top: 0.5rem;
+}
+/* 進入巢狀清單（階層 2 以上）時，第一個子項預設緊貼父項標題（間距 0），
+   比同層項目間距（0.5rem）更擠，使巢狀階層看起來比頂層擁擠。
+   補上相同的 0.5rem，讓不論階層深度、每一列的垂直節奏一致。 */
+.clause-body li > ol,
+.clause-body li > ul {
+  margin-top: 0.5rem;
 }
 .clause-body a {
   color: var(--bs-secondary);
@@ -233,6 +240,14 @@ body {
 .clause-body :not(blockquote):has(.code-figure) + blockquote,
 .clause-body :not(blockquote) + blockquote:has(.code-figure) {
   margin-top: 3.5rem;
+}
+/* 第一層清單群組分隔（單章節頁）：頂層清單（＝一個第一層項目）結束後，
+   下一個第一層項目的英文對照 blockquote 之前，把分隔由 2.5rem 加大到 3.25rem，
+   讓第二層巢狀子項結束後不會緊接著下一個第一層項目。子項間距（0.35rem）不受影響。
+   與上方 :not(blockquote)+blockquote 同特異性，靠排序在後覆寫。 */
+.clause-body > ol + blockquote,
+.clause-body > ul + blockquote {
+  margin-top: 2rem;
 }
 
 /* /server-cert-br/ 全文頁僅顯示中文翻譯。
