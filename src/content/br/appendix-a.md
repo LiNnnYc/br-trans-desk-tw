@@ -15,7 +15,7 @@ tags: []
 
 > These methods allow domain owners to publish contact information in DNS for the purpose of validating domain control.
 
-這些方法允許網域名稱（Domain Name）擁有者在 DNS 中發佈聯絡資訊，以供網域控管驗證之用。
+這些方法允許網域名稱（Domain Name）擁有者在 DNS 中發布聯絡資訊，以供網域控管驗證之用。
 
 ## A.1. CAA 方法
 
