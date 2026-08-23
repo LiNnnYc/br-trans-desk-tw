@@ -59,7 +59,7 @@ const { version, lastSyncedAt } = siteConfig.upstream;
 
 <BaseLayout
   title="《基本要求》全文"
-  description="CA/Browser Forum (Server Cert) Baseline Requirements 非官方繁體中文翻譯（全文）。"
+  description="CA/Browser Forum TLS Baseline Requirements 非官方繁體中文翻譯（全文）。"
 >
   <Breadcrumb
     slot="breadcrumb"
@@ -74,7 +74,7 @@ const { version, lastSyncedAt } = siteConfig.upstream;
       《基本要求》全文
     </h1>
     <p class="mt-2 text-sm text-slate-600 leading-relaxed">
-      CA/Browser Forum《Server Certificate Baseline Requirements》非官方繁體中文翻譯，
+      CA/Browser Forum《Baseline Requirements for the Issuance and Management of Publicly-Trusted TLS Server Certificates》非官方繁體中文翻譯，
       對應原文版本 <span class="font-mono">{version === 'tbd' ? '版本待定' : version}</span>
       {lastSyncedAt && <> · 最後同步 <span class="font-mono">{lastSyncedAt}</span></>}。
     </p>
