@@ -306,6 +306,9 @@ SubjectPublicKeyInfo  ::=  SEQUENCE  {
 - `scripts/remark-table-nowrap.mjs` — 表格短 token／章節參照 nowrap、整欄收緊（col-shrink）
 - `scripts/remark-fancy-lists.mjs` — 字母（`a.`）／羅馬數字（`i.`）子清單重建成 `<ol type>`（見 §6）
 - `scripts/rehype-table-caption.mjs` — 把表格上方 `Table:`／`表：` 段落轉成表格底端 `<caption>`，並把每個 `<table>` 包進 `.table-wrap`（見 §2.2）
+- `scripts/rehype-footnotes.mjs` — 註腳 id 加章節前綴、標題改中文「註腳」、標記英文側引用（見 §13）
+
+> ⚠️ **改 plugin 後要清 content layer 快取**：Astro 把每個章節檔的 render 結果存在 `node_modules/.astro/data-store.json`（另有 `.astro/data-store.json`），快取只看 markdown 內容與 `astro.config.mjs`，**不看 plugin 檔本身**。只改 `scripts/*.mjs` 而不動 config 的話，`npm run build` 會沿用舊 HTML、看起來像改動沒生效。刪掉這兩個檔再 build 即可。
 
 校驗 lint（手動執行，`python scripts/<name>.py`）：
 
@@ -320,6 +323,7 @@ SubjectPublicKeyInfo  ::=  SEQUENCE  {
 - `scripts/interleave_wave1_paragraphs.py` — 把全 EN→全 CN 改為逐段交錯
 - `scripts/preserve_table_indent.py` — 把 BR.md 表格儲存格前導空白轉成 U+2007 對齊縮排
 - `scripts/add_en_to_definitions_1_6_1.py` — 從 BR.md 把 §1.6.1 定義改成 Style A（補英文原文）；BR 版本升級時若 §1.6.1 定義有增減，調整後可重跑（會重寫整個 `1-6-1.md`）
+- `scripts/add_en_footnote_defs.py` — 把註腳補成中英對照：英文側引用改用 `<label>_en`、從 BR.md 補上英文定義（見 §13）。可重跑（已補過的會跳過）；BR 升版若註腳有增減可再跑一次。`--write` 才實際寫入；`--doc <路徑>` 產出「改註腳翻譯要動哪些檔」的審閱清單（含各副本位置與不一致警示），已產出 `web-spec-doc/翻譯工作區/註腳翻譯修改清單.md`。
 - `scripts/restore_table_captions.py` — 把 BR.md 的 `Table:` caption（英文）與 git `237ce19^` 的「表：」（中文）以「緊鄰表格上方」格式回填各章節檔，供 `rehype-table-caption.mjs` 轉 `<caption>`（見 §2.2）。以表格內容簽章比對、idempotent，BR 升版後可重跑；`--write` 才實際寫入。
 
 不在 repo 中的 hot-fix 腳本（補英文表 blockquote 等）已在歷史 commit 訊息中說明做法，未來如需重做可參考 commit `13558e3`、`17e34ed`、本檔對應的整理 commit。
@@ -339,7 +343,7 @@ cabforum.org 用 Pandoc 渲染 BR 原文，並為此調整過 markdown 語法。
 | fancy lists（`a.`／`i.`） | 55 | `remark-fancy-lists.mjs`（§6） |
 | `Table:` caption | 41 | `rehype-table-caption.mjs` → 底端 `<caption>`（§2.2） |
 | 表格儲存格縮排 | 多處 | `preserve_table_indent.py`（U+2007） |
-| footnotes `[^x]` | 22 | `remark-gfm` 原生支援 |
+| footnotes `[^x]` | 22 | `remark-gfm` + `rehype-footnotes.mjs`（§13） |
 | pipe tables | 大量 | `remark-gfm` |
 | grid tables `+---+` | 0 | — |
 | definition lists（`: 釋義`） | 0 | — |
@@ -349,3 +353,37 @@ cabforum.org 用 Pandoc 渲染 BR 原文，並為此調整過 markdown 語法。
 **結論**：「支援 Pandoc」在 remark 生態裡的正確翻譯，就是「針對用到的 Pandoc 功能加 plugin」——而這已是現行策略。撞到新的 Pandoc-ism 時，加一支對應 plugin 即可，不需整體改造。
 
 **可選的中間路線（backlog，暫不做）**：Pandoc definition list（`<dl><dt><dd>`）語意上最適合 §1.6.1／glossary，無障礙性較佳，可用 `remark-definition-list`。但 §1.6.1 剛統一為 Style A、與全站一致，為語意再翻一次不划算；等 a11y 或術語表體驗有實際需求再評估。
+
+---
+
+## 13. 註腳（footnotes）
+
+### 13.1 譯稿寫法（中英對照）
+
+註腳比照 Style A 做中英對照：**英文側用 `<label>_en`、中文側用原 label**，兩份定義都放在該章節檔最下方，英文在上、中文在下：
+
+```markdown
+> | `extKeyUsage` | SHOULD[^eku_ca_en] | N | … |
+
+| `extKeyUsage` | 宜（SHOULD）[^eku_ca] | N | … |
+
+> [^eku_ca_en]: While [RFC 5280, Section 4.2.1.12](…) notes that…（照抄 BR.md）
+
+[^eku_ca]: 雖然 RFC 5280 第 4.2.1.12 節指出…（中文譯文）
+```
+
+- **label 沿用原文的英文 label**（`eku_ca`、`name_constraints`…），不要改名或改成數字：拆檔後同一個 label 會出現在多個章節檔，靠 label 相同才能在全文頁合併成同一條註腳。英文那份固定加 `_en` 後綴。
+- 英文定義寫成 `> ` blockquote 形式（與其他英文原文一致）。markdown 的註腳定義不論寫在哪都會被抽到註腳區，blockquote 只是原地留一個空框——由 `rehype-footnotes.mjs` 自動清掉。
+- **每個引用該註腳的章節檔都要自帶中英兩份定義**（拆檔時由 `split_to_collection.py` 複製中文那份；英文那份由 `add_en_footnote_defs.py` 從 BR.md 補），否則該節單獨頁的註腳會變成純文字 `[^eku_ca]`。
+- 同一 label 在不同章節檔的定義文字**必須完全一致**；全文頁合併時以首次出現者為準，內容不同會被吃掉。
+
+### 13.2 呈現方式（`scripts/rehype-footnotes.mjs` + 全文頁合併）
+
+| 位置 | 註腳出現在哪 | 中英 | 編號 | 錨點 |
+|---|---|---|---|---|
+| 單章節頁 `/server-cert-br/<slug>/` | 該節內文最下方，只含該節用到的註腳 | 英文條目（灰字）+ 中文條目並列 | 該節內 1、2…，中英兩條**共用**同一號（`<li value>`） | `#fn-<節slug>-<label>` ↔ `#fnref-<節slug>-<label>-<n>` |
+| 全文頁 `/server-cert-br/` | **全文最下方**單一清單（比照 cabforum.org 原文） | 只有中文 | 全文首次出現順序 1…N | `#fn-<label>` ↔ 各節的 `#fnref-…` |
+
+- 引用（上標數字）點下去跳到對應註腳；註腳的回鏈跳回內文標記處。全文頁的回鏈以「§節號」列出所有引用該註腳的章節（同節多次引用時附上標 2、3…）。
+- 英文條目與英文側引用在全文頁不出現（英文 blockquote 本來就隱藏），其回鏈另有 `.fn-backref-en` 供一併隱藏，避免點了跳到看不見的位置。
+- 匯出腳本 `export_chapters_html.mjs` 會一併帶出全文頁的註腳區，並濾掉回鏈落在匯出範圍外的註腳（保留原編號，以 `<li value>` 固定）。（`<dl><dt><dd>`）語意上最適合 §1.6.1／glossary，無障礙性較佳，可用 `remark-definition-list`。但 §1.6.1 剛統一為 Style A、與全站一致，為語意再翻一次不划算；等 a11y 或術語表體驗有實際需求再評估。

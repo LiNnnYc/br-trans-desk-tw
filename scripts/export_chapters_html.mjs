@@ -109,6 +109,44 @@ for (const sec of kept) {
   removedLinks += removeWhere(sec, (n) => n.tagName === 'a' && attr(n, 'href').startsWith('/'));
 }
 
+// ---- 註腳（全文頁末尾的合併清單，見 scripts/rehype-footnotes.mjs）-----------
+// 全文頁把各節註腳合併到 <section id="footnotes"> 置於文件最下方，因此匯出時
+// 必須一併帶上，否則內文的註腳上標會指向不存在的錨點。只保留「回鏈落在匯出
+// 範圍內」的註腳；被丟掉的註腳會讓編號不連續，故以 <li value> 固定原編號。
+const footnotesSection = find(
+  article,
+  (n) => n.tagName === 'section' && attr(n, 'id') === 'footnotes'
+);
+let keptFootnotes = 0;
+let droppedFootnotes = 0;
+if (footnotesSection) {
+  const idsInRange = new Set();
+  for (const sec of kept) {
+    for (const n of walk(sec)) {
+      const id = n.nodeName !== '#text' ? attr(n, 'id') : '';
+      if (id) idsInRange.add(id);
+    }
+  }
+  const ol = find(footnotesSection, (n) => n.tagName === 'ol');
+  const items = (ol?.childNodes ?? []).filter((n) => n.tagName === 'li');
+  items.forEach((li, idx) => {
+    // 指向範圍外章節的回鏈先拔掉，再清掉空掉的群組 <span>
+    removeWhere(li, (n) => n.tagName === 'a' && !idsInRange.has(attr(n, 'href').slice(1)));
+    removeWhere(
+      li,
+      (n) => hasClass(n, 'fn-backref-group') && !find(n, (c) => c.tagName === 'a')
+    );
+    if (!find(li, (n) => n.tagName === 'a' && hasClass(n, 'fn-backref'))) {
+      removeWhere(ol, (n) => n === li);
+      droppedFootnotes++;
+      return;
+    }
+    li.attrs = [...(li.attrs ?? []), { name: 'value', value: String(idx + 1) }];
+    keptFootnotes++;
+  });
+  if (keptFootnotes === 0) footnotesSection.childNodes = [];
+}
+
 // ---- 目錄（取 h2/h3 兩層，即 §X 與 §X.Y） ------------------------------------
 const toc = [];
 for (const sec of kept) {
@@ -196,6 +234,7 @@ ${toc.map((t) => `        <li class="lv${t.level}"><a href="#${t.id}">${t.text}<
 
     <article class="full-text-only-cn" style="margin-top:2rem;">
 ${kept.map((s) => parse5.serializeOuter(s)).join('\n')}
+${keptFootnotes > 0 ? parse5.serializeOuter(footnotesSection) : ''}
     </article>
 
     <footer class="export-foot">
@@ -212,5 +251,6 @@ writeFileSync(outPath, html, 'utf8');
 console.log(`✔ 已匯出 ${outPath}`);
 console.log(`  章節 section：${kept.length} 個（${chapterLabel}）`);
 console.log(`  移除英文 blockquote：${removedQuotes} 個；移除站內連結：${removedLinks} 個`);
+console.log(`  註腳：保留 ${keptFootnotes} 條，範圍外捨棄 ${droppedFootnotes} 條`);
 console.log(`  內嵌樣式表：${cssHrefs.join(', ')}`);
 console.log(`  目錄項目：${toc.length}`);

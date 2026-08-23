@@ -126,3 +126,9 @@ npm run preview
 - **不要動 `web-spec-doc/`**：那是使用者的規劃原稿。需要更新時請改 `HANDOFF.md` 與本檔。
 - **`siteConfig.repoUrl` 為 `#TODO-github-repo`**：M0-1 建 repo 後再填入；目前 footer / contact 已做 placeholder 判斷。
 - **`src/content/br/3-2-2-4.md`**：是模板驗證 fixture，不是正式翻譯。M2 啟動時先 `git rm` 或直接覆寫。
+- **改 remark／rehype plugin 後 build 沒變化 → 是 content layer 快取**：Astro 把章節檔的 render 結果存在 `node_modules/.astro/data-store.json`（另有 `.astro/data-store.json`），失效條件只看 markdown 內容與 `astro.config.mjs`，**不看 `scripts/*.mjs`**。改 plugin 後請先刪這兩個檔再 build：
+
+  ```sh
+  rm -f node_modules/.astro/data-store.json .astro/data-store.json
+  npm run build
+  ```

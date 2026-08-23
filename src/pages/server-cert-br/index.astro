@@ -39,7 +39,96 @@ function compareSectionId(a: string, b: string) {
 
 const sorted = [...all].sort((a, b) => compareSectionId(a.data.section_id, b.data.section_id));
 
-// 預先 render 所有 entry 的 <Content />；section_id 深度 ≤ 2 視為 scrollspy 觀察點
+// ── 註腳：搬到全文最下方（比照 cabforum.org 原文把註腳放在文件末尾）──────────
+//
+// scripts/rehype-footnotes.mjs 已把每個章節檔的註腳整理成
+// `<section class="clause-footnotes">`（單章節頁直接用這份，落在該節內文最下方）。
+// 全文頁則把各節的註腳區抽掉，依 label 合併成整份文件末尾的單一清單：
+//   - 同一個 label（如 `eku_ca` 在 5 個章節各定義一份、內容相同）合併成一條，
+//     編號依全文首次出現順序（1、2、3…）。
+//   - 內文引用的 href 改指向文件層級的 `#fn-<label>`，顯示數字改成全文編號。
+//   - 註腳的回鏈列出所有引用它的章節，點了跳回該節內文標記處。
+//   - 英文原文側（blockquote 內）的引用在全文頁本來就隱藏，不列入回鏈。
+//
+// 以字串處理 entry.rendered.html：因為要改寫引用與抽走註腳區，<Content /> 拿不到
+// 可改寫的 HTML。若 rendered.html 不存在（理論上不會，content layer 會存），
+// 退回原本的 <Content />，此時該節註腳維持顯示在節內（功能不壞、只是位置不同）。
+const FN_SECTION_RE = /<section\b[^>]*\bclass="clause-footnotes"[^>]*>[\s\S]*?<\/section>/;
+const FN_OL_RE = /<ol\b[^>]*>([\s\S]*)<\/ol>/;
+const FN_LI_RE = /^<li\b[^>]*>([\s\S]*)<\/li>\s*$/;
+const FN_LABEL_RE = /<li\b[^>]*\bdata-fn-label="([^"]+)"/;
+// class 可能是 "fn-backref" 或 "fn-backref fn-backref-en"（英文原文側）
+const FN_BACKREF_RE = /\s*<a\b[^>]*\bclass="fn-backref[^"]*"[^>]*>[\s\S]*?<\/a>/g;
+const FN_REF_RE = /<a\b[^>]*\bdata-fn-label="[^"]*"[^>]*>[^<]*<\/a>/g;
+
+type BackrefGroup = { sec: string; refIds: string[] };
+type DocFootnote = { label: string; defHtml: string; groups: BackrefGroup[] };
+
+const docFootnotes: DocFootnote[] = [];
+const docFootnoteByLabel = new Map<string, DocFootnote>();
+
+/** 取得（或建立）文件層級註腳；回傳其全文編號（1-based）。 */
+function registerFootnote(label: string, defHtml: string | null) {
+  let fn = docFootnoteByLabel.get(label);
+  if (!fn) {
+    fn = { label, defHtml: defHtml ?? '', groups: [] };
+    docFootnoteByLabel.set(label, fn);
+    docFootnotes.push(fn);
+  }
+  // 引用（EN blockquote）可能出現在定義被解析出來之前，補上定義內容
+  if (!fn.defHtml && defHtml) fn.defHtml = defHtml;
+  return docFootnotes.indexOf(fn) + 1;
+}
+
+function addBackref(label: string, sec: string, refId: string) {
+  const fn = docFootnoteByLabel.get(label);
+  if (!fn) return;
+  const group = fn.groups.find((g) => g.sec === sec);
+  if (group) group.refIds.push(refId);
+  else fn.groups.push({ sec, refIds: [refId] });
+}
+
+/** 抽掉章節內的註腳區，回傳 {本文, label → 定義 HTML（已去回鏈）} */
+function extractFootnoteDefs(html: string) {
+  const found = html.match(FN_SECTION_RE);
+  if (!found || found.index === undefined) return { body: html, defs: new Map<string, string>() };
+  const body = html.slice(0, found.index) + html.slice(found.index + found[0].length);
+  const defs = new Map<string, string>();
+  const ol = found[0].match(FN_OL_RE);
+  if (ol) {
+    // 以 `<li id="fn-…"` 為界切開；註腳內若有巢狀清單，其 <li> 無此 id，不會誤切
+    for (const chunk of ol[1].split(/(?=<li id="fn-)/)) {
+      const item = chunk.trim();
+      if (!item) continue;
+      const label = item.match(FN_LABEL_RE)?.[1];
+      const inner = item.match(FN_LI_RE)?.[1];
+      if (label && inner) defs.set(label, inner.replace(FN_BACKREF_RE, ''));
+    }
+  }
+  return { body, defs };
+}
+
+/** 改寫本文中的註腳引用：指向文件層級 id、顯示全文編號，並登記回鏈 */
+function rewriteFootnoteRefs(body: string, defs: Map<string, string>) {
+  return body.replace(FN_REF_RE, (tag) => {
+    const raw = tag.match(/\bdata-fn-label="([^"]+)"/)?.[1];
+    if (!raw) return tag;
+    // 英文註腳（`<label>_en`）在全文頁不出現，其引用併到中文那條
+    const label = raw.replace(/_en$/, '');
+    const num = registerFootnote(label, defs.get(label) ?? null);
+    const sec = tag.match(/\bdata-fn-sec="([^"]+)"/)?.[1] ?? '';
+    const refId = tag.match(/\bid="([^"]+)"/)?.[1] ?? '';
+    // 英文原文側的引用在全文頁隱藏（.full-text-only-cn blockquote），不做回鏈
+    if (!/\bdata-fn-en\b/.test(tag) && sec && refId) addBackref(label, sec, refId);
+    return tag
+      .replace(/\bhref="[^"]*"/, `href="#fn-${label}"`)
+      // 節內註腳標題已被抽掉，改指向全文末尾註腳區的標題
+      .replace(/\baria-describedby="[^"]*"/, 'aria-describedby="doc-footnotes-title"')
+      .replace(/>[^<]*<\/a>$/, `>${num}</a>`);
+  });
+}
+
+// 預先 render 所有 entry 的內容；section_id 深度 ≤ 2 視為 scrollspy 觀察點
 const items = await Promise.all(
   sorted.map(async (entry) => {
     const { Content } = await render(entry);
@@ -50,9 +139,26 @@ const items = await Promise.all(
     const cleanTitle =
       entry.data.title.replace(/^\s*\d+(?:\.\d+)*\s*[、：:.\-—]?\s*/, '').trim() ||
       entry.data.title;
-    return { entry, Content, depth, slug, cleanTitle, isAnchorTarget: depth <= 1 || isAppendix };
+    return {
+      entry,
+      Content,
+      rawHtml: entry.rendered?.html ?? null,
+      bodyHtml: null as string | null,
+      depth,
+      slug,
+      cleanTitle,
+      isAnchorTarget: depth <= 1 || isAppendix,
+    };
   })
 );
+
+// 註腳的全文編號依「文件順序」決定，故此處必須循序處理（不可放進上面的
+// Promise.all，並行的 await 會讓登記順序不確定）。
+for (const item of items) {
+  if (item.rawHtml === null) continue;
+  const { body, defs } = extractFootnoteDefs(item.rawHtml);
+  item.bodyHtml = rewriteFootnoteRefs(body, defs);
+}
 
 const { version, lastSyncedAt } = siteConfig.upstream;
 ---
@@ -87,7 +193,7 @@ const { version, lastSyncedAt } = siteConfig.upstream;
 
   <article class="full-text-only-cn mt-6" data-pagefind-ignore>
     {
-      items.map(({ entry, Content, depth, slug, cleanTitle, isAnchorTarget }, idx) => {
+      items.map(({ entry, Content, bodyHtml, depth, slug, cleanTitle, isAnchorTarget }, idx) => {
         const id = entry.data.section_id;
         const idAttrs = isAnchorTarget
           ? { id: `sec-${slug}`, 'data-anchor-target': '' }
@@ -143,12 +249,58 @@ const { version, lastSyncedAt } = siteConfig.upstream;
                 </a>
               </span>
             </HeadingTag>
-            <div class="clause-body">
-              <Content />
-            </div>
+            {
+              bodyHtml !== null ? (
+                <div class="clause-body" set:html={bodyHtml} />
+              ) : (
+                <div class="clause-body">
+                  <Content />
+                </div>
+              )
+            }
           </section>
         );
       })
+    }
+
+    {
+      docFootnotes.length > 0 && (
+        <section id="footnotes" class="doc-footnotes clause-body" aria-labelledby="doc-footnotes-title">
+          <h2 id="doc-footnotes-title" class="clause-footnotes-title">註腳</h2>
+          <ol>
+            {docFootnotes.map((fn) => (
+              <li id={`fn-${fn.label}`}>
+                <Fragment set:html={fn.defHtml} />
+                {fn.groups.length > 0 && (
+                  <span class="fn-backrefs">
+                    <span class="fn-backrefs-label">回到內文：</span>
+                    {fn.groups.map((g) => (
+                      <span class="fn-backref-group">
+                        <a
+                          class="fn-backref"
+                          href={`#${g.refIds[0]}`}
+                          aria-label={`回到第 ${g.sec} 節的引用處`}
+                        >
+                          §{g.sec}
+                        </a>
+                        {g.refIds.slice(1).map((refId, i) => (
+                          <a
+                            class="fn-backref fn-backref-extra"
+                            href={`#${refId}`}
+                            aria-label={`回到第 ${g.sec} 節第 ${i + 2} 處引用`}
+                          >
+                            <sup>{i + 2}</sup>
+                          </a>
+                        ))}
+                      </span>
+                    ))}
+                  </span>
+                )}
+              </li>
+            ))}
+          </ol>
+        </section>
+      )
     }
   </article>
   </div>

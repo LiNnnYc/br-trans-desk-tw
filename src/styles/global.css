@@ -250,6 +250,99 @@ body {
   margin-top: 2rem;
 }
 
+/* ── 註腳（scripts/rehype-footnotes.mjs 產出）─────────────────────────────
+   單章節頁：`.clause-footnotes` 落在該節內文最下方，只含該節用到的註腳。
+   全文頁：各節註腳合併成 `#footnotes.doc-footnotes` 置於全文最下方（比照
+   cabforum.org 原文），內文引用改指向文件層級的 `#fn-<label>`。
+   兩者共用以下樣式：與內文明顯分隔的上框線 + 中文小標題 + 小一號灰字。 */
+.clause-body .clause-footnotes,
+.doc-footnotes {
+  margin-top: 3rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e2e8f0; /* slate-200 */
+  font-size: 0.9em;
+  color: #475569; /* slate-600 */
+}
+.doc-footnotes {
+  margin-top: 4rem;
+  border-top-width: 2px;
+  border-top-color: #cbd5e1; /* slate-300：全文末尾的分界比節內更明確 */
+}
+.clause-body .clause-footnotes-title {
+  font-family: var(--font-serif-tc);
+  font-size: 1rem;
+  font-weight: 600;
+  color: #334155; /* slate-700 */
+  margin: 0 0 0.5rem;
+  padding: 0;
+  border: 0;
+  scroll-margin-top: 5rem;
+}
+.clause-body .clause-footnotes ol,
+.doc-footnotes ol {
+  padding-left: 1.5rem;
+  list-style: decimal;
+}
+.clause-body .clause-footnotes li,
+.doc-footnotes li {
+  scroll-margin-top: 5rem;
+}
+.clause-body .clause-footnotes li + li,
+.doc-footnotes li + li {
+  margin-top: 0.75rem;
+}
+/* 內文引用的上標數字：加大點擊區、不要被底線干擾閱讀 */
+.clause-body a.fn-ref {
+  text-decoration: none;
+  padding: 0 0.15em;
+  font-weight: 600;
+  scroll-margin-top: 5rem;
+}
+.clause-body a.fn-ref:hover {
+  text-decoration: underline;
+}
+/* 回鏈：單章節頁沿用 GFM 的 ↩；全文頁列出引用它的各節（§7.1.2.2.3 …） */
+.clause-body a.fn-backref,
+.doc-footnotes a.fn-backref {
+  text-decoration: none;
+  white-space: nowrap;
+}
+/* 英文註腳（譯稿中的 `[^<label>_en]`）：單章節頁的英文原文 blockquote 是常駐
+   顯示的，故英文註腳也常駐，只以灰階與中文那條區分（同 blockquote 的灰）。
+   中英兩條共用同一個編號（由 rehype-footnotes.mjs 寫進 <li value>）。 */
+.clause-body .clause-footnotes li.fn-item-en {
+  color: #475569; /* slate-600：與英文對照 blockquote 同一灰階 */
+}
+/* 全文頁只顯示中文：英文註腳與指向英文側引用的回鏈一律不出現。
+   （正常情況下全文頁的註腳已由 index.astro 合併成文末清單、英文條目不納入；
+     此規則是 rendered.html 取不到而退回 <Content /> 時的防呆。） */
+.full-text-only-cn .clause-body .clause-footnotes li.fn-item-en,
+.full-text-only-cn .clause-body a.fn-backref-en {
+  display: none;
+}
+.doc-footnotes .fn-backrefs {
+  display: block;
+  margin-top: 0.35rem;
+  font-size: 0.9em;
+  color: #64748b; /* slate-500 */
+}
+.doc-footnotes .fn-backrefs-label {
+  margin-right: 0.25rem;
+}
+.doc-footnotes .fn-backref-group + .fn-backref-group {
+  margin-left: 0.6rem;
+}
+.doc-footnotes a.fn-backref-extra {
+  margin-left: 0.1rem;
+}
+/* 由引用跳到註腳（或反向）時，短暫標示目標，避免在長清單裡找不到落點 */
+.clause-body .clause-footnotes li:target,
+.doc-footnotes li:target,
+.clause-body a.fn-ref:target {
+  background: #fef9c3; /* yellow-100 */
+  border-radius: 0.25rem;
+}
+
 /* /server-cert-br/ 全文頁僅顯示中文翻譯。
    英文對照（blockquote）統一隱藏；單章節頁 /server-cert-br/[slug]/ 不受影響。
    規格：web-spec-doc/server-cert-br樣式變更.txt（2026-05-25）。 */
