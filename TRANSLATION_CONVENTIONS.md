@@ -96,6 +96,34 @@ Table: My caption
 - caption 內可含 inline `` `code` ``（如 `` `policyQualifiers` ``），plugin 會保留。
 - 每個 `<table>` 另會被 plugin 包進 `<div class="table-wrap">`（水平捲動），表格維持 `display:table` 以確保 `caption-side: bottom` 在全文頁也生效。
 
+### 2.3 欄位階層縮排（U+2007）
+
+BR.md 以前導空白表示欄位從屬關係（`    revokedCertificates` 隸屬於 `tbsCertList`）。HTML 會摺疊一般空白，故 `scripts/preserve_table_indent.py` 把它轉成 **U+2007 FIGURE SPACE**（數字寬空白，不會被摺疊）寫在儲存格開頭：
+
+```markdown
+|     `revokedCertificates` | * | 若 CA 已簽發… |
+```
+
+- **層級對應**：目前語料用 2／4／8 個 U+2007（4＝一層、8＝兩層；2 是 §7.1.2.10.8 的半層）。沿用即可，不要改成一般空白或 `&nbsp;`。
+- **render 時會被搬到 CSS padding**：`scripts/rehype-table-indent.mjs` 在 build 時把前導 U+2007 從文字拿掉，改成 `<td class="cell-indent" style="--cell-indent:4">`。
+  原因：縮排若留在文字流裡，會被 `overflow-wrap: anywhere`（讓長識別碼不撐爆欄寬的規則）視為斷行點，該儲存格的 min-content 只剩識別碼寬度；同列其他欄一長、第一欄被壓到最小寬度時，縮排就留在上一行、識別碼貼齊左緣，看起來完全沒縮排（實例：§7.2「CRL 欄位」表的 `revokedCertificates`）。改成 padding 後縮排不參與換行、且計入欄寬下限，任何寬度都不會失效。
+- 因此**譯稿只管照原文寫 U+2007**，排版問題由 plugin 處理，不需要為了視覺效果調整字數或改用別的字元。
+- **不要混用半形空白**：`|    ␣␣␣`base`` 這種「U+2007 + 半形空白」寫法，半形部分會被 HTML 摺疊，第二層就跟第一層一樣寬、階層整個消失（實例：§7.1.2.10.8 的中文表曾把第一層寫成 4 個 U+2007、第二層寫成 4 個 U+2007＋3 個半形空白，兩層看起來一樣）。加深一層就是**再加一組 U+2007**。
+- **中英兩表層級要一致**：同一個識別碼在英文表與中文表的縮排數必須相同。以上兩點由 `scripts/lint_table_indent.py` 機械檢查。
+
+### 2.4 長識別碼不會被從中間切斷
+
+`global.css` 對 `td` 設了 `overflow-wrap: anywhere`（避免長識別碼撐爆欄寬），代價是瀏覽器可以在**任意字元間**斷行。為了不讓 `cessationOfOperation` 這種語意單元被切成兩半，`scripts/remark-table-nowrap.mjs` 會把「原子 token」儲存格標成 `nowrap`：
+
+- 無空白且 ≤16 字元（日期、版號、章節編號…），或
+- 無空白、≤40 字元且**內容全為 ASCII**（ASN.1 欄位名 `authorityInformationAccess`、OID `0.9.2342.19200300.100.1.25`、CRLReason `cessationOfOperation`、時間戳 `2025-06-15T12:00:00Z`）。
+
+**為什麼限定 ASCII**：中文句子本來就沒有空白，若只看「無空白」，整句中文會被判成原子 token 而 `nowrap`，直接撐爆版面。
+
+整欄 body 都是原子 token 時另加 `col-shrink`（`width: 1%`），欄寬收到內容寬度、把空間讓給說明欄。反面案例：§7.2.2 CRLReasons 表第一欄原本因為 `affiliationChanged`（18 字元）超過舊的 16 字元上限而未標 nowrap，欄位被說明欄擠窄後，識別碼就從中間斷成兩行。
+
+inline `` `code` `` 另有 `.clause-body td code { white-space: nowrap }` 保護；**未加反引號的純文字識別碼**（BR.md 原文有些表格就是這樣寫）則靠上述規則。
+
 ---
 
 ## 3. RFC 2119 規範詞處理
@@ -303,10 +331,11 @@ SubjectPublicKeyInfo  ::=  SEQUENCE  {
 常駐 remark／rehype plugins（`astro.config.mjs` 掛載，每次 build 自動生效）：
 
 - `scripts/remark-code-figure.mjs` — 為 code block 加語言標籤與複製按鈕 toolbar
-- `scripts/remark-table-nowrap.mjs` — 表格短 token／章節參照 nowrap、整欄收緊（col-shrink）
+- `scripts/remark-table-nowrap.mjs` — 表格原子 token（短 token、長的純 ASCII 識別碼／OID、章節參照）nowrap、整欄收緊（col-shrink）
 - `scripts/remark-fancy-lists.mjs` — 字母（`a.`）／羅馬數字（`i.`）子清單重建成 `<ol type>`（見 §6）
 - `scripts/rehype-table-caption.mjs` — 把表格上方 `Table:`／`表：` 段落轉成表格底端 `<caption>`，並把每個 `<table>` 包進 `.table-wrap`（見 §2.2）
 - `scripts/rehype-footnotes.mjs` — 註腳 id 加章節前綴、標題改中文「註腳」、標記英文側引用（見 §13）
+- `scripts/rehype-table-indent.mjs` — 表格儲存格前導 U+2007 縮排改成 cell padding（見 §2.3）
 
 > ⚠️ **改 plugin 後要清 content layer 快取**：Astro 把每個章節檔的 render 結果存在 `node_modules/.astro/data-store.json`（另有 `.astro/data-store.json`），快取只看 markdown 內容與 `astro.config.mjs`，**不看 plugin 檔本身**。只改 `scripts/*.mjs` 而不動 config 的話，`npm run build` 會沿用舊 HTML、看起來像改動沒生效。刪掉這兩個檔再 build 即可。
 
@@ -314,6 +343,7 @@ SubjectPublicKeyInfo  ::=  SEQUENCE  {
 
 - `scripts/lint_rfc2119.py` — RFC 2119 加粗對照：英文 blockquote 大寫關鍵字 vs 中文 `（關鍵字）` 括註（見 §3.7）；另含 bare 粗體與畸形括註檢查
 - `scripts/lint_term_consistency.py` — 譯名一致性：以 §1.6.1/§1.6.2 定版掃 chapter ≥ 3 的 `變體（English）` 分歧
+- `scripts/lint_table_indent.py` — 表格欄位階層縮排檢查：抓「U+2007 混半形空白」與「中英表層級不一致」（見 §2.3）
 - `scripts/lint_translation_style.py` — 翻譯風格 lint（審閱加速器 Phase A）：以 §1.6/glossary/CURATED 為基準掃 chapter ≥ 4 的譯名分歧與機翻 artifact；報告寫 `web-spec-doc/翻譯工作區/風格審查_PhaseA報告.md`。逐節語意審查（Phase B）由 Claude 對照英文執行，產出 `PhaseB_ch<N>_worklist.md`
 
 一次性轉換腳本：
@@ -342,7 +372,7 @@ cabforum.org 用 Pandoc 渲染 BR 原文，並為此調整過 markdown 語法。
 |---|---|---|
 | fancy lists（`a.`／`i.`） | 55 | `remark-fancy-lists.mjs`（§6） |
 | `Table:` caption | 41 | `rehype-table-caption.mjs` → 底端 `<caption>`（§2.2） |
-| 表格儲存格縮排 | 多處 | `preserve_table_indent.py`（U+2007） |
+| 表格儲存格縮排 | 多處 | `preserve_table_indent.py`（U+2007）+ `rehype-table-indent.mjs`（§2.3） |
 | footnotes `[^x]` | 22 | `remark-gfm` + `rehype-footnotes.mjs`（§13） |
 | pipe tables | 大量 | `remark-gfm` |
 | grid tables `+---+` | 0 | — |

@@ -7,6 +7,7 @@ import { remarkTableNowrap } from './scripts/remark-table-nowrap.mjs';
 import { remarkFancyLists } from './scripts/remark-fancy-lists.mjs';
 import { rehypeTableCaption } from './scripts/rehype-table-caption.mjs';
 import { rehypeFootnotes } from './scripts/rehype-footnotes.mjs';
+import { rehypeTableIndent } from './scripts/rehype-table-indent.mjs';
 
 // https://astro.build/config
 export default defineConfig({
@@ -34,7 +35,9 @@ export default defineConfig({
     // rehypeFootnotes：把 GFM 註腳的 id 改為含章節前綴（全文頁串接 408 節時
     // 才不會撞 id），標題改中文「註腳」，並標記英文側引用；全文頁再據此把
     // 各節註腳合併到文件最下方（比照 cabforum.org 原文的註腳位置）。
-    rehypePlugins: [rehypeTableCaption, rehypeFootnotes],
+    // rehypeTableIndent：把表格儲存格的前導 U+2007 縮排改成 cell padding，
+    // 避免窄欄位時縮排被當成斷行點而失效（見 TRANSLATION_CONVENTIONS §2.3）。
+    rehypePlugins: [rehypeTableCaption, rehypeFootnotes, rehypeTableIndent],
   },
   vite: {
     // tailwind 4.3 的 vite plugin 與 Astro 內建 vite 型別有 skew，build 正常；

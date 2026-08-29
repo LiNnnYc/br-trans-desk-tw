@@ -477,6 +477,19 @@ body {
 .clause-body th code {
   white-space: nowrap;
 }
+/* 欄位階層縮排（由 rehype-table-indent.mjs 產生）。
+   BR.md 用前導空白表示欄位從屬（`    revokedCertificates` 隸屬 `tbsCertList`），
+   preserve_table_indent.py 轉成 U+2007 保留對齊。但留在文字流裡的縮排也是可
+   換行的內容：td 設了 overflow-wrap: anywhere（長識別碼不撐爆欄寬），縮排與
+   識別碼之間就成了斷行點，該 cell 的 min-content 只剩識別碼寬度；同列其他欄
+   一長，第一欄被壓到最小寬度，縮排就被留在上一行、識別碼貼齊左緣＝縮排失效
+   （實例：§7.2「CRL 欄位」表的 `revokedCertificates`）。
+   改用 padding 表示縮排：不參與換行、計入欄寬下限，且換行時首行與續行對齊。 */
+.clause-body td.cell-indent,
+.clause-body th.cell-indent {
+  padding-left: calc(0.5rem + var(--cell-indent, 0) * 0.5em);
+}
+
 /* 第一欄留多一點右側 padding，與第二欄拉開距離（模擬原文 markdown 表格
    在欄與欄之間的視覺呼吸感）。 */
 .clause-body td:first-child,

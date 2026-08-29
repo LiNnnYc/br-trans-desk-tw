@@ -1,7 +1,7 @@
 /**
  * Remark plugin：為表格儲存格自動加 `nowrap` class。
  *
- * 規則：cell 內文（trim 後）沒有空白字元、且長度 ≤ 16，視為原子 token
+ * 規則：cell 內文（trim 後）沒有空白字元、且長度 ≤ 16（或 ≤ 40 且不含 CJK），視為原子 token
  * （日期 2025-01-15、版號 1.2.3、章節編號 3.2.2.4、Ballot 編號 SC080v3、
  *   破折號 --、N/A 等），加上 .nowrap class 由 CSS 套 white-space: nowrap。
  *
@@ -31,11 +31,23 @@ function nodeText(node) {
 const SECTION_REF_RE =
   /^(?:參見)?第\s+\d+(?:\.\d+)*\s+節$|^(?:See\s+)?Section\s+\d+(?:\.\d+)*$/;
 
+// 中文句子沒有空白，「無空白」不能當成「原子 token」的判準，否則整句中文會被
+// nowrap 撐爆版面。故長 token 規則限定純 ASCII 內容（全形標點、CJK 一律排除）。
+const ASCII_TOKEN_RE = /^[ -~]+$/; // 僅可列印 ASCII（0x20–0x7E）
+
 function shouldNowrap(text) {
   const t = text.trim();
   if (!t) return false;
   // 短 token：無空白 + ≤16 字元
   if (!/\s/.test(t) && t.length <= 16) return true;
+  // 長的純 Latin token：ASN.1 欄位名（authorityInformationAccess）、OID
+  // （0.9.2342.19200300.100.1.25）、CRLReason（cessationOfOperation）、
+  // 時間戳（2025-06-15T12:00:00Z）等，即使超過 16 字元仍是不可分割的語意單元。
+  // 不加這條的話，`global.css` 對 td 設的 overflow-wrap: anywhere 會在欄位被
+  // 壓窄時把識別碼從中間切斷（實例：§7.2.2 CRLReasons 表第一欄的
+  // affiliationChanged / cessationOfOperation / privilegeWithdrawn）。
+  // 上限 40 是保險：真正超長的字串（如整條 URL）仍讓它斷行，免得撐爆表格。
+  if (!/\s/.test(t) && t.length <= 40 && ASCII_TOKEN_RE.test(t)) return true;
   // 章節參照
   if (SECTION_REF_RE.test(t)) return true;
   return false;
