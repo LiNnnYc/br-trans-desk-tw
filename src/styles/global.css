@@ -291,15 +291,27 @@ body {
 .doc-footnotes li + li {
   margin-top: 0.75rem;
 }
-/* 內文引用的上標數字：加大點擊區、不要被底線干擾閱讀 */
+/* 內文引用的上標數字：加底線（比照 cabforum.org）。
+   BR 內文本來就有 2¹⁵⁹ 這類真正的指數，沒有底線的裸上標數字會被誤讀成指數，
+   底線同時也是「這是連結」的提示。底線要貼齊數字本身，故不加左右 padding；
+   底線顏色明寫成連結色，不沿用 .clause-body a 的淡灰底線（#cbd5e1）——那在
+   0.75em 的上標數字上幾乎看不見。不可寫 currentColor：那是 initial 值，會被
+   CSS 壓縮器整條刪掉，於是回退成上面那條淡灰規則。 */
 .clause-body a.fn-ref {
-  text-decoration: none;
-  padding: 0 0.15em;
+  text-decoration: underline;
+  text-decoration-color: var(--bs-secondary);
+  text-decoration-thickness: 1px; /* 上標約 0.75em，from-font 會細到看不見 */
+  text-underline-offset: 0.12em;
+  /* 與前一個字元拉開距離：`64` 緊貼上標時仍像指數。用 margin 不用 padding，
+     底線才會只畫在數字底下、不含這段空隙。0.25em 是相對於上標字級（約 0.75em），
+     換算成內文約 0.19em。 */
+  margin-left: 0.25em;
+  padding: 0;
   font-weight: 600;
   scroll-margin-top: 5rem;
 }
 .clause-body a.fn-ref:hover {
-  text-decoration: underline;
+  text-decoration-thickness: 2px;
 }
 /* 回鏈：單章節頁沿用 GFM 的 ↩；全文頁列出引用它的各節（§7.1.2.2.3 …） */
 .clause-body a.fn-backref,
