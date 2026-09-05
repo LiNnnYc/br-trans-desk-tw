@@ -19,6 +19,7 @@ import CitationCard from '../../components/CitationCard.astro';
 import BrSidebarSubmenu from '../../components/BrSidebarSubmenu.astro';
 import { getCollection, render } from 'astro:content';
 import { sectionIdToPath } from '../../lib/citation';
+import { compareSectionId, sectionIdDepth, sectionIdToLabel } from '../../lib/section';
 
 export async function getStaticPaths() {
   const all = await getCollection('br');
@@ -54,7 +55,7 @@ function firstParagraph(body: string | undefined): string {
 }
 const citationBody = firstParagraph(entry.body);
 
-// 麵包屑：拆出每層父節（如 3.2.2.4 → 3, 3.2, 3.2.2）
+// 麵包屑：拆出每層父節（如 3.2.2.4 → 3, 3.2, 3.2.2；appendix-a.1.1 → appendix-a, appendix-a.1）
 const parts = d.section_id.split('.');
 const ancestorIds: string[] = [];
 for (let i = 1; i < parts.length; i++) {
@@ -70,25 +71,14 @@ const breadcrumbItems = [
   { label: '基本要求', href: '/server-cert-br/' },
   ...ancestorEntries.map((a) => ({
     label: a.entry
-      ? `${a.id} ${a.entry.data.title.replace(/^\s*\d+(?:\.\d+)*\s*[、：:.\-—]?\s*/, '').trim()}`
-      : a.id,
+      ? `${sectionIdToLabel(a.id)} ${a.entry.data.title.replace(/^\s*\d+(?:\.\d+)*\s*[、：:.\-—]?\s*/, '').trim()}`
+      : sectionIdToLabel(a.id),
     href: a.entry ? `/server-cert-br/${sectionIdToPath(a.id)}/` : undefined,
   })),
-  { label: d.section_id },
+  { label: sectionIdToLabel(d.section_id) },
 ];
 
 // sidebar：列出本 top-level 章節下所有節點，外加其他 top-level（僅顯示頂層連結）
-function compareSectionId(a: string, b: string) {
-  const ap = a.split('.').map(Number);
-  const bp = b.split('.').map(Number);
-  const n = Math.max(ap.length, bp.length);
-  for (let i = 0; i < n; i++) {
-    const av = ap[i] ?? -1;
-    const bv = bp[i] ?? -1;
-    if (av !== bv) return av - bv;
-  }
-  return 0;
-}
 const currentTopId = parts[0];
 const sidebarEntries = all
   .filter((e) => {
@@ -111,20 +101,21 @@ const statusToneCls: Record<typeof d.status, string> = {
   outdated: 'bg-amber-50 text-amber-800 border-amber-300',
 };
 
-const pageTitle = `${d.section_id} ${cleanTitle}`;
+const sectionLabel = sectionIdToLabel(d.section_id);
+const pageTitle = `${sectionLabel} ${cleanTitle}`;
 const isoUpdated =
   d.last_updated instanceof Date
     ? d.last_updated.toISOString().slice(0, 10)
     : String(d.last_updated);
 ---
 
-<BaseLayout title={pageTitle} description={`${d.section_id} ${cleanTitle}（CA/Browser Forum Baseline Requirements 非官方繁體中文翻譯）`}>
+<BaseLayout title={pageTitle} description={`${sectionLabel} ${cleanTitle}（CA/Browser Forum Baseline Requirements 非官方繁體中文翻譯）`}>
   <Breadcrumb slot="breadcrumb" items={breadcrumbItems} />
 
   <article class="cabf-card bg-white border border-slate-200 rounded p-5 sm:p-7">
     <header class="border-b border-slate-200 pb-4">
       <div class="flex flex-wrap items-center gap-2 text-xs">
-        <span class="font-mono font-semibold text-bs-secondary" data-pagefind-meta={`section_id:${d.section_id}`}>{d.section_id}</span>
+        <span class="font-mono font-semibold text-bs-secondary" data-pagefind-meta={`section_id:${d.section_id}`}>{sectionLabel}</span>
         <span
           class:list={[
             'inline-flex items-center rounded border px-1.5 py-0.5 font-medium',
@@ -167,7 +158,7 @@ const isoUpdated =
           target="_blank"
           rel="noopener noreferrer"
           class="inline-flex items-center gap-1.5 rounded-md border border-slate-300 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 hover:border-slate-500 hover:bg-slate-50"
-          aria-label={`在新分頁開啟 cabforum.org 原文：${d.section_id}`}
+          aria-label={`在新分頁開啟 cabforum.org 原文：${sectionLabel}`}
         >
           <span aria-hidden="true">↗</span>
           <span>跳至原文</span>
@@ -218,7 +209,7 @@ const isoUpdated =
       <ul class="py-2 text-sm">
         {
           sidebarEntries.map((e) => {
-            const depth = e.data.section_id.split('.').length - 1;
+            const depth = sectionIdDepth(e.data.section_id);
             const isCurrent = e.data.section_id === d.section_id;
             const cleanLabel = e.data.title
               .replace(/^\s*\d+(?:\.\d+)*\s*[、：:.\-—]?\s*/, '')
@@ -237,7 +228,7 @@ const isoUpdated =
                       : 'border-transparent text-slate-700 hover:bg-slate-50 hover:text-slate-900',
                   ]}
                 >
-                  <span class="font-mono text-[11px] text-slate-500 mr-1.5">{e.data.section_id}</span>
+                  <span class="font-mono text-[11px] text-slate-500 mr-1.5">{sectionIdToLabel(e.data.section_id)}</span>
                   <span>{cleanLabel}</span>
                 </a>
               </li>

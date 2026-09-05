@@ -2,8 +2,10 @@
 // 此格式為 CLAUDE.md 明示「不可更動」之輸出規範，包含免責聲明。
 // 修改任何欄位順序、emoji、標點都會破壞下游 CA 客服窗口的引用模板。
 
+import { sectionIdToLabel } from './section';
+
 export interface CitationInput {
-  /** 章節編號，如 "3.2.2.4" */
+  /** 章節編號，如 "3.2.2.4"、"appendix-a.1.1"（附錄的顯示編號由 sectionIdToLabel 還原） */
   sectionId: string;
   /** 中文章節標題（不含編號） */
   title: string;
@@ -25,8 +27,10 @@ export function buildCitation(input: CitationInput): string {
   const siteUrl = input.siteUrl.replace(/\/+$/, '');
   const sectionPath = sectionIdToPath(input.sectionId);
 
+  // 【】內是給人讀的章節號：附錄要還原成原文的「附錄 A」／「A.1.1」，
+  // 而網址仍以機器識別碼 sectionId 推導，兩者刻意分開。
   return [
-    `【${input.sectionId} ${input.title}】`,
+    `【${sectionIdToLabel(input.sectionId)} ${input.title}】`,
     input.body,
     '',
     `📎 繁中翻譯：${siteUrl}/server-cert-br/${sectionPath}/`,

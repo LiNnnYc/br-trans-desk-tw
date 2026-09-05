@@ -7,21 +7,10 @@ import Breadcrumb from '../../components/Breadcrumb.astro';
 import BrSidebarSubmenu from '../../components/BrSidebarSubmenu.astro';
 import { getCollection } from 'astro:content';
 import { sectionIdToPath } from '../../lib/citation';
+import { compareSectionId, sectionIdDepth, sectionIdToLabel } from '../../lib/section';
 import { siteConfig } from '../../config/site';
 
 const all = await getCollection('br');
-
-function compareSectionId(a: string, b: string) {
-  const ap = a.split('.').map(Number);
-  const bp = b.split('.').map(Number);
-  const n = Math.max(ap.length, bp.length);
-  for (let i = 0; i < n; i++) {
-    const av = ap[i] ?? -1;
-    const bv = bp[i] ?? -1;
-    if (av !== bv) return av - bv;
-  }
-  return 0;
-}
 
 const sorted = [...all].sort((a, b) => compareSectionId(a.data.section_id, b.data.section_id));
 
@@ -88,7 +77,7 @@ const { version, lastSyncedAt } = siteConfig.upstream;
         <ul class="divide-y divide-slate-100">
           {sorted.map((entry) => {
             const d = entry.data;
-            const depth = d.section_id.split('.').length - 1;
+            const depth = sectionIdDepth(d.section_id);
             const indent = ['pl-4', 'pl-8', 'pl-12', 'pl-16', 'pl-20'][Math.min(depth, 4)];
             const cleanLabel = d.title
               .replace(/^\s*\d+(?:\.\d+)*\s*[、：:.\-—]?\s*/, '')
@@ -114,7 +103,7 @@ const { version, lastSyncedAt } = siteConfig.upstream;
                     indent,
                   ]}
                 >
-                  <span class="font-mono text-xs text-slate-500 w-20 shrink-0">{d.section_id}</span>
+                  <span class="font-mono text-xs text-slate-500 w-20 shrink-0">{sectionIdToLabel(d.section_id)}</span>
                   <span class="flex-1 text-slate-800">{cleanLabel}</span>
                   <span class:list={['text-[11px] font-medium shrink-0', statusCls]}>{statusLabel}</span>
                 </a>

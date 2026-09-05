@@ -16,26 +16,10 @@ import BrAnchorNav from '../../components/BrAnchorNav.astro';
 import BrAnchorNavMobile from '../../components/BrAnchorNavMobile.astro';
 import { getCollection, render } from 'astro:content';
 import { sectionIdToPath } from '../../lib/citation';
+import { compareSectionId, sectionIdDepth, sectionIdToLabel } from '../../lib/section';
 import { siteConfig } from '../../config/site';
 
 const all = await getCollection('br');
-
-function compareSectionId(a: string, b: string) {
-  const isAppA = a.startsWith('appendix-');
-  const isAppB = b.startsWith('appendix-');
-  if (isAppA && !isAppB) return 1;
-  if (!isAppA && isAppB) return -1;
-  if (isAppA && isAppB) return a.localeCompare(b);
-  const ap = a.split('.').map(Number);
-  const bp = b.split('.').map(Number);
-  const n = Math.max(ap.length, bp.length);
-  for (let i = 0; i < n; i++) {
-    const av = ap[i] ?? -1;
-    const bv = bp[i] ?? -1;
-    if (av !== bv) return av - bv;
-  }
-  return 0;
-}
 
 const sorted = [...all].sort((a, b) => compareSectionId(a.data.section_id, b.data.section_id));
 
@@ -133,8 +117,7 @@ const items = await Promise.all(
   sorted.map(async (entry) => {
     const { Content } = await render(entry);
     const id = entry.data.section_id;
-    const isAppendix = id.startsWith('appendix-');
-    const depth = isAppendix ? 0 : id.split('.').length - 1;
+    const depth = sectionIdDepth(id);
     const slug = id.replace(/\./g, '-');
     const cleanTitle =
       entry.data.title.replace(/^\s*\d+(?:\.\d+)*\s*[、：:.\-—]?\s*/, '').trim() ||
@@ -147,7 +130,7 @@ const items = await Promise.all(
       depth,
       slug,
       cleanTitle,
-      isAnchorTarget: depth <= 1 || isAppendix,
+      isAnchorTarget: depth <= 1,
     };
   })
 );
@@ -195,6 +178,7 @@ const { version, lastSyncedAt } = siteConfig.upstream;
     {
       items.map(({ entry, Content, bodyHtml, depth, slug, cleanTitle, isAnchorTarget }, idx) => {
         const id = entry.data.section_id;
+        const label = sectionIdToLabel(id);
         const idAttrs = isAnchorTarget
           ? { id: `sec-${slug}`, 'data-anchor-target': '' }
           : { id: `sec-${slug}` };
@@ -226,13 +210,13 @@ const { version, lastSyncedAt } = siteConfig.upstream;
         return (
           <section {...idAttrs} class="full-text-section">
             <HeadingTag class:list={['font-serif-tc text-slate-900 leading-tight scroll-mt-20 group', headingSizeCls]}>
-              <span class="font-mono text-bs-secondary mr-2">{id}</span>
+              <span class="font-mono text-bs-secondary mr-2">{label}</span>
               <span>{cleanTitle}</span>
               <span class="ml-2 inline-flex items-center gap-1 align-middle text-xs font-normal opacity-60 group-hover:opacity-100 transition">
                 <a
                   href={`/server-cert-br/${sectionIdToPath(id)}/`}
                   class="inline-flex items-center rounded border border-slate-300 px-1.5 py-0.5 text-slate-600 hover:border-bs-primary hover:text-bs-secondary"
-                  aria-label={`${id} 單章節頁（含中英對照、引用）`}
+                  aria-label={`${label} 單章節頁（含中英對照、引用）`}
                   title="單章節頁（含中英對照、引用）"
                 >
                   詳細頁
@@ -242,7 +226,7 @@ const { version, lastSyncedAt } = siteConfig.upstream;
                   target="_blank"
                   rel="noopener noreferrer"
                   class="inline-flex items-center rounded border border-slate-300 px-1.5 py-0.5 text-slate-600 hover:border-bs-primary hover:text-bs-secondary"
-                  aria-label={`${id} cabforum.org 原文`}
+                  aria-label={`${label} cabforum.org 原文`}
                   title="cabforum.org 原文"
                 >
                   原文 ↗

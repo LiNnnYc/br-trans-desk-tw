@@ -9,12 +9,12 @@ const br = defineCollection({
     section_id: z
       .string()
       .regex(
-        /^(\d+(\.\d+)*|appendix-[a-z])$/,
-        'section_id 須為點分數字（如 "3.2.2.4"）或附錄識別碼（如 "appendix-a"）',
+        /^(\d+(\.\d+)*|appendix-[a-z](\.\d+)*)$/,
+        'section_id 須為點分數字（如 "3.2.2.4"）或附錄識別碼（如 "appendix-a"、"appendix-a.1.1"）',
       ),
     parent: z
       .string()
-      .regex(/^(\d+(\.\d+)*|appendix-[a-z])$/)
+      .regex(/^(\d+(\.\d+)*|appendix-[a-z](\.\d+)*)$/)
       .optional(),
     order: z.number().int().nonnegative(),
     original_url: z.string().url(),

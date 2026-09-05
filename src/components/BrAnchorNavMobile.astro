@@ -9,31 +9,11 @@
 // drawer 開關 + scrollspy 邏輯由 BrAnchorNav 元件的 <script> 統一處理
 // （透過共用 id 與 [data-anchor-link] 選擇器）。
 import { getCollection } from 'astro:content';
+import { compareSectionId, sectionIdDepth, sectionIdToLabel } from '../lib/section';
 
 const all = await getCollection('br');
 
-function compareSectionId(a: string, b: string) {
-  const isAppA = a.startsWith('appendix-');
-  const isAppB = b.startsWith('appendix-');
-  if (isAppA && !isAppB) return 1;
-  if (!isAppA && isAppB) return -1;
-  if (isAppA && isAppB) return a.localeCompare(b);
-  const ap = a.split('.').map(Number);
-  const bp = b.split('.').map(Number);
-  const n = Math.max(ap.length, bp.length);
-  for (let i = 0; i < n; i++) {
-    const av = ap[i] ?? -1;
-    const bv = bp[i] ?? -1;
-    if (av !== bv) return av - bv;
-  }
-  return 0;
-}
-
-const topLevel = all.filter((e) => {
-  const id = e.data.section_id;
-  if (id.startsWith('appendix-')) return true;
-  return id.split('.').length <= 2;
-});
+const topLevel = all.filter((e) => e.data.section_id.split('.').length <= 2);
 const sorted = topLevel.sort((a, b) => compareSectionId(a.data.section_id, b.data.section_id));
 
 function sectionIdToAnchorSlug(id: string) {
@@ -98,7 +78,7 @@ function cleanTitle(t: string) {
     <ul class="py-2 text-sm overflow-y-auto">
       {sorted.map((e) => {
         const id = e.data.section_id;
-        const depth = id.startsWith('appendix-') ? 0 : id.split('.').length - 1;
+        const depth = sectionIdDepth(id);
         const indent = depth === 0 ? 'pl-4' : 'pl-8';
         const slug = sectionIdToAnchorSlug(id);
         return (
@@ -111,7 +91,7 @@ function cleanTitle(t: string) {
                 indent,
               ]}
             >
-              <span class="font-mono text-[11px] text-slate-500 mr-1.5">{id}</span>
+              <span class="font-mono text-[11px] text-slate-500 mr-1.5">{sectionIdToLabel(id)}</span>
               <span>{cleanTitle(e.data.title)}</span>
             </a>
           </li>
