@@ -36,18 +36,31 @@ const d = entry.data;
 // 去除標題前若已內含 section_id 前綴（避免麵包屑與 h1 重複顯示編號）
 const cleanTitle = d.title.replace(/^\s*\d+(?:\.\d+)*\s*[、：:.\-—]?\s*/, '').trim() || d.title;
 
-// 由 entry.body 抽出第一個非空、非標題段落作為引用卡 body 用
+// 由 entry.body 抽出第一段中文散文，作為引用卡的摘要欄位。
+//
+// ⚠️ `>` 一定要跳過：每個章節檔的開頭固定是英文標題 blockquote
+// （`> **Certificate Usage**`），其後才是「英文原文 blockquote → 中文譯文」
+// 交錯的段落。少了這條，摘要抓到的會是英文標題而不是中文條文——客服按
+// 「複製引用」貼給客戶時，最需要的那一行就變成英文（曾全站 414 頁都中）。
+// 表格、程式碼區塊、註腳定義同樣不適合當摘要，一併跳過。
+// 純標題節（如 §1.4、§3.1.1，原文本來就沒有中文散文）回傳空字串，
+// 由 buildCitation 略去該行。
+const CITATION_SKIP_PREFIXES = ['#', '<', '---', '>', '|', '```', '[^'];
 function firstParagraph(body: string | undefined): string {
   if (!body) return '';
   const blocks = body.split(/\n\s*\n+/).map((b) => b.trim());
   for (const b of blocks) {
     if (!b) continue;
-    if (b.startsWith('#') || b.startsWith('<') || b.startsWith('---')) continue;
+    if (CITATION_SKIP_PREFIXES.some((p) => b.startsWith(p))) continue;
     // 去除常見 markdown 標記
     return b
       .replace(/!\[[^\]]*\]\([^)]+\)/g, '')
       .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
-      .replace(/[*_`>]+/g, '')
+      // 還原 markdown 逸出（如 §1.2.1 的 `\*`），否則下一步只吃掉星號、留下孤立反斜線
+      .replace(/\\([\\`*_[\]])/g, '$1')
+      // 不可把 `>` 一起剝掉：blockquote 已在區塊層級整塊跳過，這裡的 `>` 只會是
+      // 內文的角括號（如 §A.1.1 的 `contactemail <rfc6532emailaddress>`），剝了會缺右括號
+      .replace(/[*_`]+/g, '')
       .replace(/\s+/g, ' ')
       .trim();
   }

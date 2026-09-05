@@ -29,9 +29,12 @@ export function buildCitation(input: CitationInput): string {
 
   // 【】內是給人讀的章節號：附錄要還原成原文的「附錄 A」／「A.1.1」，
   // 而網址仍以機器識別碼 sectionId 推導，兩者刻意分開。
+  //
+  // {short_summary_or_paragraph} 為空時（純標題節，原文本來就沒有中文散文）
+  // 略去該行，避免標題下方出現兩個連續空行。欄位順序與內容一律不動。
   return [
     `【${sectionIdToLabel(input.sectionId)} ${input.title}】`,
-    input.body,
+    ...(input.body.trim() ? [input.body] : []),
     '',
     `📎 繁中翻譯：${siteUrl}/server-cert-br/${sectionPath}/`,
     `📎 原文：${input.originalUrl}`,
