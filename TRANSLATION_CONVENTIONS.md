@@ -298,7 +298,7 @@ CommonMark 規定第 0 欄的 blockquote 會把整個上層清單關掉，其後
 與 `（a）` 不同層。附錄 B 曾如此，2026-09-06 修正。
 
 > 辨識法：畫面上同一組的 `（a）`／`（b）` 縮排不一樣 → 先看兩者之間的英文
-> blockquote 是不是寫在第 0 欄。
+> blockquote 是不是寫在第 0 欄，或直接跑 `python scripts/lint_list_nesting.py`。
 
 ---
 
@@ -372,6 +372,7 @@ SubjectPublicKeyInfo  ::=  SEQUENCE  {
 - `scripts/lint_rfc2119.py` — RFC 2119 加粗對照：英文 blockquote 大寫關鍵字 vs 中文 `（關鍵字）` 括註（見 §3.7）；另含 bare 粗體與畸形括註檢查
 - `scripts/lint_term_consistency.py` — 譯名一致性：以 §1.6.1/§1.6.2 定版掃 chapter ≥ 3 的 `變體（English）` 分歧
 - `scripts/lint_table_indent.py` — 表格欄位階層縮排檢查：抓「U+2007 混半形空白」與「中英表層級不一致」（見 §2.3）
+- `scripts/lint_list_nesting.py` — 巢狀清單掉層檢查：抓「縮排清單項前面隔著第 0 欄 blockquote」導致 render 少一層縮排（見 §6.1）。中英兩側各自判定；只在該項確實有上層清單項時才報，故 `  a.` `  b.` 這種前面只有散文引言、縮排純屬排版的頂層清單不會誤報。純掃 markdown，不需先 build
 - `scripts/lint_translation_style.py` — 翻譯風格 lint（審閱加速器 Phase A）：以 §1.6/glossary/CURATED 為基準掃 chapter ≥ 4 的譯名分歧與機翻 artifact；報告寫 `web-spec-doc/翻譯工作區/風格審查_PhaseA報告.md`。逐節語意審查（Phase B）由 Claude 對照英文執行，產出 `PhaseB_ch<N>_worklist.md`
 
 一次性轉換腳本：
