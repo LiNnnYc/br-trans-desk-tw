@@ -1,0 +1,39 @@
+---
+// 文件層級的版本徽章，比照 cabforum.org TLS BR 頁面標題區右側那兩顆 badge：
+//
+//   <span class="badge bg-primary me-2">Version: 2.2.9</span>
+//   <span class="badge bg-secondary">Date: 6-Aug-2026</span>
+//
+// **與 `VersionBadge.astro` 是兩個獨立元件，不要合併**：
+//   - `VersionBadge`  → 站台頁首右上／漢堡選單，帶同步狀態燈與「完整版本歷程」連結，
+//                       講的是「本站與上游的同步狀況」。
+//   - `DocVersionBadge`（本元件）→ 貼在文件標題旁，只回答「我正在讀的是哪一版、哪一天的」，
+//                       不放狀態燈與連結，避免和標題搶注意力。
+//
+// 資料同樣來自 src/lib/version.ts（本站發布版 + 該版原文發布日），不另外傳參數，
+// 以免出現「兩個徽章顯示不同版本」的情況。
+import { current } from '../lib/version';
+
+interface Props {
+  /** 額外的容器 class（通常給間距用） */
+  class?: string;
+}
+
+const { class: extraClass = '' } = Astro.props;
+
+const badgeBase =
+  'inline-flex items-center rounded px-2 py-0.5 text-xs font-medium whitespace-nowrap';
+---
+
+<div class:list={['flex flex-wrap items-center gap-2', extraClass]}>
+  {/*
+    底色沿用 cabforum 的 --bs-primary / --bs-secondary（本站 Mockup C 本來就抄自他們），
+    但版本徽章的文字改深色：cabforum 原本是白字配 #37b8eb，對比僅 2.3:1，遠低於
+    WCAG AA 對小字要求的 4.5:1（他們自己的頁面也有這個問題）。改用 slate-900 後
+    對比 7.5:1，外觀仍是同一顆淡藍徽章。日期徽章 #105a75 配白字為 7.2:1，維持原樣。
+  */}
+  <span class:list={[badgeBase, 'bg-bs-primary text-slate-900']}>版本：{current.version}</span>
+  <span class:list={[badgeBase, 'bg-bs-secondary text-white']}>
+    日期：<time datetime={current.date}>{current.date}</time>
+  </span>
+</div>

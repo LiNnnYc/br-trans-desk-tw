@@ -14,6 +14,7 @@ import Breadcrumb from '../../components/Breadcrumb.astro';
 import BrSidebarSubmenu from '../../components/BrSidebarSubmenu.astro';
 import BrAnchorNav from '../../components/BrAnchorNav.astro';
 import BrAnchorNavMobile from '../../components/BrAnchorNavMobile.astro';
+import DocVersionBadge from '../../components/DocVersionBadge.astro';
 import { getCollection, render } from 'astro:content';
 import { sectionIdToPath } from '../../lib/citation';
 import { compareSectionId, sectionIdDepth, sectionIdToLabel } from '../../lib/section';
@@ -164,9 +165,14 @@ const { version, lastSyncedAt } = siteConfig.upstream;
 
   <div class="cabf-card bg-white border border-slate-200 rounded p-5 sm:p-7">
   <header class="border-b border-slate-200 pb-4">
-    <h1 class="font-serif-tc text-2xl font-bold text-slate-900 sm:text-3xl leading-tight">
-      《基本要求》全文
-    </h1>
+    <!-- 比照 cabforum.org TLS BR 頁：標題與版本／日期徽章同一列、兩端對齊。
+         窄螢幕時 flex-wrap 讓徽章掉到標題下方，不去壓縮標題。 -->
+    <div class="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
+      <h1 class="font-serif-tc text-2xl font-bold text-slate-900 sm:text-3xl leading-tight">
+        《基本要求》全文
+      </h1>
+      <DocVersionBadge />
+    </div>
     <p class="mt-2 text-sm text-slate-600 leading-relaxed">
       CA/Browser Forum《Baseline Requirements for the Issuance and Management of Publicly-Trusted TLS Server Certificates》非官方繁體中文翻譯，
       對應原文版本 <span class="font-mono">{version === 'tbd' ? '版本待定' : version}</span>
