@@ -5,9 +5,9 @@ order: 406
 original_url: "https://cabforum.org/working-groups/server/baseline-requirements/requirements/#appendix-a--caa-contact-tag"
 original_version: "2.2.7"
 ballot_refs: []
-translator: "免費 AI 初譯 + Claude (Opus) 潤稿"
-last_updated: 2026-05-24
-status: draft
+translator: "Claude (Sonnet) 初譯 + ChatGPT (Instant) 潤稿 + LiNnnYc 審閱"
+last_updated: 2026-09-06
+status: translated
 tags: []
 ---
 
@@ -15,4 +15,4 @@ tags: []
 
 > These methods allow domain owners to publish contact information in DNS for the purpose of validating domain control.
 
-這些方法允許網域名稱（Domain Name）擁有者在 DNS 中發布聯絡資訊，以供網域控管驗證之用。
+這些方法允許網域名稱（Domain Name）擁有者在 DNS 中發布聯絡資訊，以供網域控管權驗證之用。
