@@ -1,13 +1,21 @@
 ---
-// /about-base-req/ — 關於《基本要求》中文翻譯（placeholder）。
-// 正式翻譯內容於 M3 階段進行；目前僅放骨架說明。
+// /about-base-req/ — cabforum.org「About the Baseline Requirements」繁體中文翻譯。
+//
+// 譯文放在 src/md/about-base-req.md（Style A：英文 blockquote + 中文段落，
+// 與 src/content/br/*.md 同一套慣例，故沿用 .clause-body 排版與各 remark/rehype
+// plugin）。之後若這類側邊欄頁增多，可再考慮收成 content collection。
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Breadcrumb from '../components/Breadcrumb.astro';
+import BrSidebarSubmenu from '../components/BrSidebarSubmenu.astro';
+import { Content } from '../md/about-base-req.md';
+
+const ORIGINAL_URL = 'https://cabforum.org/working-groups/server/baseline-requirements/about/';
+const LAST_SYNCED = '2026-08-20';
 ---
 
 <BaseLayout
   title="關於《基本要求》"
-  description="CA/Browser Forum《About the Baseline Requirements》非官方繁體中文翻譯（建置中）。"
+  description="CA/Browser Forum「About the Baseline Requirements」非官方繁體中文翻譯：《基本要求》的適用範圍，以及依《基本要求》對憑證申請者所做的查核。"
 >
   <Breadcrumb
     slot="breadcrumb"
@@ -19,28 +27,47 @@ import Breadcrumb from '../components/Breadcrumb.astro';
       <h1 class="font-serif-tc text-2xl font-bold text-slate-900 sm:text-3xl leading-tight">
         關於《基本要求》
       </h1>
-      <p class="mt-2 text-sm text-slate-600">
-        CA/Browser Forum 官方「About the Baseline Requirements」頁面繁體中文翻譯。
+      <p class="mt-2 text-sm text-slate-600 leading-relaxed">
+        CA/Browser Forum 官方「About the Baseline Requirements」頁面之繁體中文翻譯。
       </p>
+      <div class="mt-4 flex flex-wrap items-center gap-2">
+        <a
+          href={ORIGINAL_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center gap-1.5 rounded-md border border-slate-300 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 hover:border-slate-500 hover:bg-slate-50"
+          aria-label="在新分頁開啟 cabforum.org 原文：About the Baseline Requirements"
+        >
+          <span aria-hidden="true">↗</span>
+          <span>跳至原文</span>
+        </a>
+      </div>
     </header>
 
     <div class="clause-body mt-6">
-      <p>
-        本頁將收錄 CA/Browser Forum 官方
-        <a href="https://cabforum.org/working-groups/server/baseline-requirements/about/" target="_blank" rel="noopener noreferrer">About the Baseline Requirements</a>
-        的繁體中文翻譯，介紹《基本要求》的目的、歷史與適用範圍。
-      </p>
-      <p>
-        翻譯工作預計於 <strong>M3 階段</strong> 進行，待主文件（Baseline Requirements 本文）完成翻譯後展開。
-      </p>
-      <p class="text-sm text-slate-500">
-        目前若有此頁面相關問題，請暫時直接參閱
-        <a href="https://cabforum.org/working-groups/server/baseline-requirements/about/" target="_blank" rel="noopener noreferrer">cabforum.org 上的官方原文</a>。
-      </p>
+      <Content />
     </div>
 
-    <footer class="mt-8 border-t border-slate-200 pt-4 text-[11px] leading-relaxed text-slate-500">
-      ⚠️ 本翻譯為非官方翻譯，發生爭議時以 CA/Browser Forum 英文原文為準。
+    <footer class="mt-8 border-t border-slate-200 pt-4 text-xs text-slate-500">
+      <dl class="grid grid-cols-1 gap-y-1 sm:grid-cols-[6rem_1fr]">
+        <dt class="font-medium text-slate-600">原文</dt>
+        <dd>
+          <a
+            href={ORIGINAL_URL}
+            class="text-bs-secondary underline decoration-slate-300 underline-offset-2 hover:decoration-bs-secondary break-all"
+            target="_blank"
+            rel="noopener noreferrer">{ORIGINAL_URL}</a>
+        </dd>
+        <dt class="font-medium text-slate-600">最後同步</dt>
+        <dd><time datetime={LAST_SYNCED}>{LAST_SYNCED}</time></dd>
+      </dl>
+      <p class="mt-3 text-[11px] leading-relaxed text-slate-500">
+        ⚠️ 本翻譯為非官方翻譯，發生爭議時以 CA/Browser Forum 英文原文為準。
+      </p>
     </footer>
   </article>
+
+  <Fragment slot="sidebar">
+    <BrSidebarSubmenu currentPath="/about-base-req/" />
+  </Fragment>
 </BaseLayout>
