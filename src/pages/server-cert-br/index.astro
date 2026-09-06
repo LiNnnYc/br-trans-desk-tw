@@ -18,7 +18,6 @@ import DocVersionBadge from '../../components/DocVersionBadge.astro';
 import { getCollection, render } from 'astro:content';
 import { sectionIdToPath } from '../../lib/citation';
 import { compareSectionId, sectionIdDepth, sectionIdToLabel } from '../../lib/section';
-import { siteConfig } from '../../config/site';
 
 const all = await getCollection('br');
 
@@ -149,7 +148,6 @@ for (const item of items) {
   item.bodyHtml = rewriteFootnoteRefs(body, defs);
 }
 
-const { version, lastSyncedAt } = siteConfig.upstream;
 ---
 
 <BaseLayout
@@ -173,16 +171,11 @@ const { version, lastSyncedAt } = siteConfig.upstream;
       </h1>
       <DocVersionBadge />
     </div>
+    <!-- 版本與日期已由上方 DocVersionBadge 呈現，此處不再重複「對應原文版本／最後同步」。 -->
     <p class="mt-2 text-sm text-slate-600 leading-relaxed">
-      CA/Browser Forum《Baseline Requirements for the Issuance and Management of Publicly-Trusted TLS Server Certificates》非官方繁體中文翻譯，
-      對應原文版本 <span class="font-mono">{version === 'tbd' ? '版本待定' : version}</span>
-      {lastSyncedAt && <> · 最後同步 <span class="font-mono">{lastSyncedAt}</span></>}。
+      CA/Browser Forum《Baseline Requirements for the Issuance and Management of Publicly-Trusted TLS Server Certificates》
     </p>
-    <p class="mt-2 text-xs text-slate-500 leading-relaxed">
-      本頁僅顯示中文翻譯。若需中英對照與整節引用功能，請點各章節標題旁的「
-      <span class="inline-flex items-center font-mono">›</span>
-      」進入單章節頁。
-    </p>
+    <p class="mt-1 text-sm text-slate-600 leading-relaxed">非官方繁體中文翻譯</p>
   </header>
 
   <article class="full-text-only-cn mt-6" data-pagefind-ignore>
