@@ -89,10 +89,16 @@ git config core.hooksPath .githooks
 4. 產出舊版離線存檔並打 tag：
 
    ```sh
-   npm run build
+   git status                       # 必須乾淨——存檔要對應得上 commit
+   npm run build                    # ⚠️ 一定要在匯出「之前」重建
    node scripts/export_chapters_html.mjs --chapters all      --out "public/archive/BR_v<舊版>_zh-TW.html"
    git tag br-v<舊版> <該版最後一個 commit>
    ```
+
+   > **⚠️ 匯出前一定要重建**：`export_chapters_html.mjs` 讀的是 `dist/`，不會自己 build。
+   > 若 `dist/` 是更早之前建的，匯出的存檔會是**某個既非 HEAD、也未被提交**的中間狀態
+   > ——看起來正常，但和 tag 對不起來。2026-09-07 建立 v2.2.7 存檔時就踩過這個坑
+   > （存檔含了一份當時尚未提交的章節修改）。
 
 5. 確認可發布：
 
