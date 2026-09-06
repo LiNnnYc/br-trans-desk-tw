@@ -223,6 +223,15 @@ body {
     display: none;
   }
 }
+/* 程式碼區塊與其「後一個元素」的間距，不隨縮排改變。
+   沒縮排時走 `.clause-body > * + *` 的 1rem；但清單項內的程式碼區塊不是
+   .clause-body 的直接子元素，吃不到那條，只剩 `.clause-body li > p` 的 0.5rem，
+   於是縮排的程式碼區塊後面看起來比沒縮排的擠一半（§附錄 B 的 ASN.1 區塊）。
+   排除 blockquote：那是「下一組中英對照」的起點，間距另由下方的
+   :not(blockquote) + blockquote 規則（2.5rem／3.5rem）負責，不可被這裡蓋掉。 */
+.clause-body .code-figure + :not(blockquote) {
+  margin-top: 1rem;
+}
 .clause-body blockquote {
   border-left: 4px solid var(--bs-primary);
   padding: 0.25rem 0 0.25rem 1rem;
