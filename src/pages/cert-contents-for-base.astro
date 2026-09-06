@@ -1,13 +1,26 @@
 ---
-// /cert-contents-for-base/ — SSL 憑證內容物之基本要求 中文翻譯（placeholder）。
-// 正式翻譯內容於 M3 階段進行；目前僅放骨架說明。
+// /cert-contents-for-base/ — cabforum.org「Certificate Contents for Baseline SSL」繁體中文翻譯。
+//
+// 譯文放在 src/md/cert-contents-for-base.md（Style A，同 src/content/br/*.md 慣例）。
+//
+// ⚠️ 原頁面撰於 2013 年且上游未再更新，內容多處已與現行《基本要求》不符
+// （條號沿用 BR 1.0 的編排、SHA-1／1024 位元 RSA 過渡安排、第 13.2.1 節、
+// AIA 的 OCSP 必要性、extKeyUsage 的 emailProtection）。譯文逐處加「編按」
+// 指向現行條文，頁首另有整體提醒——兩者都是本站補充，不屬於原文。
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Breadcrumb from '../components/Breadcrumb.astro';
+import BrSidebarSubmenu from '../components/BrSidebarSubmenu.astro';
+import { Content } from '../md/cert-contents-for-base.md';
+
+const ORIGINAL_URL =
+  'https://cabforum.org/working-groups/server/baseline-requirements/certificate-contents/';
+const ORIGINAL_DATE = '2013-09-04';
+const LAST_SYNCED = '2026-08-20';
 ---
 
 <BaseLayout
   title="SSL 憑證內容物之基本要求"
-  description="CA/Browser Forum《Certificate Contents for Baseline Requirements》非官方繁體中文翻譯（建置中）。"
+  description="CA/Browser Forum「Certificate Contents for Baseline SSL」非官方繁體中文翻譯，並標註與現行《基本要求》不符之處。"
 >
   <Breadcrumb
     slot="breadcrumb"
@@ -19,28 +32,64 @@ import Breadcrumb from '../components/Breadcrumb.astro';
       <h1 class="font-serif-tc text-2xl font-bold text-slate-900 sm:text-3xl leading-tight">
         SSL 憑證內容物之基本要求
       </h1>
-      <p class="mt-2 text-sm text-slate-600">
-        CA/Browser Forum 針對《基本要求》發佈的「Certificate Contents」說明頁繁體中文翻譯。
+      <p class="mt-2 text-sm text-slate-600 leading-relaxed">
+        CA/Browser Forum 官方「Certificate Contents for Baseline SSL」頁面之繁體中文翻譯。
       </p>
+      <div class="mt-4 flex flex-wrap items-center gap-2">
+        <a
+          href={ORIGINAL_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center gap-1.5 rounded-md border border-slate-300 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 hover:border-slate-500 hover:bg-slate-50"
+          aria-label="在新分頁開啟 cabforum.org 原文：Certificate Contents for Baseline SSL"
+        >
+          <span aria-hidden="true">↗</span>
+          <span>跳至原文</span>
+        </a>
+      </div>
     </header>
 
+    <aside
+      class="mt-6 rounded-md border border-amber-300 bg-amber-50 p-4 text-sm leading-relaxed text-amber-900"
+      aria-label="內容時效提醒"
+    >
+      <p class="font-semibold">⚠️ 原頁面內容已過時</p>
+      <p class="mt-1.5">
+        本頁原文標示日期為 <span class="font-mono">{ORIGINAL_DATE}</span>，CA/Browser Forum
+        其後未再更新。原文所引<strong>條號</strong>沿用《基本要求》1.0 版的編排，
+        現行版本已改採 RFC 3647 架構、章節編號完全不同；<strong>SHA-1 與 1024 位元 RSA 的過渡安排</strong>、
+        <strong>AIA 的 OCSP 必要性</strong>與 <strong>extKeyUsage 的 emailProtection</strong>
+        亦均已變更。譯文中以「編按」標出並指向現行條文；<strong>「編按」為本站補充，不屬於原文</strong>。
+        對外引用請一律以<a href="/server-cert-br/" class="underline decoration-amber-400 underline-offset-2 hover:decoration-amber-700">《基本要求》本文</a>為準。
+      </p>
+    </aside>
+
     <div class="clause-body mt-6">
-      <p>
-        本頁將收錄 CA/Browser Forum 官方
-        <a href="https://cabforum.org/working-groups/server/baseline-requirements/certificate-contents/" target="_blank" rel="noopener noreferrer">Certificate Contents for Baseline Requirements</a>
-        的繁體中文翻譯。
-      </p>
-      <p>
-        翻譯工作預計於 <strong>M3 階段</strong> 進行，待主文件（Baseline Requirements 本文）完成翻譯後展開。
-      </p>
-      <p class="text-sm text-slate-500">
-        目前若有此頁面相關問題，請暫時直接參閱
-        <a href="https://cabforum.org/working-groups/server/baseline-requirements/certificate-contents/" target="_blank" rel="noopener noreferrer">cabforum.org 上的官方原文</a>。
-      </p>
+      <Content />
     </div>
 
-    <footer class="mt-8 border-t border-slate-200 pt-4 text-[11px] leading-relaxed text-slate-500">
-      ⚠️ 本翻譯為非官方翻譯，發生爭議時以 CA/Browser Forum 英文原文為準。
+    <footer class="mt-8 border-t border-slate-200 pt-4 text-xs text-slate-500">
+      <dl class="grid grid-cols-1 gap-y-1 sm:grid-cols-[6rem_1fr]">
+        <dt class="font-medium text-slate-600">原文</dt>
+        <dd>
+          <a
+            href={ORIGINAL_URL}
+            class="text-bs-secondary underline decoration-slate-300 underline-offset-2 hover:decoration-bs-secondary break-all"
+            target="_blank"
+            rel="noopener noreferrer">{ORIGINAL_URL}</a>
+        </dd>
+        <dt class="font-medium text-slate-600">原文日期</dt>
+        <dd><time datetime={ORIGINAL_DATE}>{ORIGINAL_DATE}</time></dd>
+        <dt class="font-medium text-slate-600">最後同步</dt>
+        <dd><time datetime={LAST_SYNCED}>{LAST_SYNCED}</time></dd>
+      </dl>
+      <p class="mt-3 text-[11px] leading-relaxed text-slate-500">
+        ⚠️ 本翻譯為非官方翻譯，發生爭議時以 CA/Browser Forum 英文原文為準。
+      </p>
     </footer>
   </article>
+
+  <Fragment slot="sidebar">
+    <BrSidebarSubmenu currentPath="/cert-contents-for-base/" />
+  </Fragment>
 </BaseLayout>

@@ -1,7 +1,7 @@
 ---
 // 《基本要求》子選單（sidebar 第一區塊；desktop sidebar + mobile 漢堡共用）。
 // 規格：web-spec-doc/server-cert-br樣式變更.txt（2026-05-25）。
-// 6 項固定連結；以 currentPath 標示 active。
+// 7 項固定連結；以 currentPath 標示 active。
 export interface Props {
   /** 用於 active 高亮判斷；應由呼叫端傳入當前頁面路徑或對應的子選單 URL。 */
   currentPath?: string;
@@ -17,7 +17,8 @@ const items = [
   { label: '《基本要求》官方 FAQ', href: '/faq-for-base-req/' },
   { label: 'SSL 憑證內容物之基本要求', href: '/cert-contents-for-base/' },
   { label: '關於《基本要求》', href: '/about-base-req/' },
-  { label: '《基本要求》歷史版本', href: '/changelog/' },
+  { label: '官方文件與歷史版本', href: '/other-br-docs/' },
+  { label: '本站翻譯版本歷程', href: '/changelog/' },
 ];
 
 const isActive = (href: string) => {
