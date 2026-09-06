@@ -1,43 +1,158 @@
 ---
-// /changelog/ — 版本歷程。M1-3 階段為最小 stub（讓徽章點擊不 404）。
-// M1-8 補上正式內容：時間序列表（Git tag 或手動 markdown）。
+// /changelog/ — 本站翻譯版本歷程。
+//
+// 資料來源：src/config/br-versions.ts（唯一需人工維護的版本表）＋ src/lib/version.ts
+// 推導出的上游最新版。每次升版譯完後在 br-versions.ts 最上面加一列，本頁自動更新。
+//
+// 與 /other-br-docs/ 的分工：那頁是**上游官方**各版文件的索引（PDF／修訂對照／投票案），
+// 這頁是**本站翻譯**發布過哪些版本、以及舊版的存檔在哪。
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Breadcrumb from '../components/Breadcrumb.astro';
-import { siteConfig } from '../config/site';
+import BrSidebarSubmenu from '../components/BrSidebarSubmenu.astro';
+import { brVersions } from '../config/br-versions';
+import { current, isBehind, upstream } from '../lib/version';
 
-const { version, syncStatus, lastSyncedAt, behindCount } = siteConfig.upstream;
+const [latest, ...older] = brVersions;
 ---
 
-<BaseLayout title="版本歷程" description="本站翻譯與 CA/Browser Forum 原文版本同步紀錄。">
+<BaseLayout
+  title="本站翻譯版本歷程"
+  description="本站 TLS Baseline Requirements 繁體中文翻譯發布過的版本、對應原文版本與日期，以及舊版離線存檔。"
+>
   <Breadcrumb
     slot="breadcrumb"
-    items={[{ label: '首頁', href: '/' }, { label: '版本歷程' }]}
+    items={[{ label: '首頁', href: '/' }, { label: '本站翻譯版本歷程' }]}
   />
 
   <article class="cabf-card bg-white border border-slate-200 rounded p-5 sm:p-7">
-  <h1 class="text-2xl font-semibold text-slate-900 sm:text-3xl">版本歷程</h1>
+    <header class="border-b border-slate-200 pb-4">
+      <h1 class="font-serif-tc text-2xl font-bold text-slate-900 sm:text-3xl leading-tight">
+        本站翻譯版本歷程
+      </h1>
+      <p class="mt-2 text-sm text-slate-600 leading-relaxed">
+        本站發布過的翻譯版本。<strong>站上 <a href="/server-cert-br/" class="text-bs-secondary underline decoration-slate-300 underline-offset-2">《基本要求》全文</a>永遠對應最新的一版</strong>；
+        舊版以 git tag 嚴封，並提供單檔離線存檔供查閱。
+      </p>
+    </header>
 
-  <dl class="mt-6 grid gap-3 rounded-lg border border-slate-200 bg-slate-50 p-5 text-sm sm:grid-cols-2">
-    <div>
-      <dt class="text-xs font-semibold tracking-wider text-slate-500 uppercase">對應原文版本</dt>
-      <dd class="mt-1 text-slate-900">{version === 'tbd' ? '版本待定' : version}</dd>
-    </div>
-    <div>
-      <dt class="text-xs font-semibold tracking-wider text-slate-500 uppercase">同步狀態</dt>
-      <dd class="mt-1 text-slate-900">
-        {syncStatus === 'synced' && '已同步'}
-        {syncStatus === 'behind' && `落後 ${behindCount} 個 Ballot`}
-        {syncStatus === 'pending' && '建置中'}
-      </dd>
-    </div>
-    <div>
-      <dt class="text-xs font-semibold tracking-wider text-slate-500 uppercase">最後更新</dt>
-      <dd class="mt-1 text-slate-900">{lastSyncedAt ?? '—'}</dd>
-    </div>
-  </dl>
+    <dl class="mt-6 grid gap-3 rounded-lg border border-slate-200 bg-slate-50 p-5 text-sm sm:grid-cols-3">
+      <div>
+        <dt class="text-xs font-semibold tracking-wider text-slate-500 uppercase">本站目前版本</dt>
+        <dd class="mt-1 font-mono text-slate-900">v{current.version}</dd>
+      </div>
+      <div>
+        <dt class="text-xs font-semibold tracking-wider text-slate-500 uppercase">原文發布日</dt>
+        <dd class="mt-1 text-slate-900">
+          <time datetime={current.date}>{current.date}</time>
+        </dd>
+      </div>
+      <div>
+        <dt class="text-xs font-semibold tracking-wider text-slate-500 uppercase">上游最新版</dt>
+        <dd class="mt-1 font-mono text-slate-900">
+          {upstream.version ? `v${upstream.version}` : '—'}
+        </dd>
+      </div>
+    </dl>
 
-  <p class="mt-6 text-sm text-slate-600">
-    詳細的版本歷程時間軸將於 M1-8 補齊（每次 Ballot 跟進與翻譯更新會記錄一筆）。
-  </p>
+    {
+      isBehind && (
+        <aside
+          class="mt-4 rounded-md border border-amber-300 bg-amber-50 p-4 text-sm leading-relaxed text-amber-900"
+          aria-label="上游版本提醒"
+        >
+          <p class="font-semibold">⚠️ 上游已發布新版</p>
+          <p class="mt-1.5">
+            CA/Browser Forum 已發布 <strong>v{upstream.version}</strong>，本站翻譯目前仍對應{' '}
+            <strong>v{current.version}</strong>，新版翻譯進行中。兩版有差異之處，請以
+            <a
+              href="https://cabforum.org/working-groups/server/baseline-requirements/documents/"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="underline decoration-amber-400 underline-offset-2 hover:decoration-amber-700"
+              >官方原文</a
+            >為準；各版差異可看 <a href="/other-br-docs/" class="underline decoration-amber-400 underline-offset-2 hover:decoration-amber-700">官方文件與歷史版本</a>的修訂對照版。
+          </p>
+        </aside>
+      )
+    }
+
+    <section class="mt-8">
+      <h2 class="font-serif-tc text-xl font-semibold text-slate-900">目前發布中</h2>
+      <ul class="mt-3 divide-y divide-slate-100 rounded-md border border-slate-200">
+        <li class="p-4">
+          <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+            <span class="font-mono text-base font-bold text-bs-secondary">v{latest.version}</span>
+            <span class="inline-flex items-center rounded border border-emerald-300 bg-emerald-50 px-1.5 py-0.5 text-xs font-medium text-emerald-800">
+              發布中
+            </span>
+            <span class="text-sm text-slate-600">
+              原文發布日 <time datetime={latest.date}>{latest.date}</time>
+              {latest.ballot && <> · 投票案 <span class="font-mono">{latest.ballot}</span></>}
+            </span>
+          </div>
+          <div class="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-sm">
+            <a href="/server-cert-br/" class="text-bs-secondary underline decoration-slate-300 underline-offset-2 hover:decoration-bs-secondary">
+              閱讀全文
+            </a>
+            {latest.translatedAt && (
+              <span class="text-slate-500">本站完成審閱：{latest.translatedAt}</span>
+            )}
+          </div>
+        </li>
+      </ul>
+    </section>
+
+    <section class="mt-8">
+      <h2 class="font-serif-tc text-xl font-semibold text-slate-900">已歸檔版本</h2>
+      {
+        older.length === 0 ? (
+          <p class="mt-3 rounded-md border border-dashed border-slate-300 p-5 text-center text-sm text-slate-500">
+            尚無歸檔版本。本站升版到新的原文版本時，現行版本會移到此處，
+            並保留 git tag 與離線存檔。
+          </p>
+        ) : (
+          <ul class="mt-3 divide-y divide-slate-100 rounded-md border border-slate-200">
+            {older.map((v) => (
+              <li class="p-4">
+                <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                  <span class="font-mono text-base font-semibold text-slate-700">v{v.version}</span>
+                  <span class="text-sm text-slate-600">
+                    原文發布日 <time datetime={v.date}>{v.date}</time>
+                    {v.ballot && <> · 投票案 <span class="font-mono">{v.ballot}</span></>}
+                  </span>
+                </div>
+                <div class="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-sm">
+                  {v.archive && (
+                    <a
+                      href={`/archive/${v.archive}`}
+                      class="text-bs-secondary underline decoration-slate-300 underline-offset-2 hover:decoration-bs-secondary"
+                    >
+                      離線存檔（單一 HTML）
+                    </a>
+                  )}
+                  {v.gitTag && (
+                    <span class="text-slate-500">
+                      git tag <span class="font-mono">{v.gitTag}</span>
+                    </span>
+                  )}
+                </div>
+              </li>
+            ))}
+          </ul>
+        )
+      }
+      <p class="mt-3 text-xs leading-relaxed text-slate-500">
+        離線存檔為純中文的單一 HTML 檔，內含該版全文與附錄、章節間可互相跳轉，
+        不需連網即可閱讀。站上的章節頁只保留最新版（PRD §9）。
+      </p>
+    </section>
+
+    <footer class="mt-8 border-t border-slate-200 pt-4 text-[11px] leading-relaxed text-slate-500">
+      ⚠️ 本翻譯為非官方翻譯，發生爭議時以 CA/Browser Forum 英文原文為準。
+    </footer>
   </article>
+
+  <Fragment slot="sidebar">
+    <BrSidebarSubmenu currentPath="/changelog/" />
+  </Fragment>
 </BaseLayout>

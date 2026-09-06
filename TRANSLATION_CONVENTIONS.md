@@ -348,7 +348,10 @@ SubjectPublicKeyInfo  ::=  SEQUENCE  {
 1. 更新 `web-spec-doc/BR.md` 為新版本原文（從 [`cabforum/servercert`](https://github.com/cabforum/servercert) 抓 main 分支）。
 2. 跑 `scripts/diff_br.py`（暫不存在，未來補）或人工 diff 看哪些章節變動。
 3. 把改動的章節 `status` 改為 `outdated`，重新翻譯後再升回 `translated`。
-4. 更新 `src/config/site.ts` 的 `upstream.version` 與 `lastSyncedAt`。
+4. ~~更新 `src/config/site.ts` 的 `upstream.version` 與 `lastSyncedAt`。~~
+   → 改為在 **`src/config/br-versions.ts` 最上面加一列**（`date` 抄自新版 BR.md 標頭的
+   `date:`）；`site.ts` 已改為自動推導，不再手動維護。舊版那列補上 `gitTag` 與 `archive`。
+   完整流程見 `RUNBOOK.md` §2.4。
 5. 補 §1.2.1 新增的 Ballot 列、§1.2.2 新增的合規日期列。
 6. 全站 `last_updated` 仍維持各檔自己的最後潤稿日期，**不要全檔批量改**。
 
@@ -372,6 +375,7 @@ SubjectPublicKeyInfo  ::=  SEQUENCE  {
 
 - `scripts/lint_rfc2119.py` — RFC 2119 加粗對照：英文 blockquote 大寫關鍵字 vs 中文 `（關鍵字）` 括註（見 §3.7）；另含 bare 粗體與畸形括註檢查
 - `scripts/lint_term_consistency.py` — 譯名一致性：以 §1.6.1/§1.6.2 定版掃 chapter ≥ 3 的 `變體（English）` 分歧
+- `scripts/lint_version_consistency.py` — **發布前把關**：全庫 `original_version` 是否一致、是否等於 `br-versions.ts` 宣告的發布版、是否還有 `draft`／`outdated`。升版做到一半必然混版，故不擋 build／commit，只由 `.githooks/pre-push` 在 `git push` 前擋（安裝：`git config core.hooksPath .githooks`）
 - `scripts/lint_table_indent.py` — 表格欄位階層縮排檢查：抓「U+2007 混半形空白」與「中英表層級不一致」（見 §2.3）
 - `scripts/lint_list_nesting.py` — 巢狀清單掉層檢查：抓「縮排清單項前面隔著第 0 欄 blockquote」導致 render 少一層縮排（見 §6.1）。中英兩側各自判定；只在該項確實有上層清單項時才報，故 `  a.` `  b.` 這種前面只有散文引言、縮排純屬排版的頂層清單不會誤報。純掃 markdown，不需先 build
 - `scripts/lint_translation_style.py` — 翻譯風格 lint（審閱加速器 Phase A）：以 §1.6/glossary/CURATED 為基準掃 chapter ≥ 4 的譯名分歧與機翻 artifact；報告寫 `web-spec-doc/翻譯工作區/風格審查_PhaseA報告.md`。逐節語意審查（Phase B）由 Claude 對照英文執行，產出 `PhaseB_ch<N>_worklist.md`

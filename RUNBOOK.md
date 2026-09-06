@@ -11,6 +11,16 @@
 
 - Node.js ≥ 20（Astro 5 要求）
 - npm（隨 Node 附帶）
+- Python 3（跑 `scripts/*.py` 的 lint）
+
+**每個 clone 做一次**——啟用版控裡的 git hooks：
+
+```sh
+git config core.hooksPath .githooks
+```
+
+裝了之後 `git push` 前會自動跑版本一致性檢查（見 §2.4），擋下「升版做到一半」的
+混版狀態被推出去。日常 build／dev／commit 不受影響。
 
 ### 1.2 常用指令
 
@@ -53,10 +63,45 @@
 1. 在 `src/content/quick-reference/` 新增 `.md`，欄位見 schema：`slug`、`question`、`short_answer`、`related_sections`（須對應已存在的 BR section_id）、`last_updated`。
 2. `/quick-reference/` 列表頁會自動以 `slug` 對應 placeholder 卡片並換成正式內容；不在 placeholder 清單中的新 slug 不會出現在預設網格中（如需擴充，編輯 `src/pages/quick-reference/index.astro` 的 `placeholders` 陣列）。
 
-### 2.4 更新版本徽章資訊
+### 2.4 版本徽章與升版
 
-- 編輯 `src/config/site.ts` 的 `upstream` 區塊：`version`、`lastSyncedAt`、`syncStatus`、`behindCount`。
-- 後續 CI 可寫腳本覆寫該檔（spec §4.1 已預留）。
+**徽章資料不再手動維護**。`src/config/site.ts` 的 `upstream` 已改為由
+`src/lib/version.ts` 推導：
+
+| 顯示的東西 | 來源 |
+|---|---|
+| 本站發布版（徽章上的 `v2.2.7`） | `src/config/br-versions.ts` 的 `brVersions[0].version` |
+| 原文發布日（徽章上的日期） | 同上 `.date`——取自**該版 BR.md 標頭的 `date:`**（cabforum 在 GitHub 釋出的值） |
+| 上游最新版（落後時顯示） | build 時讀 `web-spec-doc/BR.md` 的 `subtitle: Version X` |
+
+兩個版本號不同時，徽章自動變成「上游 vX.Y.Z」，`/changelog/` 也會出現提醒。
+**上游版本永遠不會被拿來當本站版本顯示**——否則客服會誤以為站上已是新版。
+
+#### 升版流程（v2.2.7 → 下一版）
+
+1. 更新 `web-spec-doc/BR.md` 為新版原文（`cabforum/servercert` main 分支）。
+   此時徽章立刻顯示「上游 vX.Y.Z」，站上內容仍標舊版——這是正確狀態。
+2. 逐節比對、重譯變動章節，把該檔 `original_version` 改為新版、`status` 視情況調整。
+   **這段期間全庫會混版，是正常的**；本地 commit 不受影響，但 `git push` 會被
+   pre-push hook 擋下。
+3. 全部更新完成後，在 `src/config/br-versions.ts` **最上面加一列**新版
+   （`date` 從新的 BR.md 標頭抄過來），舊版那列補上 `gitTag` 與 `archive`。
+4. 產出舊版離線存檔並打 tag：
+
+   ```sh
+   npm run build
+   node scripts/export_chapters_html.mjs --chapters all      --out "public/archive/BR_v<舊版>_zh-TW.html"
+   git tag br-v<舊版> <該版最後一個 commit>
+   ```
+
+5. 確認可發布：
+
+   ```sh
+   python scripts/lint_version_consistency.py   # 要 exit 0
+   ```
+
+`/changelog/` 會自動把舊版移到「已歸檔版本」並列出存檔下載連結，站上的章節頁
+永遠只保留最新版（PRD §9：不做歷史版本翻譯，歷史以 git 與存檔留存）。
 
 ---
 

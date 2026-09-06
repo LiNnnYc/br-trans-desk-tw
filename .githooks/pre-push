@@ -1,0 +1,33 @@
+#!/bin/sh
+# 發布前把關：擋下「升版做到一半」的混版狀態被推上去。
+#
+# 安裝（每個 clone 做一次）：
+#     git config core.hooksPath .githooks
+#
+# 日常 build／dev／commit 都不受影響，只有 git push 會跑這支。
+# 確定要推出未完成狀態時：git push --no-verify
+#
+# 檢查內容見 scripts/lint_version_consistency.py。
+
+set -e
+
+for py in python python3 py; do
+  if command -v "$py" >/dev/null 2>&1; then
+    PY="$py"
+    break
+  fi
+done
+
+if [ -z "$PY" ]; then
+  echo "pre-push：找不到 python，略過版本一致性檢查" >&2
+  exit 0
+fi
+
+echo "pre-push：檢查版本一致性…"
+if ! PYTHONIOENCODING=utf-8 "$PY" scripts/lint_version_consistency.py; then
+  echo "" >&2
+  echo "pre-push：已擋下這次 push。" >&2
+  exit 1
+fi
+
+exit 0

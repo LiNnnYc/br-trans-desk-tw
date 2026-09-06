@@ -5,6 +5,7 @@
 //   variant="dark" — 透明深底，給漢堡選單裡的暗色背景用
 // 內容：Ballot 標籤 + 版本 + 同步狀態指示燈 + 最後同步日期 + 完整版本歷程連結。
 import { siteConfig, type SyncStatus } from '../config/site';
+import { upstream as upstreamLatest } from '../lib/version';
 
 interface Props {
   variant?: 'light' | 'dark';
@@ -12,12 +13,13 @@ interface Props {
 
 const { variant = 'light' } = Astro.props;
 
-const { version, syncStatus, behindCount, lastSyncedAt } = siteConfig.upstream;
+const { version, syncStatus, lastSyncedAt } = siteConfig.upstream;
 
+// 落後時要把「上游已經到哪一版」講出來——只說「落後」會讓人不知道該去看哪個版本。
 const statusLabel: Record<SyncStatus, string> = {
   pending: '建置中',
   synced: '已同步',
-  behind: `落後 ${behindCount}`,
+  behind: upstreamLatest.version ? `上游 v${upstreamLatest.version}` : '落後',
 };
 
 const statusDot: Record<SyncStatus, string> = {
@@ -27,6 +29,8 @@ const statusDot: Record<SyncStatus, string> = {
 };
 
 const versionLabel = version === 'tbd' ? '版本待定' : `v${version.replace(/^v/, '')}`;
+// 顯示的是**該版原文的發布日**（cabforum 於 GitHub 釋出的 BR.md 標頭 date），
+// 不是本站的翻譯日期——客服對照原文時要看的是這個。
 const dateLabel = lastSyncedAt;
 
 const isDark = variant === 'dark';
@@ -57,7 +61,7 @@ const linkCls = 'mt-1 inline-block text-bs-primary hover:underline';
 
 <div class={wrapperCls}>
   <div class="flex items-baseline justify-between gap-3">
-    <span class={labelCls}>Ballot</span>
+    <span class={labelCls}>TLS BR</span>
     <span class={versionCls}>{versionLabel}</span>
   </div>
   <div class="mt-1 flex items-center gap-1.5">

@@ -13,6 +13,7 @@
  *
  * 用法：
  *   node scripts/export_chapters_html.mjs --chapters 1-6 --out "web-spec-doc/翻譯工作區/BR_ch1-6_zh-TW.html"
+ *   node scripts/export_chapters_html.mjs --chapters all --out "public/archive/BR_v2.2.7_zh-TW.html"
  */
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { resolve, dirname, join } from 'node:path';
@@ -30,9 +31,13 @@ function arg(name, fallback) {
 const chapterSpec = arg('chapters', '1-6');
 const outPath = resolve(ROOT, arg('out', `web-spec-doc/翻譯工作區/BR_ch${chapterSpec}_zh-TW.html`));
 
-const [chFrom, chTo] = chapterSpec.includes('-')
-  ? chapterSpec.split('-').map(Number)
-  : [Number(chapterSpec), Number(chapterSpec)];
+// `--chapters all` 匯出全文（含附錄 A／B），用於版本存檔；數字範圍則只取正文章節。
+const wantAll = chapterSpec === 'all';
+const [chFrom, chTo] = wantAll
+  ? [Number.NEGATIVE_INFINITY, Number.POSITIVE_INFINITY]
+  : chapterSpec.includes('-')
+    ? chapterSpec.split('-').map(Number)
+    : [Number(chapterSpec), Number(chapterSpec)];
 
 // ---- 讀取 build 產物 -------------------------------------------------------
 const srcHtml = join(ROOT, 'dist/server-cert-br/index.html');
@@ -92,6 +97,7 @@ const sections = (article.childNodes ?? []).filter(
   (n) => n.tagName === 'section' && hasClass(n, 'full-text-section')
 );
 const kept = sections.filter((s) => {
+  if (wantAll) return true;
   const ch = chapterOf(attr(s, 'id'));
   return Number.isFinite(ch) && ch >= chFrom && ch <= chTo;
 });
@@ -195,7 +201,11 @@ const siteTs = readFileSync(join(ROOT, 'src/config/site.ts'), 'utf8');
 const version = /version:\s*'([^']+)'/.exec(siteTs)?.[1] ?? 'tbd';
 const today = new Date().toISOString().slice(0, 10);
 
-const chapterLabel = chFrom === chTo ? `第 ${chFrom} 章` : `第 ${chFrom}–${chTo} 章`;
+const chapterLabel = wantAll
+  ? '全文（含附錄）'
+  : chFrom === chTo
+    ? `第 ${chFrom} 章`
+    : `第 ${chFrom}–${chTo} 章`;
 const title = `CA/Browser Forum 基本要求 非官方繁體中文翻譯（${chapterLabel}）`;
 
 const DISCLAIMER =
