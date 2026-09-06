@@ -364,6 +364,7 @@ SubjectPublicKeyInfo  ::=  SEQUENCE  {
 - `scripts/rehype-table-caption.mjs` — 把表格上方 `Table:`／`表：` 段落轉成表格底端 `<caption>`，並把每個 `<table>` 包進 `.table-wrap`（見 §2.2）
 - `scripts/rehype-footnotes.mjs` — 註腳 id 加章節前綴、標題改中文「註腳」、標記英文側引用（見 §13）
 - `scripts/rehype-table-indent.mjs` — 表格儲存格前導 U+2007 縮排改成 cell padding（見 §2.3）
+- `scripts/rehype-section-links.mjs` — 章節交叉參照改指向本站全文頁：`#7121-…` → `/server-cert-br/#7121-…`。**譯稿維持原文的錨點寫法**（好與 BR.md 逐字對照），錨點名與 cabforum.org 相同，網域對調即可落到同一節。以「各檔 `original_url` fragment」為白名單，註腳的 `#fn-…` 不受影響。⚠️ 之後若替 `astro.config.mjs` 設了 `base`，plugin 內的 `FULL_TEXT_PATH` 要一併加前綴
 
 > ⚠️ **改 plugin 後要清 content layer 快取**：Astro 把每個章節檔的 render 結果存在 `node_modules/.astro/data-store.json`（另有 `.astro/data-store.json`），快取只看 markdown 內容與 `astro.config.mjs`，**不看 plugin 檔本身**。只改 `scripts/*.mjs` 而不動 config 的話，`npm run build` 會沿用舊 HTML、看起來像改動沒生效。刪掉這兩個檔再 build 即可。
 

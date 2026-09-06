@@ -8,6 +8,7 @@ import { remarkFancyLists } from './scripts/remark-fancy-lists.mjs';
 import { rehypeTableCaption } from './scripts/rehype-table-caption.mjs';
 import { rehypeFootnotes } from './scripts/rehype-footnotes.mjs';
 import { rehypeTableIndent } from './scripts/rehype-table-indent.mjs';
+import { rehypeSectionLinks } from './scripts/rehype-section-links.mjs';
 
 // https://astro.build/config
 export default defineConfig({
@@ -37,7 +38,11 @@ export default defineConfig({
     // 各節註腳合併到文件最下方（比照 cabforum.org 原文的註腳位置）。
     // rehypeTableIndent：把表格儲存格的前導 U+2007 縮排改成 cell padding，
     // 避免窄欄位時縮排被當成斷行點而失效（見 TRANSLATION_CONVENTIONS §2.3）。
-    rehypePlugins: [rehypeTableCaption, rehypeFootnotes, rehypeTableIndent],
+    // rehypeSectionLinks：譯稿沿用原文的 `#7121-…` 錨點寫法，但本站是拆頁的，
+    // 這些純片段連結在任何一頁都不存在。build 時補上全文頁路徑，指向
+    // /server-cert-br/#<原文錨點>（錨點名與 cabforum.org 相同）。註腳的
+    // `#fn-…` 以白名單機制排除，維持頁內跳轉。
+    rehypePlugins: [rehypeTableCaption, rehypeFootnotes, rehypeTableIndent, rehypeSectionLinks],
   },
   vite: {
     // tailwind 4.3 的 vite plugin 與 Astro 內建 vite 型別有 skew，build 正常；

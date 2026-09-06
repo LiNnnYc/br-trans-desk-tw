@@ -100,12 +100,35 @@ if (kept.length === 0) {
   process.exit(1);
 }
 
+// ---- 章節交叉參照：範圍內的改回文件內片段連結 --------------------------------
+// scripts/rehype-section-links.mjs 把譯稿的 `#7121-…` 改寫成
+// `/server-cert-br/#7121-…`（指向全文頁）。匯出成單一自足 HTML 時，這些節就在
+// 同一份文件裡，改回純片段即可互跳；範圍外的維持絕對路徑，由下面的清理移除。
+const anchorsInRange = new Set();
+for (const sec of kept) {
+  for (const n of walk(sec)) {
+    const id = n.nodeName !== '#text' ? attr(n, 'id') : '';
+    if (id) anchorsInRange.add(id);
+  }
+}
+let relinked = 0;
+for (const sec of kept) {
+  for (const n of walk(sec)) {
+    if (n.tagName !== 'a') continue;
+    const m = /^\/server-cert-br\/#(.+)$/.exec(attr(n, 'href'));
+    if (!m || !anchorsInRange.has(m[1])) continue;
+    n.attrs = (n.attrs ?? []).map((a) => (a.name === 'href' ? { ...a, value: `#${m[1]}` } : a));
+    relinked++;
+  }
+}
+
 // ---- 清理：刪英文 blockquote、刪站內連結 ------------------------------------
 let removedQuotes = 0;
 let removedLinks = 0;
 for (const sec of kept) {
   removedQuotes += removeWhere(sec, (n) => n.tagName === 'blockquote');
   // 站外分享時「詳細頁」相對連結會失效，移除；cabforum.org 原文連結保留。
+  // 上一步已把範圍內的章節交叉參照改成片段連結，這裡移除的是範圍外的。
   removedLinks += removeWhere(sec, (n) => n.tagName === 'a' && attr(n, 'href').startsWith('/'));
 }
 
@@ -250,7 +273,9 @@ ${keptFootnotes > 0 ? parse5.serializeOuter(footnotesSection) : ''}
 writeFileSync(outPath, html, 'utf8');
 console.log(`✔ 已匯出 ${outPath}`);
 console.log(`  章節 section：${kept.length} 個（${chapterLabel}）`);
-console.log(`  移除英文 blockquote：${removedQuotes} 個；移除站內連結：${removedLinks} 個`);
+console.log(
+  `  移除英文 blockquote：${removedQuotes} 個；章節交叉參照改文件內連結：${relinked} 個；移除站內連結：${removedLinks} 個`
+);
 console.log(`  註腳：保留 ${keptFootnotes} 條，範圍外捨棄 ${droppedFootnotes} 條`);
 console.log(`  內嵌樣式表：${cssHrefs.join(', ')}`);
 console.log(`  目錄項目：${toc.length}`);
