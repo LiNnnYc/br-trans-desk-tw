@@ -79,32 +79,80 @@ git config core.hooksPath .githooks
 
 #### 升版流程（v2.2.7 → 下一版）
 
-1. 更新 `web-spec-doc/BR.md` 為新版原文（`cabforum/servercert` main 分支）。
-   此時徽章立刻顯示「上游 vX.Y.Z」，站上內容仍標舊版——這是正確狀態。
-2. 逐節比對、重譯變動章節，把該檔 `original_version` 改為新版、`status` 視情況調整。
-   **這段期間全庫會混版，是正常的**；本地 commit 不受影響，但 `git push` 會被
-   pre-push hook 擋下。
-3. 全部更新完成後，在 `src/config/br-versions.ts` **最上面加一列**新版
-   （`date` 從新的 BR.md 標頭抄過來），舊版那列補上 `gitTag` 與 `archive`。
-4. 產出舊版離線存檔並打 tag：
+> **順序很重要：先封存舊版，再換原文。** `web-spec-doc/BR.md` 檔名不帶版本號
+> （上游 cabforum 每一版都叫 BR.md），一旦覆蓋掉，比對基準就沒了。所以**步驟 0
+> 必須在動 BR.md 之前完成**——不要像早期版本的 SOP 那樣把打 tag 排到最後，
+> 那會逼你事後回頭指認「該版最後一個 commit」，指錯就前功盡棄。
+
+**步驟 0：封存現行版（動 BR.md 之前）**
+
+```sh
+git status                       # 必須乾淨——存檔要對應得上 commit
+```
+
+1. `src/config/br-versions.ts` 現行版那列補上 `gitTag: 'br-v<舊版>'` 與
+   `archive: 'BR_v<舊版>_zh-TW.html'`。
+2. 封存英文原文（**檔名帶版本號，方便人找**）：
 
    ```sh
-   git status                       # 必須乾淨——存檔要對應得上 commit
-   npm run build                    # ⚠️ 一定要在匯出「之前」重建
+   cp web-spec-doc/BR.md web-spec-doc/BR_archive/BR-v<舊版>.md
+   ```
+
+3. 產出中文離線存檔：
+
+   ```sh
+   npm run build                  # ⚠️ 一定要在匯出「之前」重建
    node scripts/export_chapters_html.mjs --chapters all      --out "public/archive/BR_v<舊版>_zh-TW.html"
-   git tag br-v<舊版> <該版最後一個 commit>
    ```
 
    > **⚠️ 匯出前一定要重建**：`export_chapters_html.mjs` 讀的是 `dist/`，不會自己 build。
    > 若 `dist/` 是更早之前建的，匯出的存檔會是**某個既非 HEAD、也未被提交**的中間狀態
-   > ——看起來正常，但和 tag 對不起來。2026-09-07 建立 v2.2.7 存檔時就踩過這個坑
-   > （存檔含了一份當時尚未提交的章節修改）。
+   > ——看起來正常，但和 tag 對不起來。2026-09-07 建立 v2.2.7 存檔時就踩過這個坑。
 
-5. 確認可發布：
+4. commit 上述三項，然後對**該 commit** 打 tag：
 
    ```sh
-   python scripts/lint_version_consistency.py   # 要 exit 0
+   git tag -a br-v<舊版> -m "TLS BR v<舊版> 繁體中文翻譯（全文審閱完成）"
    ```
+
+**步驟 1：換上新版原文**
+
+```sh
+# 從 cabforum/servercert main 分支取得新的 BR.md
+```
+
+此時版本徽章立刻顯示「上游 vX.Y.Z」、`/changelog/` 出現落後提醒，而站上內容仍標
+舊版——**這是正確狀態**，不要急著改 `br-versions.ts`。
+
+**步驟 2：比對出哪些章節真的變了**
+
+```sh
+python scripts/diff_br_versions.py
+```
+
+自動拿 `BR_archive/` 最新的封存版（或 `br-v*` tag）跟新的 BR.md 逐節比對，列出
+內容變動／新增／刪除各幾節、對應到哪些 `src/content/br/*.md`。
+看單節差異：`--show-diff 6.3.2`。要把變動章節一次標記成待重譯：
+
+```sh
+python scripts/diff_br_versions.py --mark-outdated --write
+```
+
+**步驟 3：重譯變動章節**
+
+把該檔 `original_version` 改為新版、`status` 改回 `translated`。
+**這段期間全庫會混版，是正常的**；本地 commit 不受影響，但 `git push` 會被
+pre-push hook 擋下。
+
+**步驟 4：宣告新版**
+
+`src/config/br-versions.ts` **最上面加一列**新版（`date` 從新的 BR.md 標頭抄過來）。
+
+**步驟 5：確認可發布**
+
+```sh
+python scripts/lint_version_consistency.py   # 要 exit 0
+```
 
 `/changelog/` 會自動把舊版移到「已歸檔版本」並列出存檔下載連結，站上的章節頁
 永遠只保留最新版（PRD §9：不做歷史版本翻譯，歷史以 git 與存檔留存）。

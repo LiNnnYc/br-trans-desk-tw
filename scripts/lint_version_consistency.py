@@ -13,6 +13,8 @@
 2. 該版本是否等於 `src/config/br-versions.ts` 的 `brVersions[0].version`
    （＝版本徽章與全站顯示的版本）
 3. 是否還有 `status: draft` / `outdated` 的檔案（＝該版尚未譯完或審完）
+4. `web-spec-doc/BR.md` 的版本是否**不低於**發布版——上游較新是升版中的正常狀態
+   （徽章會顯示「落後」），但比發布版還舊代表有人誤把舊原文還原回去了
 
 用法：
     python scripts/lint_version_consistency.py
@@ -30,13 +32,21 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 BR_DIR = ROOT / "src" / "content" / "br"
 VERSIONS_TS = ROOT / "src" / "config" / "br-versions.ts"
+BR_MD = ROOT / "web-spec-doc" / "BR.md"
 
 VERSION_RE = re.compile(r'^original_version:\s*"([^"]+)"', re.M)
 STATUS_RE = re.compile(r"^status:\s*(\w+)", re.M)
 # brVersions 陣列中第一個 version 欄位＝本站發布版
 DECLARED_RE = re.compile(r"brVersions[^=]*=\s*\[\s*\{[^}]*?version:\s*'([^']+)'", re.S)
 
+BR_VERSION_RE = re.compile(r"^subtitle:\s*Version\s+(\S+)\s*$", re.M)
+
 PUBLISHABLE_STATUS = {"translated", "reviewed"}
+
+
+def version_key(v: str) -> tuple[int, ...]:
+    """"2.2.10" → (2, 2, 10)；認不得的片段當 0，不要因為格式意外就整支掛掉。"""
+    return tuple(int(x) if x.isdigit() else 0 for x in v.split("."))
 
 
 def main() -> int:
@@ -81,7 +91,28 @@ def main() -> int:
             "——版本徽章會顯示錯誤的版本"
         )
 
-    # ── 3. 是否還有未譯完／未審完的檔案 ─────────────────────────────
+    # ── 3. 上游原文版本（不擋升版中的正常落後，只擋「比發布版還舊」）────
+    upstream_note = None
+    try:
+        head = BR_MD.read_text(encoding="utf-8")[:2048]
+        upstream = (BR_VERSION_RE.search(head) or [None, None])[1]
+    except OSError:
+        upstream = None
+    if upstream is None:
+        problems.append("讀不到 web-spec-doc/BR.md 的 `subtitle: Version X`")
+    elif declared:
+        if upstream == declared:
+            upstream_note = f"上游原文 BR.md 為 {upstream}，與發布版相同"
+        elif version_key(upstream) > version_key(declared):
+            upstream_note = (f"上游原文 BR.md 已是 {upstream}（發布版 {declared}）"
+                             "——升版中的正常狀態，徽章會顯示「落後」")
+        else:
+            problems.append(
+                f"web-spec-doc/BR.md 是 {upstream}，比發布版 {declared} 還舊"
+                "——是不是不小心把舊原文還原回去了？"
+            )
+
+    # ── 4. 是否還有未譯完／未審完的檔案 ─────────────────────────────
     pending = {s: n for s, n in statuses.items() if s not in PUBLISHABLE_STATUS}
     if pending:
         detail = "、".join(f"{s} {len(n)} 檔" for s, n in sorted(pending.items()))
@@ -96,11 +127,15 @@ def main() -> int:
     if not problems:
         print(f"✓ 可發布：{total} 檔全數為 {corpus_version}，狀態皆已完成"
               f"（br-versions.ts 宣告 {declared}）")
+        if upstream_note:
+            print(f"  · {upstream_note}")
         return 0
 
     print(f"✗ 尚不可發布（{total} 檔）")
     for p in problems:
         print(f"  {p}")
+    if upstream_note:
+        print(f"  · {upstream_note}")
     print()
     print("升版做到一半是正常的，本地 commit 不受影響。")
     print("全部更新完成後再 push；若確定要推出未完成狀態：git push --no-verify")
