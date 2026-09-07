@@ -35,7 +35,17 @@ export function parseBrDate(raw: string): string | null {
 export interface UpstreamInfo {
   /** 上游最新版本號，如 "2.2.9"；讀不到時為 null */
   version: string | null;
-  /** 該版原文發布日（ISO）；讀不到時為 null */
+  /**
+   * 上游**最新版**原文的發布日（ISO）；讀不到時為 null。
+   *
+   * ⚠️ **刻意不用於任何顯示**（2026-09-08 查證確認）。站上所有日期都取
+   * `current.date`（= `br-versions.ts` 的人工記錄）。升版期間 BR.md 已換成新版原文，
+   * 此欄位會是**新版**的日期，若拿來標示本站發布版，就會出現「v2.2.7 · 2026-08-06」
+   * 這種張冠李戴。同 `version` 欄位的鐵則：上游的值只能用來判斷是否落後、以及顯示
+   * 「上游 vX.Y.Z」，絕不可當成本站的值。
+   *
+   * 目前唯一的用途是保留給日後的落後提示（如「上游已於 X 日發布新版」）。
+   */
   date: string | null;
 }
 

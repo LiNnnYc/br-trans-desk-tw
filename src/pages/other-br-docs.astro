@@ -15,11 +15,10 @@ import { Content } from '../md/other-br-docs.md';
 const ORIGINAL_URL =
   'https://cabforum.org/working-groups/server/baseline-requirements/documents/';
 const LAST_SYNCED = '2026-08-20';
+// 版本一律由 src/config/br-versions.ts 推導（見 src/lib/version.ts），必然是具體
+// 版本號——曾有的 'tbd' 佔位狀態已不存在，故不再做「版本待定」分支。
 const { version } = siteConfig.upstream;
-// site.ts 尚未填入對應版本時為 'tbd'；比照其他頁改顯示「版本待定」，
-// 且此時「本站 vs 上游」的版本比對沒有意義，改用不宣稱版本的說法。
-const versionKnown = version !== 'tbd';
-const versionLabel = versionKnown ? `v${version}` : '版本待定';
+const versionLabel = `v${version}`;
 ---
 
 <BaseLayout
@@ -65,20 +64,8 @@ const versionLabel = versionKnown ? `v${version}` : '版本待定';
       class="mt-6 rounded-md border border-sky-300 bg-sky-50 p-4 text-sm leading-relaxed text-sky-900"
       aria-label="本站對應版本說明"
     >
-      {
-        versionKnown ? (
-          <>
-            本站翻譯對應 <strong>TLS BR {versionLabel}</strong>。上游現行版本請見下方「現行版本」一節——
-            若兩者不同，代表上游已發布新版而本站尚未跟進，以《基本要求》原文為準。
-          </>
-        ) : (
-          <>
-            本頁列出的是<strong>上游官方版本</strong>；本站翻譯所對應的版本尚未於站台設定中標明
-            （<span class="font-mono">site.ts</span> 的 <span class="font-mono">upstream.version</span> 仍為
-            <span class="font-mono">tbd</span>）。發生爭議時一律以《基本要求》原文為準。
-          </>
-        )
-      }
+      本站翻譯對應 <strong>TLS BR {versionLabel}</strong>。上游現行版本請見下方「現行版本」一節——
+      若兩者不同，代表上游已發布新版而本站尚未跟進，以《基本要求》原文為準。
     </aside>
 
     <div class="clause-body mt-6">

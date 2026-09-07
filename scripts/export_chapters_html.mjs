@@ -197,9 +197,25 @@ const css = cssHrefs
   .join('\n');
 
 // ---- 站台資訊 --------------------------------------------------------------
-const siteTs = readFileSync(join(ROOT, 'src/config/site.ts'), 'utf8');
-const version = /version:\s*'([^']+)'/.exec(siteTs)?.[1] ?? 'tbd';
-const today = new Date().toISOString().slice(0, 10);
+// 版本取自 br-versions.ts 的第一列（= 本站發布版），這是全站唯一人工維護的版本資料。
+//
+// ⚠️ 曾經是刮 `src/config/site.ts` 的 `version: 'tbd'` 字面值；2026-09-07 site.ts 改成
+// `version: current.version`（推導）之後，這條 regex 就再也匹配不到，靜靜落到 `?? 'tbd'`
+// 的預設值——結果 v2.2.7 的離線存檔自稱「對應原文版本 tbd」。故改為**匹配不到就拋錯**，
+// 寧可中止匯出，也不要產出一份版本標錯的客服用存檔。
+const brVersionsTs = readFileSync(join(ROOT, 'src/config/br-versions.ts'), 'utf8');
+const version = /^\s*version:\s*'([^']+)'/m.exec(
+  brVersionsTs.slice(brVersionsTs.indexOf('export const brVersions')),
+)?.[1];
+if (!version) {
+  throw new Error(
+    'src/config/br-versions.ts 讀不到 brVersions[0].version；' +
+      '版本資料格式可能已變動，請先修好再匯出（不要產出版本標錯的存檔）。',
+  );
+}
+// 用**本地**日期，不用 toISOString()——那是 UTC，台灣時間凌晨 0–8 點匯出會標成前一天
+// （2026-09-08 03:58 匯出曾標成 2026-09-07）。'sv-SE' 的地區格式正好是 yyyy-mm-dd。
+const today = new Date().toLocaleDateString('sv-SE');
 
 const chapterLabel = wantAll
   ? '全文（含附錄）'

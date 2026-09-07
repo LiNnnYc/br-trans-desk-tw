@@ -28,9 +28,11 @@ const statusDot: Record<SyncStatus, string> = {
   pending: 'bg-slate-400',
 };
 
-const versionLabel = version === 'tbd' ? '版本待定' : `v${version.replace(/^v/, '')}`;
+// 版本必然是具體版本號（由 br-versions.ts 推導），不再有 'tbd' 佔位狀態。
+const versionLabel = `v${version.replace(/^v/, '')}`;
 // 顯示的是**該版原文的發布日**（cabforum 於 GitHub 釋出的 BR.md 標頭 date），
-// 不是本站的翻譯日期——客服對照原文時要看的是這個。
+// 不是本站的翻譯日期——客服對照原文時要看的是這個。徽章空間放不下標籤，
+// 以 title 補上語意，免得被讀成「最後同步日」。
 const dateLabel = lastSyncedAt;
 
 const isDark = variant === 'dark';
@@ -70,7 +72,7 @@ const linkCls = 'mt-1 inline-block text-bs-primary hover:underline';
     {
       dateLabel && (
         <span class={dateTextCls}>
-          · <time datetime={dateLabel}>{dateLabel}</time>
+          · <time datetime={dateLabel} title="原文發布日">{dateLabel}</time>
         </span>
       )
     }

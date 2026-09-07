@@ -19,6 +19,9 @@ const reviewedCount = sorted.filter((e) => e.data.status === 'reviewed').length;
 const translatedCount = sorted.filter((e) => e.data.status === 'translated').length;
 const draftCount = sorted.filter((e) => e.data.status === 'draft').length;
 
+// version 必然是具體版本號（由 br-versions.ts 推導），不再有 'tbd' 佔位狀態。
+// lastSyncedAt 是**該版原文的發布日**，不是本站的同步／翻譯日期（翻譯完成日記在
+// br-versions.ts 的 translatedAt），故標籤寫「原文發布日」而非「最後同步」。
 const { version, lastSyncedAt } = siteConfig.upstream;
 ---
 
@@ -49,10 +52,10 @@ const { version, lastSyncedAt } = siteConfig.upstream;
   <dl class="mt-6 grid gap-3 rounded-lg border border-slate-200 bg-slate-50 p-5 text-sm sm:grid-cols-2 lg:grid-cols-4">
     <div>
       <dt class="text-xs font-semibold uppercase tracking-wider text-slate-500">對應原文版本</dt>
-      <dd class="mt-1 font-mono text-slate-900">{version === 'tbd' ? '版本待定' : version}</dd>
+      <dd class="mt-1 font-mono text-slate-900">{version}</dd>
     </div>
     <div>
-      <dt class="text-xs font-semibold uppercase tracking-wider text-slate-500">最後同步</dt>
+      <dt class="text-xs font-semibold uppercase tracking-wider text-slate-500">原文發布日</dt>
       <dd class="mt-1 text-slate-900">{lastSyncedAt ?? '—'}</dd>
     </div>
     <div>
