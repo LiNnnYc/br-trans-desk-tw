@@ -4,7 +4,7 @@ abbreviation: "ADN"
 recommended_zh: "經授權網域名稱"
 recommended_definition: |
   係指用以對指定之完全吻合網域名稱（FQDN）或萬用網域名稱（Wildcard Domain Name）執行網域授權或控管權驗證之 FQDN。
-  （v2.3.0 起，ADN 的推導方式改由《基本要求》§3.2.2.4 的選取流程規範，不再寫在定義裡。）
+  （v2.3.0 起，ADN 的決定方式改由《基本要求》§3.2.2.4 的選取流程規範，不再寫在定義裡。）
 recommended_source: "BR"
 sources:
   - source: "BR"
@@ -12,7 +12,7 @@ sources:
     term_zh: "經授權網域名稱"
     definition: |
       係指用以對指定之完全吻合網域名稱（FQDN）或萬用網域名稱（Wildcard Domain Name）執行網域授權或控管權驗證之 FQDN。
-      （v2.3.0 起，ADN 的推導方式改由《基本要求》§3.2.2.4 的選取流程規範，不再寫在定義裡。）
+      （v2.3.0 起，ADN 的決定方式改由《基本要求》§3.2.2.4 的選取流程規範，不再寫在定義裡。）
     ref: "/server-cert-br/1-6-1/"
   - source: "HiPKICA"
     version: "v1.1"
