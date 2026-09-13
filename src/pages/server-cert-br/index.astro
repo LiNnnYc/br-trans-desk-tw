@@ -5,7 +5,7 @@
 //
 // 規格：web-spec-doc/server-cert-br樣式變更.txt
 //   - SSR 串接所有 br entries（依 section_id 自然排序）
-//   - 每節 heading 含 cabforum.org 原文錨點與單章節 deep-link
+//   - 每節 heading：章節編號連到單章節頁、錨點連結圖示（比照 cabforum.org）、原文連結
 //   - blockquote 透過 .full-text-only-cn 容器 CSS 隱藏（純中文）
 //   - 加 data-pagefind-ignore 避免與單章節頁雙重索引
 //   - sidebar：BrSidebarSubmenu + BrAnchorNav
@@ -172,7 +172,7 @@ for (const item of items) {
       <DocVersionBadge />
     </div>
     <!-- 版本與日期已由上方 DocVersionBadge 呈現，此處不再重複「對應原文版本／最後同步」。 -->
-    <p class="mt-2 text-sm text-slate-600 leading-relaxed">
+    <p class="mt-4 text-sm text-slate-600 leading-relaxed">
       CA/Browser Forum《Baseline Requirements for the Issuance and Management of Publicly-Trusted TLS Server Certificates》
     </p>
     <p class="mt-1 text-sm text-slate-600 leading-relaxed">非官方繁體中文翻譯</p>
@@ -213,23 +213,34 @@ for (const item of items) {
                 : 'text-base sm:text-lg font-semibold mt-8';
         return (
           <section {...idAttrs} class="full-text-section">
-            <HeadingTag id={originalAnchor} class:list={['font-serif-tc text-slate-900 leading-tight scroll-mt-20 group', headingSizeCls]}>
-              <span class="font-mono text-bs-secondary mr-2">{label}</span>
+            <HeadingTag id={originalAnchor} class:list={['font-serif-tc text-slate-900 leading-tight scroll-mt-20', headingSizeCls]}>
+              <!-- 章節編號即單章節頁（含中英對照、引用）的入口 -->
+              <a
+                href={`/server-cert-br/${sectionIdToPath(id)}/`}
+                class="font-mono text-bs-secondary mr-2 underline decoration-transparent underline-offset-4 hover:decoration-current transition"
+                aria-label={`${label} 單章節頁（含中英對照、引用）`}
+                title="單章節頁（含中英對照、引用）"
+              >{label}</a>
               <span>{cleanTitle}</span>
-              <span class="ml-2 inline-flex items-center gap-1 align-middle text-xs font-normal opacity-60 group-hover:opacity-100 transition">
-                <a
-                  href={`/server-cert-br/${sectionIdToPath(id)}/`}
-                  class="inline-flex items-center rounded border border-slate-300 px-1.5 py-0.5 text-slate-600 hover:border-bs-primary hover:text-bs-secondary"
-                  aria-label={`${label} 單章節頁（含中英對照、引用）`}
-                  title="單章節頁（含中英對照、引用）"
-                >
-                  詳細頁
-                </a>
+              <!-- 比照 cabforum.org 的 header-link：標題後方常駐的錨點連結圖示（Bootstrap Icons link-45deg）。
+                   「原文」鈕只在滑鼠移到按鈕本身時才高亮，不隨標題 hover 變化。 -->
+              <a
+                href={`#${originalAnchor ?? `sec-${slug}`}`}
+                class="ml-2 inline-flex align-middle text-bs-secondary hover:text-bs-primary transition"
+                aria-label={`${label} 本節錨點連結`}
+                title="本節錨點連結"
+              >
+                <svg width="20" height="20" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
+                  <path d="M4.715 6.542 3.343 7.914a3 3 0 1 0 4.243 4.243l1.828-1.829A3 3 0 0 0 8.586 5.5L8 6.086a1 1 0 0 0-.154.199 2 2 0 0 1 .861 3.337L6.88 11.45a2 2 0 1 1-2.83-2.83l.793-.792a4 4 0 0 1-.128-1.287z"/>
+                  <path d="M6.586 4.672A3 3 0 0 0 7.414 9.5l.775-.776a2 2 0 0 1-.896-3.346L9.12 3.55a2 2 0 1 1 2.83 2.83l-.793.792c.112.42.155.855.128 1.287l1.372-1.372a3 3 0 1 0-4.243-4.243z"/>
+                </svg>
+              </a>
+              <span class="ml-2 inline-flex items-center align-middle text-xs font-normal">
                 <a
                   href={entry.data.original_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  class="inline-flex items-center rounded border border-slate-300 px-1.5 py-0.5 text-slate-600 hover:border-bs-primary hover:text-bs-secondary"
+                  class="inline-flex items-center rounded border border-slate-300 px-1.5 py-0.5 text-slate-600 opacity-60 transition hover:opacity-100 hover:border-bs-primary hover:text-bs-secondary"
                   aria-label={`${label} cabforum.org 原文`}
                   title="cabforum.org 原文"
                 >

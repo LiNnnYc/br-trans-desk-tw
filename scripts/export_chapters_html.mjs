@@ -6,7 +6,7 @@
  *   - 只保留中文：移除所有英文對照 blockquote 節點（不是靠 CSS 隱藏，是真的刪掉，
  *     複製文字不會夾帶英文）。
  *   - CSS 內嵌：把 build 產出的樣式表 inline 進 <style>，單檔即可開啟。
- *   - 站內連結（詳細頁）移除，cabforum.org 原文外連保留。
+ *   - 站內連結（章節編號→單章節頁、範圍外交叉參照）拆掉連結但保留文字，cabforum.org 原文外連保留。
  *   - 附章節目錄 + 免責聲明（CLAUDE.md：免責文字為 load-bearing，不得移除）。
  *
  * 前置：先跑 `npm run build`（本腳本讀 dist/，不自行 build）。
@@ -80,6 +80,25 @@ function removeWhere(root, pred) {
   visit(root);
   return removed;
 }
+/** 遞迴拆掉符合 pred 的節點外殼、保留其子節點（連結去掉但文字留著） */
+function unwrapWhere(root, pred) {
+  let unwrapped = 0;
+  const visit = (node) => {
+    if (!node.childNodes) return;
+    node.childNodes = node.childNodes.flatMap((c) => {
+      if (c.nodeName !== '#text' && pred(c)) {
+        unwrapped++;
+        const kids = c.childNodes ?? [];
+        for (const k of kids) k.parentNode = node;
+        return kids;
+      }
+      return [c];
+    });
+    node.childNodes.forEach(visit);
+  };
+  visit(root);
+  return unwrapped;
+}
 // ---- 取出全文 article、篩選章節 --------------------------------------------
 const article = find(doc, (n) => n.tagName === 'article' && hasClass(n, 'full-text-only-cn'));
 if (!article) {
@@ -133,9 +152,13 @@ let removedQuotes = 0;
 let removedLinks = 0;
 for (const sec of kept) {
   removedQuotes += removeWhere(sec, (n) => n.tagName === 'blockquote');
-  // 站外分享時「詳細頁」相對連結會失效，移除；cabforum.org 原文連結保留。
-  // 上一步已把範圍內的章節交叉參照改成片段連結，這裡移除的是範圍外的。
-  removedLinks += removeWhere(sec, (n) => n.tagName === 'a' && attr(n, 'href').startsWith('/'));
+  // 站外分享時站內相對連結會失效，拆掉連結；cabforum.org 原文連結保留。
+  // 上一步已把範圍內的章節交叉參照改成片段連結，這裡處理的是範圍外的交叉參照，
+  // 以及標題上連到單章節頁的章節編號。
+  // ⚠️ 必須「拆殼留字」而非整個刪除：2026-09-14 以前是 removeWhere，部分章節匯出時
+  // 範圍外交叉參照的節號（如 §1.2.2 表中的「4.9.9」）連字一起消失；同日章節編號
+  // 改成連結後，標題與目錄的編號也會跟著不見。
+  removedLinks += unwrapWhere(sec, (n) => n.tagName === 'a' && attr(n, 'href').startsWith('/'));
 }
 
 // ---- 註腳（全文頁末尾的合併清單，見 scripts/rehype-footnotes.mjs）-----------
@@ -300,7 +323,7 @@ writeFileSync(outPath, html, 'utf8');
 console.log(`✔ 已匯出 ${outPath}`);
 console.log(`  章節 section：${kept.length} 個（${chapterLabel}）`);
 console.log(
-  `  移除英文 blockquote：${removedQuotes} 個；章節交叉參照改文件內連結：${relinked} 個；移除站內連結：${removedLinks} 個`
+  `  移除英文 blockquote：${removedQuotes} 個；章節交叉參照改文件內連結：${relinked} 個；拆除站內連結（保留文字）：${removedLinks} 個`
 );
 console.log(`  註腳：保留 ${keptFootnotes} 條，範圍外捨棄 ${droppedFootnotes} 條`);
 console.log(`  內嵌樣式表：${cssHrefs.join(', ')}`);
