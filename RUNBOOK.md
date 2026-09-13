@@ -146,7 +146,15 @@ pre-push hook 擋下。
 
 **步驟 4：宣告新版**
 
-`src/config/br-versions.ts` **最上面加一列**新版（`date` 從新的 BR.md 標頭抄過來）。
+1. **內容未變動的章節也要把 `original_version` 改為新版**——`lint_version_consistency.py`
+   要求全庫一致。改之前先確認這些節在新舊原文間真的一字未變
+   （v2.3.0 升版時是 391 節，逐節比對 `BR_archive/BR-v<舊版>.md` 與 `BR.md` 後才批次改）。
+   只改該行，`last_updated` 不動（譯文沒變）。
+2. 若升版有**新增章節**，`order` 依 `section_id` 自然排序（同 `src/lib/section.ts` 的
+   `compareSectionId`）**從 1 起**重新連號。`order` 目前沒有程式讀取（排序走 `section_id`），
+   但維持連號可避免日後誤用；新節插在中間時編號必然整片位移，建議與譯文分開 commit。
+3. `src/config/br-versions.ts` **最上面加一列**新版（`date` 從新的 BR.md 標頭抄過來）。
+   `gitTag` 與 `archive` 先不填——**要到下一次升版的步驟 0 封存時才補**。
 
 **步驟 5：確認可發布**
 

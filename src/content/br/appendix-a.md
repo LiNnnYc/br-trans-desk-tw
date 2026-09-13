@@ -1,9 +1,9 @@
 ---
 title: "CAA 聯絡標籤"
 section_id: "appendix-a"
-order: 406
+order: 418
 original_url: "https://cabforum.org/working-groups/server/baseline-requirements/requirements/#appendix-a--caa-contact-tag"
-original_version: "2.2.7"
+original_version: "2.3.0"
 ballot_refs: []
 translator: "Claude (Sonnet) 初譯 + ChatGPT (Instant) 潤稿 + LiNnnYc 審閱"
 last_updated: 2026-09-06

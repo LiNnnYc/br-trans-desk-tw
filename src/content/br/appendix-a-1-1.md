@@ -2,9 +2,9 @@
 title: "CAA contactemail 屬性"
 section_id: "appendix-a.1.1"
 parent: "appendix-a.1"
-order: 408
+order: 420
 original_url: "https://cabforum.org/working-groups/server/baseline-requirements/requirements/#a11-caa-contactemail-property"
-original_version: "2.2.7"
+original_version: "2.3.0"
 ballot_refs: []
 translator: "Claude (Sonnet) 初譯 + ChatGPT (Instant) 潤稿 + LiNnnYc 審閱"
 last_updated: 2026-09-06

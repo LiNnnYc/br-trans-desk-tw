@@ -2,9 +2,9 @@
 title: "DNS TXT 紀錄電話聯絡人（DNS TXT Record Phone Contact）"
 section_id: "appendix-a.2.2"
 parent: "appendix-a.2"
-order: 412
+order: 424
 original_url: "https://cabforum.org/working-groups/server/baseline-requirements/requirements/#a22-dns-txt-record-phone-contact"
-original_version: "2.2.7"
+original_version: "2.3.0"
 ballot_refs: []
 translator: "Claude (Sonnet) 初譯 + ChatGPT (Instant) 潤稿 + LiNnnYc 審閱"
 last_updated: 2026-09-12
