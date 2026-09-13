@@ -18,6 +18,10 @@ const totalCount = sorted.length;
 const reviewedCount = sorted.filter((e) => e.data.status === 'reviewed').length;
 const translatedCount = sorted.filter((e) => e.data.status === 'translated').length;
 const draftCount = sorted.filter((e) => e.data.status === 'draft').length;
+// 升版期間會有一批 outdated（原文已變動、譯稿尚未跟上）。不列出來的話，
+// 摘要列的加總會少於「已建立節數」，讀者看不出那些節去哪了。
+const outdatedCount = sorted.filter((e) => e.data.status === 'outdated').length;
+const pendingReviewCount = sorted.filter((e) => e.data.status === 'pending-review').length;
 
 // version 必然是具體版本號（由 br-versions.ts 推導），不再有 'tbd' 佔位狀態。
 // lastSyncedAt 是**該版原文的發布日**，不是本站的同步／翻譯日期（翻譯完成日記在
@@ -65,7 +69,7 @@ const { version, lastSyncedAt } = siteConfig.upstream;
     <div>
       <dt class="text-xs font-semibold uppercase tracking-wider text-slate-500">翻譯狀態</dt>
       <dd class="mt-1 text-slate-900 text-xs leading-relaxed">
-        已校稿 {reviewedCount}・已翻譯 {translatedCount}・草稿 {draftCount}
+        已校稿 {reviewedCount}・已翻譯 {translatedCount}・待審閱 {pendingReviewCount}・草稿 {draftCount}・過時 {outdatedCount}
       </dd>
     </div>
   </dl>
@@ -90,12 +94,14 @@ const { version, lastSyncedAt } = siteConfig.upstream;
               translated: '已翻譯',
               reviewed: '已校稿',
               outdated: '過時',
+              'pending-review': '待審閱',
             }[d.status];
             const statusCls = {
               draft: 'text-slate-500',
               translated: 'text-sky-700',
               reviewed: 'text-emerald-700',
               outdated: 'text-amber-700',
+              'pending-review': 'text-violet-700',
             }[d.status];
             return (
               <li>

@@ -22,7 +22,10 @@ const br = defineCollection({
     ballot_refs: z.array(z.string()).default([]),
     translator: z.string().min(1),
     last_updated: z.coerce.date(),
-    status: z.enum(['draft', 'translated', 'reviewed', 'outdated']),
+    // pending-review：升版重譯完成、尚未經人工審閱。與 draft 的差別是「譯完了」，
+    // 與 translated 的差別是「還沒審」——升版期間需要區分這兩者，故獨立一個狀態。
+    // 不列入 lint_version_consistency.py 的 PUBLISHABLE_STATUS，所以會擋 push。
+    status: z.enum(['draft', 'translated', 'reviewed', 'outdated', 'pending-review']),
     tags: z.array(z.string()).default([]),
   }),
 });

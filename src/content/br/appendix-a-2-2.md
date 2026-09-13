@@ -1,5 +1,5 @@
 ---
-title: "DNS TXT 紀錄之電話聯絡資訊"
+title: "DNS TXT 紀錄電話聯絡人（DNS TXT Record Phone Contact）"
 section_id: "appendix-a.2.2"
 parent: "appendix-a.2"
 order: 412
@@ -7,7 +7,7 @@ original_url: "https://cabforum.org/working-groups/server/baseline-requirements/
 original_version: "2.2.7"
 ballot_refs: []
 translator: "Claude (Sonnet) 初譯 + ChatGPT (Instant) 潤稿 + LiNnnYc 審閱"
-last_updated: 2026-09-06
+last_updated: 2026-09-12
 status: translated
 tags: []
 ---

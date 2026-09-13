@@ -106,12 +106,14 @@ const statusLabel: Record<typeof d.status, string> = {
   translated: '已翻譯',
   reviewed: '已校稿',
   outdated: '過時',
+  'pending-review': '待審閱',
 };
 const statusToneCls: Record<typeof d.status, string> = {
   draft: 'bg-slate-100 text-slate-700 border-slate-300',
   translated: 'bg-sky-50 text-sky-800 border-sky-300',
   reviewed: 'bg-emerald-50 text-emerald-800 border-emerald-300',
   outdated: 'bg-amber-50 text-amber-800 border-amber-300',
+  'pending-review': 'bg-violet-50 text-violet-800 border-violet-300',
 };
 
 const sectionLabel = sectionIdToLabel(d.section_id);

@@ -3,10 +3,10 @@ title: "為 Onion 網域名稱簽發憑證"
 section_id: "appendix-b"
 order: 413
 original_url: "https://cabforum.org/working-groups/server/baseline-requirements/requirements/#appendix-b--issuance-of-certificates-for-onion-domain-names"
-original_version: "2.2.7"
+original_version: "2.3.0"
 ballot_refs: []
-translator: "Claude (Sonnet) 初譯 + ChatGPT (Instant) 潤稿 + LiNnnYc 審閱"
-last_updated: 2026-09-06
+translator: "Claude (Opus) + LiNnnYc 審閱"
+last_updated: 2026-09-13
 status: translated
 tags: []
 ---
@@ -17,31 +17,25 @@ tags: []
 
 本附錄定義在憑證中包含一個或多個 Onion 網域名稱（Onion Domain Name）時所允許採用的驗證程序。
 
-> 1. The Domain Name MUST contain at least two Domain Labels, where the rightmost Domain Label is "onion", and the Domain Label immediately preceding the rightmost "onion" Domain Label is a valid Version 3 Onion Address, as defined in Section 6 of the Tor Rendezvous Specification - Version 3 located at <https://spec.torproject.org/rend-spec-v3>.
+> 1. The ADN MUST contain at least two Domain Labels, where the rightmost Domain Label is "onion", and the Domain Label immediately preceding the rightmost "onion" Domain Label is a valid Version 3 Onion Address, as defined in Section 6 of the Tor Rendezvous Specification - Version 3 located at <https://spec.torproject.org/rend-spec-v3>.
 
-1. 網域名稱**應（MUST）**包含至少兩個網域標籤（Domain Label），其中最右側的網域標籤為「onion」，且緊鄰該「onion」網域標籤左側的網域標籤為有效的第 3 版 Onion 位址（Version 3 Onion Address），其定義見 [Tor Rendezvous 規範－第 3 版](https://spec.torproject.org/rend-spec-v3) 第 6 節。
+1. 經授權網域名稱（Authorization Domain Name，ADN）**應（MUST）**包含至少兩個網域標籤（Domain Label），其中最右側的網域標籤為「onion」，且緊鄰該「onion」網域標籤左側的網域標籤應為有效的第 3 版 Onion 位址（Version 3 Onion Address），其定義見 [Tor Rendezvous 規範－第 3 版](https://spec.torproject.org/rend-spec-v3) 第 6 節。
 
-> 2. The CA MUST verify the Applicant's control over the Onion Domain Name using at least one of the methods listed below:
->    1. **(a)** The CA MAY verify the Applicant's control over the .onion service by using one of the following methods from [Section 3.2.2.4](#3224-validation-of-domain-authorization-or-control):
->       - **(i)** [Section 3.2.2.4.18](#322418-agreed-upon-change-to-website-v2) — Agreed-Upon Change to Website v2
->       - **(ii)** [Section 3.2.2.4.19](#322419-agreed-upon-change-to-website---acme) — Agreed-Upon Change to Website - ACME
->       - **(iii)** [Section 3.2.2.4.20](#322420-tls-using-alpn) — TLS Using ALPN
+> 2. The CA MUST verify the Applicant's control over the ADN using at least one of the methods listed below:
+>    1. **(a)** The CA MAY verify the Applicant's control over the ADN by using any method from [Section 3.2.2.4](#3224-validation-of-domain-authorization-or-control) that says "This method allows Onion Domain Name issuance", with this modification:
 >
->       When these methods are used to verify the Applicant's control over the .onion service, the CA MUST use Tor protocol to establish a connection to the .onion hidden service. The CA MUST NOT delegate or rely on a third-party to establish the connection, such as by using Tor2Web.
+>       When these methods are used to verify the Applicant's control over an Onion Domain Name, the CA MUST use Tor protocol to establish a connection to the ADN. The CA MUST NOT delegate or rely on a third-party to establish the connection, such as by using Tor2Web.
 >
->       **Note**: This section does not override or supersede any provisions specified within the respective methods. The CA MUST only use a method if it is still permitted within that section and MUST NOT issue Wildcard Certificates or use it as an Authorization Domain Name, except as specified by that method.
+>       **Note**: This section does not override or supersede any provisions specified within the respective methods. The CA MUST only use a method if it is still permitted within that section.
 
-2. CA **應（MUST）**使用下列至少一種方法驗證申請者對 Onion 網域名稱的控管權：
-   1. **（a）** CA **得（MAY）**使用[第 3.2.2.4 節](#3224-validation-of-domain-authorization-or-control)所列的下列方法之一，驗證申請者對 .onion 服務的控管權：
-      - **（i）** [第 3.2.2.4.18 節](#322418-agreed-upon-change-to-website-v2) — 經約定之網站變更 v2
-      - **（ii）** [第 3.2.2.4.19 節](#322419-agreed-upon-change-to-website---acme) — 經約定之網站變更 - ACME
-      - **（iii）** [第 3.2.2.4.20 節](#322420-tls-using-alpn) — 使用 ALPN 的 TLS 連線
+2. CA **應（MUST）**使用下列至少一種方法驗證申請者對經授權網域名稱（ADN）的控管權：
+   1. **（a）** CA **得（MAY）**使用[第 3.2.2.4 節](#3224-validation-of-domain-authorization-or-control)中任何載明「此方法允許簽發 Onion 網域名稱」的方法（指第 3.2.2.4 節表格中 Onion 欄位標示「✔」的方法），驗證申請者對經授權網域名稱（ADN）的控管權，但須做以下調整：
 
-      使用上述方法驗證申請者對 .onion 服務的控管權時，CA **應（MUST）**使用 Tor 協定建立與 .onion 隱藏服務的連線。CA **不得（MUST NOT）**委任第三方建立該連線，亦**不得（MUST NOT）**依賴第三方所建立的連線，例如使用 Tor2Web。
+      使用上述方法驗證申請者對 Onion 網域名稱的控管權時，CA **應（MUST）**使用 Tor 協定建立與經授權網域名稱（ADN）的連線。CA **不得（MUST NOT）**委託第三方建立該連線，亦**不得（MUST NOT）**依賴第三方所建立的連線，例如使用 Tor2Web。
 
-      **注意**：本節不凌駕或取代各驗證方法本身所規定的任何條款。CA **應（MUST）**僅在該方法於其所屬章節中仍獲准使用時使用該方法；除非所使用的驗證方法另有規定，否則 CA 使用該方法時，**不得（MUST NOT）**簽發萬用網域憑證（Wildcard Certificate），亦**不得（MUST NOT）**以該方法允許範圍外的網域名稱作為經授權網域名稱（Authorization Domain Name）。
+      **注意**：本節不凌駕或取代各驗證方法本身所規定的任何條款。CA **應（MUST）**僅在該方法於其所屬章節中仍獲准使用時使用該方法。
 
-   >    2. **(b)** The CA MAY verify the Applicant's control over the .onion service by having the Applicant provide a Certificate Request signed using the .onion service's private key if the Attributes section of the certificationRequestInfo contains:
+   >    2. **(b)** The CA MAY verify the Applicant's control over the .onion service corresponding to the ADN by having the Applicant provide a Certificate Request signed using the .onion service's private key if the Attributes section of the certificationRequestInfo contains:
    >       - **(i)** A caSigningNonce attribute that contains a Random Value that is generated by the CA; and
    >       - **(ii)** An applicantSigningNonce attribute that contains a single value. The CA MUST recommend to Applicants that the applicantSigningNonce value should contain at least 64 bits of entropy.
    >
@@ -70,11 +64,8 @@ tags: []
    >       ```
    >       
    >       The Random Value SHALL remain valid for use in a confirming response for no more than 30 days from its creation. The CPS MAY specify a shorter validity period for Random Values.
-   >       
-   >       Once the FQDN has been validated using this method, the CA MAY also issue Certificates for other FQDNs that end with all the labels of the validated FQDN. This method is suitable for validating Wildcard Domain Names.
 
-
-   2. **（b）** 若 `certificationRequestInfo` 的 Attributes 區段包含下列內容，CA **得（MAY）**要求申請者提供以 .onion 服務私密金鑰（private key）簽章的憑證請求（Certificate Request），以驗證申請者對 .onion 服務的控管權：
+   2. **（b）** 若 `certificationRequestInfo` 的 Attributes 區段包含下列內容，CA **得（MAY）**要求申請者提供以 .onion 服務私密金鑰（private key）簽章的憑證請求（Certificate Request），以驗證申請者對經授權網域名稱（ADN）所對應之 .onion 服務的控管權：
       - **（i）** `caSigningNonce` 屬性，其中包含由 CA 產生的隨機值（Random Value）；及
       - **（ii）** `applicantSigningNonce` 屬性，其中包含單一值。CA **應（MUST）**向申請者建議，`applicantSigningNonce` 值宜包含至少 64 位元之亂度（entropy，資訊熵）。
 
@@ -104,8 +95,6 @@ tags: []
 
       隨機值自建立之日起，用於確認回覆的有效期限**應（SHALL）**不超過 30 日。憑證實務作業基準（Certification Practice Statement，CPS）**得（MAY）**規定更短的隨機值有效期限。
 
-      一旦 FQDN 透過此方法完成驗證，CA 亦**得（MAY）**針對以該驗證 FQDN 之完整標籤（labels）為結尾的其他 FQDN 簽發憑證。此方法適用於驗證萬用網域名稱（Wildcard Domain Names）。
-
 > 3. When a Certificate includes an Onion Domain Name, the Domain Name shall not be considered an Internal Name provided that the Certificate was issued in compliance with this [Appendix B](#appendix-b--issuance-of-certificates-for-onion-domain-names).
 
-3. 若憑證中包含 Onion 網域名稱，且該憑證係依本[附錄 B ](#appendix-b--issuance-of-certificates-for-onion-domain-names)規定簽發，則該網域名稱不視為內部名稱（Internal Name）。
+3. 若憑證中包含 Onion 網域名稱，且該憑證係依本文件[附錄 B ](#appendix-b--issuance-of-certificates-for-onion-domain-names)規定所簽發，則該網域名稱不視為內部名稱（Internal Name）。

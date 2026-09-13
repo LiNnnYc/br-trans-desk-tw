@@ -218,6 +218,108 @@ inline `` `code` `` 另有 `.clause-body td code { white-space: nowrap }` 保護
 | Multi-Perspective Issuance Corroboration | **多視角簽發佐證**（MPIC） | 多視角驗證 |
 | No stipulation（空白章節標記） | **不作規定** | 無規定、未作規定 |
 
+#### 4.2.1 v2.3.0（SC-101v2）ADN 相關定版
+
+以下由 §3.2.2.4 人工審閱定案（2026-09-09），§4.2.2.1 家族審閱再補（2026-09-10），
+**§3.2.2.4 全家族、§4.2.2 全家族與附錄 B 一律沿用**：
+
+| 英文 | 中譯 | 不要用 |
+|---|---|---|
+| Authorization Domain Name（內文首次） | **經授權網域名稱（Authorization Domain Name，ADN）** | 經授權網域名稱（ADN, Authorization Domain Name） |
+| Authorization Domain Name（內文後續） | **經授權網域名稱（ADN）**——**同一句重複多次也不裸寫** | 裸寫 `ADN` |
+| Prune（§3.2.2.4 對照表欄名） | **刪減（Prune）** | 刪除（Prune）、修剪 |
+| prune（動詞，句中） | **刪除**（刪除最左側網域標籤） | 刪減、修剪 |
+| Wildcard（§3.2.2.4 對照表欄名） | **萬用網域（Wildcard）** | 萬用（Wildcard） |
+| Method（§3.2.2.4 對照表欄名） | **驗證方法** | 方法 |
+| has a check in the X column | **於下表「X」欄中標示「✔」** | 於下表「X」欄標示為 ✔ |
+| applied-for（FQDN） | **所申請的** | 申請的 |
+| given（FQDN） | **指定之** | 給定之、所指之 |
+| Initialize `A` to … | **將 `A` 設為…** | 將 `A` 初始化為… |
+| validation of domain authorization or control | **網域授權或控管權驗證** | 網域授權或控制驗證 |
+| CAA record lookup(s) | **CAA 紀錄檢查** | CAA 紀錄查詢 |
+| CAA check / CAA checking | **CAA 檢查** | CAA 查核 |
+| IANA ACME Validation Methods registry | **保留原文不譯** | IANA ACME 驗證方法登錄簿 |
+| ACME Account URL | **保留原文不譯** | ACME 帳戶網址 |
+| URI scheme | **保留原文不譯**（如「acct」URI scheme） | URI 協定、URI 配置 |
+| account | **帳號** | 帳戶 |
+| subsection | **小節** | 子節 |
+| bind / binding | **繫結** | 綁定、連結 |
+| register / registered | **登記** | 登錄 |
+| Effective `<date>`（句首時間狀語） | **自 `<date>` 起，…** | 自 `<date>` 起生效，… |
+| DNS TXT Record | **DNS TXT 紀錄** | DNS TXT Record（中文側照抄英文） |
+| DNS TXT Record Phone Contact／Email Contact | **DNS TXT 紀錄電話聯絡人／電子郵件聯絡人**，檔內首次加英文括註 | DNS TXT Record 電話聯絡人 |
+| DNS CAA Phone Contact／Email Contact | **DNS CAA 電話聯絡人／電子郵件聯絡人**，檔內首次加英文括註 | DNS CAA 電子郵件聯絡地址 |
+| EV Guidelines | **《EV 指引》** | EV Guidelines（中文側照抄英文） |
+| underscore（character） | **底線**（字元） | 下底線 |
+| Section `N`（中文句中引用他份文件的節號） | **第 `N` 節** | Section `N` |
+| Automated Certificate Management Environment | **自動憑證更新環境（ACME）** | 自動化憑證管理環境 |
+| Account URI | **保留原文不譯** | 帳號 URI |
+| ADN selection algorithm（§3.2.2.5.3 等） | **選擇經授權網域名稱（ADN）的判斷流程** | ADN 選取演算法 |
+| (ADNs must be) derived | **決定** | 推導 |
+| Clarify …（Ballot 名稱，§1.2.1） | **明定…** | 釐清…、明訂… |
+| Clarification（名詞，Ballot 名稱） | **釐清** | |
+
+**縮寫括註的兩套格式，不要混用**：
+
+- **§1.6.1 定義條目**：`中譯（縮寫, English Full Name）`，半形逗號。
+  例：`憑證廢止清冊（CRL, Certificate Revocation List）`、
+  `經授權網域名稱（ADN, Authorization Domain Name）`。這是定義章自己的格式。
+- **一般內文**：`中譯（English Full Name，縮寫）`，全形逗號；同一檔後續出現簡化為
+  `中譯（縮寫）`。例：`完全吻合網域名稱（Fully-Qualified Domain Name，FQDN）`、
+  `經授權網域名稱（Authorization Domain Name，ADN）` → 後續 `經授權網域名稱（ADN）`。
+
+**節標題的「之」**：`X of Y`／`Y requirements` 這類標題，中譯用「之」連接，不要省略。
+
+| 英文節標題 | 中譯 |
+|---|---|
+| Validation of Domain Authorization or Control | 網域授權或控管權**之**驗證 |
+| CAA record processing | 授權憑證機構簽發憑證（CAA）紀錄**之**處理 |
+| DNSSEC Validation Requirements | DNSSEC 驗證**之**要求 |
+| DNS Resolver Requirements | DNS 解析器**之**要求 |
+
+**CAA 節標題一律用全稱**「授權憑證機構簽發憑證（CAA）…」，**子節也不例外**：
+
+| 節 | 標題 |
+|---|---|
+| §3.2.2.8 | 授權憑證機構簽發憑證（CAA）紀錄 |
+| §4.2.2.1 | 授權憑證機構簽發憑證（CAA）紀錄**之**處理 |
+| §4.2.2.1.1 | 授權憑證機構簽發憑證（CAA）**之**多視角簽發佐證 |
+| §4.2.2.1.2 | 授權憑證機構簽發憑證（CAA）**之**參數 |
+
+> **沿革**：2026-09-10 曾誤記為「子節用簡稱 CAA」（當時 §4.2.2.1.1／.1.2 的初稿是簡稱），
+> 2026-09-12 審閱把兩節都改為全稱，**規則是一律全稱**。
+> 目前唯一例外是 §3.2.2.8.1「CAA 紀錄的 DNSSEC 驗證」——舊標題，本次未一併改。
+
+**IANA 的登錄簿／資料庫等專有名稱保留英文**，不譯、不加中文括註——比照 §1.6.1 對
+`IANA Root Zone Database` 的既有處理。實例：§4.2.2.1.2 的連結文字寫
+`[IANA ACME Validation Methods registry](…)`。
+（`IANA DNSSEC root trust anchor` 是例外：既有譯文作「IANA DNSSEC 信賴根源
+（IANA DNSSEC root trust anchor）」，已審閱定稿，維持不動。）
+
+> **ADN 重複時的寫法已定案（2026-09-13）**：§3.2.2.4.16／.17 原本的「首次全稱、後續裸寫 ADN」
+> 已由審閱全部改成「經授權網域名稱（ADN）」，即使一句話出現三次也照寫。
+> 全庫殘留 1 處：`5-4-1.md` 第 74 行「所使用之 ADN 與所申請的 FQDN 不相同」。
+
+> **「自動憑證更新環境」不是誤譯**（2026-09-13 審閱者說明）：`Management` 字面是「管理」，
+> 但台灣兩大 CA 都稱 ACME 為「自動憑證更新環境」——業界對 ACME 的認知就是憑證自動更新，
+> 而非管理整個憑證生命週期。glossary `automated-certificate-management-environment.md`
+> 早已收錄（來源 TWCA Global CPS v3.1 附錄一）。**依 §4.1 優先順序，國內 CA 既有譯名優先於字面直譯**，
+> 質疑譯名前先查 glossary。
+
+> **附錄 B 有一處本站補充的括號說明**（2026-09-13 審閱加入）：v2.3.0 附錄 B.2.a 引用
+> 「This method allows Onion Domain Name issuance」，但 §3.2.2.4 底下沒有任何方法寫這句
+> （上游改用對照表的 Onion 欄後漏改）。中文在該處補「（指第 3.2.2.4 節表格中 Onion 欄位標示「✔」的方法）」。
+> **這段括號是刻意加的，英文側沒有對應文字，不要當成多譯刪掉。**上游若修正此句，再回頭拿掉。
+
+**以下是審閱時出現、但全庫未一致的潤飾——不是定版，勿逕行全站 sweep**（除非審閱者明說）：
+
+| 審閱改法 | 全庫現況 | 判斷 |
+|---|---|---|
+| 「之所有」→「的所有」 | 仍有 16 檔 19 處 | 局部潤飾 |
+| 「遵從其 CPS」→「遵從其憑證實務作業基準（CPS）」 | 中文側裸寫 CPS 仍有 8 檔 10 處 | 局部潤飾 |
+| `delegate`（動作）：「委派」／「委任」→「委託」（§3.2.2.4.7、附錄 B） | 「委託」全庫已 10 處／6 檔；「委任」40 處多為固定詞「受委任第三方（Delegated Third Party）」；「委派」剩 3 處（§1.3.2 一處、DNSSEC Delegation Signer、ICANN delegated gTLD） | 一般 delegate 動作傾向「委託」；**「受委任第三方」為定版不動**；其餘依語境 |
+| 「該經授權網域名稱（ADN）」刪「該」 | 同節內仍有保留「該」者 | 依語境，無規則 |
+
 ### 4.3 使用者面向用詞
 
 | 用 | 不用 |
@@ -300,6 +402,30 @@ CommonMark 規定第 0 欄的 blockquote 會把整個上層清單關掉，其後
 > 辨識法：畫面上同一組的 `（a）`／`（b）` 縮排不一樣 → 先看兩者之間的英文
 > blockquote 是不是寫在第 0 欄，或直接跑 `python scripts/lint_list_nesting.py`。
 
+### 6.2 上游把子項寫在第 0 欄時：英文照抄，中文縮排成巢狀
+
+BR.md 偶爾會把語意上的子條件寫在第 0 欄，導致 CommonMark／Pandoc 把它解讀成
+「中斷項目清單、另起一個編號清單」，渲染成並列而非巢狀。實例（§4.2.2.1.2，v2.3.0）：
+
+```markdown
+- For certificate requests made using the ACME protocol, … all of the following:
+1. The CA maintains an internal, auditable mapping …      ← 第 0 欄，語意上是子條件
+2. The CA has cryptographically or administratively verified …
+3. The CA retains audit logs …
+- If the CA supports domain validation methods …
+```
+
+**處理原則（2026-09-10 定案）**：
+
+- **英文 blockquote 逐字照抄，連縮排都不要動**——它必須與 BR.md 逐行相同，
+  才通得過「英文引用側機械核對」。渲染成 `ul → ol → ul` 三個並列清單是預期結果，
+  cabforum.org（Pandoc）呈現的也一樣。
+- **中文縮排成正確的巢狀**（子項縮 2 格對齊 `- ` 的內容欄）。
+  讀者理解優先，中英兩側的清單結構因此**刻意不一致**。
+
+> 這是 §1「中英結構對稱」的**唯一例外**，且僅適用於「上游 markdown 明顯寫錯層級」的情形。
+> 一般情況仍須兩側結構一致。遇到時在對照檔記一筆，讓審閱者知道差異是刻意的。
+
 ---
 
 ## 7. 標題格式
@@ -322,11 +448,34 @@ CommonMark 規定第 0 欄的 blockquote 會把整個上層清單關掉，其後
 新增章節時預設 `status: draft`。經人工 review 後依下列順序升級：
 
 - `draft` → 機器初譯／粗潤完成、未經人工驗收
+- `pending-review` → **譯完但還沒人工審**（站上顯示紫色「待審閱」徽章）。
+  2026-09-08 為 v2.3.0 升版新增；**不列入 `lint_version_consistency.py` 的
+  `PUBLISHABLE_STATUS`，會擋 push**。
 - `translated` → 譯者本人或他人通讀過，視為可用
 - `reviewed` → 至少兩人交叉 review 完成（含術語一致性、規範性語義正確性）
 - `outdated` → 上游 Ballot 已改動此節但譯稿尚未跟上
 
 目錄頁 `/server-cert-br/table-of-contents/` 會自動統計各狀態數量。
+
+### 8.1 升版重譯的 `translator` 欄
+
+重譯期間分兩階段寫，**不要保留舊的初譯／潤稿／審閱鏈**：
+
+| 階段 | `status` | `translator` |
+|---|---|---|
+| 重譯完成、待人工審 | `pending-review` | `Claude (Opus)` |
+| 人工審閱完成 | `translated` | `Claude (Opus) + LiNnnYc 審閱` |
+| 審閱前經另一個模型潤稿 | `translated` | `Claude (Opus) + ChatGPT (Instant) 潤稿 + LiNnnYc 審閱` |
+
+`last_updated` 在第二階段改為**實際審閱日**（可能與重譯日不同天）。
+
+審閱者若在送審前另用其他模型潤稿，就把該階段插在鏈中間（第三列）——
+這是全站既有寫法，第 7～9 章與附錄多數檔案都是這個形式。**不要自行填寫潤稿階段**，
+由審閱者補；重譯時一律只寫 `Claude (Opus)`。
+
+> ⚠️ 新增含連字號的 `status` 值時，先 `grep -rn 'status:' scripts/*.py` 掃一遍——
+> `\w+` 不吃連字號，會安靜截斷；`diff_br_versions.py` 甚至會把截斷結果**寫回檔案**
+> （`pending-review` 曾被寫成 `outdated-review`）。兩支腳本已改 `[\w-]+`。
 
 ---
 

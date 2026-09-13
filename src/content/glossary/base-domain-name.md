@@ -2,14 +2,14 @@
 term_en: "Base Domain Name"
 recommended_zh: "基礎網域名稱"
 recommended_definition: |
-  於申請的完全吻合網域名稱（FQDN）中，位於註冊表控制網域或公開字尾（registry-controlled or public suffix）左方第一個網域名稱節點（Domain Name node），加上該註冊表控制網域或公開字尾之部分（例如「example.co.uk」或「example.com」）。若 FQDN 最右端之網域名稱節點在其註冊協議（registry agreement）中具備 ICANN 規格 13（Specification 13）之通用頂級網域名稱（gTLD），則該 gTLD 本身可被當作基礎網域名稱。
+  於指定之完全吻合網域名稱（FQDN）中，位於註冊表控制網域或公開字尾（registry-controlled or public suffix）左方第一個網域名稱節點（Domain Name node），加上該註冊表控制網域或公開字尾之部分（例如「example.co.uk」或「example.com」）。若 FQDN 最右端之網域名稱節點在其註冊協議（registry agreement）中具備 ICANN 規格 13（Specification 13）之通用頂級網域名稱（gTLD），則該 gTLD 本身可被當作基礎網域名稱。
 recommended_source: "BR"
 sources:
   - source: "BR"
-    version: "v2.2.7"
+    version: "v2.3.0"
     term_zh: "基礎網域名稱"
     definition: |
-      於申請的完全吻合網域名稱（FQDN）中，位於註冊表控制網域或公開字尾（registry-controlled or public suffix）左方第一個網域名稱節點（Domain Name node），加上該註冊表控制網域或公開字尾之部分（例如「example.co.uk」或「example.com」）。若 FQDN 最右端之網域名稱節點在其註冊協議（registry agreement）中具備 ICANN 規格 13（Specification 13）之通用頂級網域名稱（gTLD），則該 gTLD 本身可被當作基礎網域名稱。
+      於指定之完全吻合網域名稱（FQDN）中，位於註冊表控制網域或公開字尾（registry-controlled or public suffix）左方第一個網域名稱節點（Domain Name node），加上該註冊表控制網域或公開字尾之部分（例如「example.co.uk」或「example.com」）。若 FQDN 最右端之網域名稱節點在其註冊協議（registry agreement）中具備 ICANN 規格 13（Specification 13）之通用頂級網域名稱（gTLD），則該 gTLD 本身可被當作基礎網域名稱。
     ref: "/server-cert-br/1-6-1/"
   - source: "HiPKICA"
     version: "v1.1"

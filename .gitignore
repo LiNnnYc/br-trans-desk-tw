@@ -35,3 +35,7 @@ HANDOFF.md
 
 # 翻譯 brief（鎖定譯名／風格指南，給免費 AI 用；不入版控）
 TRANSLATION_BRIEF.md
+
+# Python
+__pycache__/
+*.pyc

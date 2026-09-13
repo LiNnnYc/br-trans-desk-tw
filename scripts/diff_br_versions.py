@@ -31,6 +31,12 @@ import subprocess
 import sys
 from pathlib import Path
 
+# Windows 主控台預設 cp950，原文含 ✔（§3.2.2.4 方法能力對照表）等字元時
+# `--show-diff` 會在 print 當場 UnicodeEncodeError 中斷。統一改用 UTF-8 輸出。
+for _stream in (sys.stdout, sys.stderr):
+    if hasattr(_stream, "reconfigure"):
+        _stream.reconfigure(encoding="utf-8", errors="replace")
+
 ROOT = Path(__file__).resolve().parent.parent
 BR_MD = ROOT / "web-spec-doc" / "BR.md"
 ARCHIVE_DIR = ROOT / "web-spec-doc" / "BR_archive"
@@ -78,6 +84,20 @@ def normalise(body: str) -> list[str]:
     return [ln.rstrip() for ln in body.split("\n") if ln.strip()]
 
 
+def _display_path(p: Path) -> str:
+    """顯示用的路徑：能相對於 repo 就相對，否則原樣。
+
+    relative_to() 對 repo 外的絕對路徑會丟 ValueError——比對暫存區裡的候選原文
+    （如升版前先試算 /tmp 的新版）時就會炸在這行，而這只是要印個標籤而已。
+    """
+    if p.is_absolute():
+        try:
+            return str(p.relative_to(ROOT))
+        except ValueError:
+            return str(p)
+    return str(p)
+
+
 def load_old(spec: str | None) -> tuple[str, str]:
     """回傳 (來源說明, 內文)。spec 可為 git tag、檔案路徑，或 None（自動挑）。"""
     if spec is None:
@@ -97,7 +117,7 @@ def load_old(spec: str | None) -> tuple[str, str]:
 
     p = Path(spec)
     if p.is_file():
-        return f"檔案 {p.relative_to(ROOT) if p.is_absolute() else p}", p.read_text(encoding="utf-8")
+        return f"檔案 {_display_path(p)}", p.read_text(encoding="utf-8")
 
     r = subprocess.run(
         ["git", "show", f"{spec}:web-spec-doc/BR.md"],
@@ -173,7 +193,10 @@ def main() -> int:
             if not f.exists():
                 continue
             t = f.read_text(encoding="utf-8")
-            t2 = re.sub(r"^status:\s*\w+", "status: outdated", t, count=1, flags=re.M)
+            # `[\w-]+`：狀態值可能含連字號（pending-review）。用 `\w+` 的話，
+            # 對已經是 pending-review 的檔案重跑會寫出 `status: outdated-review`
+            # ——Zod 會擋下，但檔案已經被寫壞了。
+            t2 = re.sub(r"^status:\s*[\w-]+", "status: outdated", t, count=1, flags=re.M)
             if t2 != t:
                 n += 1
                 if args.write:

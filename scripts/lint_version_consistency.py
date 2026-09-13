@@ -12,7 +12,8 @@
 1. `src/content/br/*.md` 的 `original_version` 是否全庫一致
 2. 該版本是否等於 `src/config/br-versions.ts` 的 `brVersions[0].version`
    （＝版本徽章與全站顯示的版本）
-3. 是否還有 `status: draft` / `outdated` 的檔案（＝該版尚未譯完或審完）
+3. 是否還有 `status: draft` / `outdated` / `pending-review` 的檔案
+   （＝該版尚未譯完或審完；pending-review 是升版重譯完但還沒人工審閱）
 4. `web-spec-doc/BR.md` 的版本是否**不低於**發布版——上游較新是升版中的正常狀態
    （徽章會顯示「落後」），但比發布版還舊代表有人誤把舊原文還原回去了
 
@@ -35,7 +36,10 @@ VERSIONS_TS = ROOT / "src" / "config" / "br-versions.ts"
 BR_MD = ROOT / "web-spec-doc" / "BR.md"
 
 VERSION_RE = re.compile(r'^original_version:\s*"([^"]+)"', re.M)
-STATUS_RE = re.compile(r"^status:\s*(\w+)", re.M)
+# `[\w-]+` 而非 `\w+`：狀態值含連字號（pending-review），\w 不吃 `-` 會把它截成
+# 「pending」——目前仍會正確擋下（截斷後同樣不在白名單），但訊息會誤導，
+# 且日後若有連字號狀態該放行就會誤判。
+STATUS_RE = re.compile(r"^status:\s*([\w-]+)", re.M)
 # brVersions 陣列中第一個 version 欄位＝本站發布版
 DECLARED_RE = re.compile(r"brVersions[^=]*=\s*\[\s*\{[^}]*?version:\s*'([^']+)'", re.S)
 
