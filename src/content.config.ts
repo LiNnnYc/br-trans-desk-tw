@@ -65,6 +65,31 @@ const glossary = defineCollection({
   }),
 });
 
+// 縮寫表（與 glossary 分開、同在 /glossary/ 主頁顯示）：一縮寫一檔，sources[] 裝多來源的中文與英文全稱。
+// 對應的 glossary 詞條不另存欄位，於頁面上以 glossary 的 abbreviation 比對自動連結。
+const acronymSource = z.object({
+  /** 來源代碼：沿用 glossary（BR｜HiPKICA｜TWCA｜BR 翻譯小站 …） */
+  source: z.string().min(1),
+  version: z.string().optional(),
+  /** 該來源的中文名稱；部分來源（如 TWCA）只列英文全稱 */
+  term_zh: z.string().optional(),
+  expansion_en: z.string().optional(),
+  ref: z.string().optional(),
+});
+
+const acronyms = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/acronyms' }),
+  schema: z.object({
+    acronym: z.string().min(1),
+    /** 推薦英文全稱（表格顯示） */
+    expansion_en: z.string().optional(),
+    recommended_zh: z.string().min(1),
+    recommended_source: z.string().optional(),
+    sources: z.array(acronymSource).min(1),
+    tags: z.array(z.string()).default([]),
+  }),
+});
+
 // spec §3.3 — 客服爭議卡片
 const quickReference = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/quick-reference' }),
@@ -82,5 +107,6 @@ const quickReference = defineCollection({
 export const collections = {
   br,
   glossary,
+  acronyms,
   'quick-reference': quickReference,
 };

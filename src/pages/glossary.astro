@@ -29,6 +29,42 @@ const SOURCE_SHORT: Record<string, string> = {
   'BR 翻譯小站': '本站',
 };
 const srcShort = (s: string) => SOURCE_SHORT[s] ?? s;
+
+// ---------- 縮寫表（acronyms collection）----------
+const acronymEntries = (await getCollection('acronyms')).sort((a, b) =>
+  a.data.acronym.localeCompare(b.data.acronym, 'en', { sensitivity: 'base' }),
+);
+
+// 以 glossary 的 abbreviation 自動對應詞條頁；同縮寫有多個詞條時優先取推薦譯名相同者
+const glossaryByAbbr = new Map<string, Entry[]>();
+for (const entry of all) {
+  const abbr = entry.data.abbreviation;
+  if (!abbr) continue;
+  if (!glossaryByAbbr.has(abbr)) glossaryByAbbr.set(abbr, []);
+  glossaryByAbbr.get(abbr)!.push(entry);
+}
+const glossaryHref = (acronym: string, zh: string) => {
+  const cands = glossaryByAbbr.get(acronym);
+  if (!cands?.length) return null;
+  const hit = cands.find((c) => c.data.recommended_zh === zh) ?? cands[0];
+  return `/glossary/${hit.id}/`;
+};
+
+// 英文全稱比較時忽略大小寫、空白與連字號（Fully-Qualified ≈ Fully Qualified）
+const normEn = (s?: string) => (s ?? '').toLowerCase().replace(/[\s\-‐]/g, '');
+
+type AcronymSource = (typeof acronymEntries)[number]['data']['sources'][number];
+/** 與推薦譯名／英文全稱不同的來源，另列說明文字；相同者只顯示來源標籤 */
+const sourceNote = (s: AcronymSource, recZh: string, recEn?: string) => {
+  const zhDiff = !!s.term_zh && s.term_zh !== recZh;
+  const enDiff = !!s.expansion_en && normEn(s.expansion_en) !== normEn(recEn);
+  const parts: string[] = [];
+  if (!s.term_zh) parts.push('僅列英文全稱');
+  else if (zhDiff) parts.push(s.term_zh);
+  if (enDiff) parts.push(s.expansion_en!);
+  return parts.length ? parts.join('　') : null;
+};
+const sourceTitle = (s: AcronymSource) => [s.version, s.ref].filter(Boolean).join('｜') || undefined;
 ---
 
 <BaseLayout
@@ -46,7 +82,7 @@ const srcShort = (s: string) => SOURCE_SHORT[s] ?? s;
       <h1 class="text-2xl font-semibold text-slate-900 sm:text-3xl">術語表</h1>
       <p class="mt-2 text-sm text-slate-600">
         台灣憑證 PKI 與網路基礎建設譯名參考。每個英文術語列出本站推薦譯名，點入可比較
-        CA/Browser Forum 基本要求、中華電信 HiPKI CA、TWCA、數位發展部主管法規等不同來源的翻譯與定義。
+        CA/Browser Forum 基本要求、中華電信 HiPKI CA、TWCA、數位發展部主管法規等不同來源的翻譯與定義。頁面下方另附縮寫表。
       </p>
     </header>
 
@@ -70,6 +106,14 @@ const srcShort = (s: string) => SOURCE_SHORT[s] ?? s;
               </a>
             ))}
             <span aria-hidden="true" class="mx-1 h-5 w-px bg-slate-200"></span>
+            {acronymEntries.length > 0 && (
+              <a
+                href="#acronyms"
+                class="inline-flex h-8 items-center justify-center rounded px-2 font-medium text-slate-700 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-slate-400"
+              >
+                縮寫表
+              </a>
+            )}
             <a
               href="#rfc-2119"
               class="inline-flex h-8 items-center justify-center rounded px-2 font-mono font-medium text-slate-700 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-slate-400"
@@ -126,6 +170,86 @@ const srcShort = (s: string) => SOURCE_SHORT[s] ?? s;
               </section>
             ))}
           </div>
+
+          {acronymEntries.length > 0 && (
+            <section id="acronyms" aria-labelledby="heading-acronyms" class="mt-10">
+              <h2
+                id="heading-acronyms"
+                class="border-b border-slate-200 pb-1 text-lg font-semibold text-slate-800"
+              >
+                縮寫表
+              </h2>
+              <p class="mt-3 text-sm text-slate-600 leading-relaxed">
+                各來源對同一縮寫的中文名稱與英文全稱。與推薦譯名相同的來源只列標籤，不同者另列該來源的寫法；已收錄於術語表的縮寫可點入查看定義。
+              </p>
+              <div class="mt-4 overflow-x-auto rounded-md border border-slate-200">
+                <table class="w-full text-sm">
+                  <thead class="bg-slate-50 text-left text-xs uppercase tracking-wider text-slate-500">
+                    <tr>
+                      <th scope="col" class="px-4 py-2 font-semibold">縮寫</th>
+                      <th scope="col" class="px-4 py-2 font-semibold">全稱</th>
+                      <th scope="col" class="px-4 py-2 font-semibold">來源</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-slate-100 text-slate-700">
+                    {acronymEntries.map((a) => {
+                      const d = a.data;
+                      const href = glossaryHref(d.acronym, d.recommended_zh);
+                      const same = d.sources.filter((s) => !sourceNote(s, d.recommended_zh, d.expansion_en));
+                      const diff = d.sources.filter((s) => sourceNote(s, d.recommended_zh, d.expansion_en));
+                      return (
+                        <tr id={`acronym-${a.id}`} class="align-top">
+                          <td class="whitespace-nowrap px-4 py-3 font-mono font-semibold text-slate-900">
+                            {d.acronym}
+                          </td>
+                          <td class="min-w-[14rem] px-4 py-3">
+                            {href ? (
+                              <a
+                                href={href}
+                                class="font-medium text-bs-secondary underline decoration-slate-300 underline-offset-2 hover:decoration-bs-secondary"
+                              >
+                                {d.recommended_zh}
+                              </a>
+                            ) : (
+                              <span class="font-medium text-slate-900">{d.recommended_zh}</span>
+                            )}
+                            {d.expansion_en && (
+                              <div lang="en" class="mt-0.5 text-slate-500">{d.expansion_en}</div>
+                            )}
+                          </td>
+                          <td class="min-w-[12rem] px-4 py-3 text-xs text-slate-500">
+                            {same.length > 0 && (
+                              <div class="flex flex-wrap gap-1">
+                                {same.map((s) => (
+                                  <span
+                                    title={sourceTitle(s)}
+                                    class="inline-flex items-center rounded bg-slate-100 px-1.5 py-0.5 font-medium text-slate-500"
+                                  >
+                                    {srcShort(s.source)}
+                                  </span>
+                                ))}
+                              </div>
+                            )}
+                            {diff.map((s) => (
+                              <div class={same.length > 0 ? 'mt-1.5' : ''}>
+                                <span
+                                  title={sourceTitle(s)}
+                                  class="mr-1 inline-flex items-center rounded bg-slate-100 px-1.5 py-0.5 font-medium text-slate-500"
+                                >
+                                  {srcShort(s.source)}
+                                </span>
+                                <span class="text-slate-700">{sourceNote(s, d.recommended_zh, d.expansion_en)}</span>
+                              </div>
+                            ))}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </section>
+          )}
 
           <section id="rfc-2119" aria-labelledby="heading-rfc-2119" class="mt-10">
             <h2

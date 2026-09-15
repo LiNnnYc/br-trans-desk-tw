@@ -1,0 +1,12 @@
+---
+acronym: "ECC"
+expansion_en: "Elliptic Curve Cryptography"
+recommended_zh: "橢圓曲線密碼學"
+recommended_source: "TWCA"
+sources:
+  - source: "TWCA"
+    term_zh: "橢圓曲線密碼學"
+    expansion_en: "Elliptic Curve Cryptography"
+    ref: "TWCA Global CPS 縮寫（Acronyms and Abbreviations）"
+tags: []
+---
