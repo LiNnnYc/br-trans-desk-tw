@@ -6,10 +6,10 @@ recommended_definition: |
 recommended_source: "HiPKICA"
 sources:
   - source: "HiPKICA"
-    version: "v1.1"
+    version: "v1.2"
     term_zh: "憑證廢止"
     definition: |
       在憑證的有效期間內，提前終止憑證的運作。
-    ref: "HiPKICA CP/CPS v1.1 附錄 2"
+    ref: "HiPKICA CP/CPS v1.2 附錄 2"
 tags: []
 ---

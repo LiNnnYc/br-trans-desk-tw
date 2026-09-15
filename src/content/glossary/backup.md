@@ -6,10 +6,10 @@ recommended_definition: |
 recommended_source: "HiPKICA"
 sources:
   - source: "HiPKICA"
-    version: "v1.1"
+    version: "v1.2"
     term_zh: "備份"
     definition: |
       將資料或程式複製，必要時可供復原之用。
-    ref: "HiPKICA CP/CPS v1.1 附錄 2"
+    ref: "HiPKICA CP/CPS v1.2 附錄 2"
 tags: []
 ---

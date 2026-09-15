@@ -6,10 +6,10 @@ recommended_definition: |
 recommended_source: "HiPKICA"
 sources:
   - source: "HiPKICA"
-    version: "v1.1"
+    version: "v1.2"
     term_zh: "時戳"
     definition: |
       由可信賴的權威機構以數位方式簽署，證明某特定數位物件在某特別時間之存在。
-    ref: "HiPKICA CP/CPS v1.1 附錄 2"
+    ref: "HiPKICA CP/CPS v1.2 附錄 2"
 tags: []
 ---

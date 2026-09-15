@@ -6,10 +6,10 @@ recommended_definition: |
 recommended_source: "HiPKICA"
 sources:
   - source: "HiPKICA"
-    version: "v1.1"
+    version: "v1.2"
     term_zh: "憑證機構憑證"
     definition: |
       簽發給憑證機構的憑證。
-    ref: "HiPKICA CP/CPS v1.1 附錄 2"
+    ref: "HiPKICA CP/CPS v1.2 附錄 2"
 tags: []
 ---

@@ -6,10 +6,10 @@ recommended_definition: |
 recommended_source: "HiPKICA"
 sources:
   - source: "HiPKICA"
-    version: "v1.1"
+    version: "v1.2"
     term_zh: "連結、繫結"
     definition: |
       將兩個相關的資訊元素做連結（結合）的過程。
-    ref: "HiPKICA CP/CPS v1.1 附錄 2"
+    ref: "HiPKICA CP/CPS v1.2 附錄 2"
 tags: []
 ---
