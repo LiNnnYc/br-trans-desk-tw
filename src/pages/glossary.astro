@@ -25,13 +25,15 @@ const SOURCE_SHORT: Record<string, string> = {
   BR: 'BR',
   HiPKICA: 'HiPKI CA',
   TWCA: 'TWCA',
+  數位發展部: '數發部',
+  'BR 翻譯小站': '本站',
 };
 const srcShort = (s: string) => SOURCE_SHORT[s] ?? s;
 ---
 
 <BaseLayout
   title="術語表"
-  description="台灣憑證 PKI 與網路基礎建設譯名參考：每個英文術語對照多來源（CA/Browser Forum 基本要求、中華電信 HiPKI CA、TWCA）的翻譯與定義。"
+  description="台灣憑證 PKI 與網路基礎建設譯名參考：每個英文術語對照多來源（CA/Browser Forum 基本要求、中華電信 HiPKI CA、TWCA、數位發展部主管法規）的翻譯與定義。"
   mainMaxWidth="max-w-4xl"
 >
   <Breadcrumb
@@ -44,7 +46,7 @@ const srcShort = (s: string) => SOURCE_SHORT[s] ?? s;
       <h1 class="text-2xl font-semibold text-slate-900 sm:text-3xl">術語表</h1>
       <p class="mt-2 text-sm text-slate-600">
         台灣憑證 PKI 與網路基礎建設譯名參考。每個英文術語列出本站推薦譯名，點入可比較
-        CA/Browser Forum 基本要求、中華電信 HiPKI CA、TWCA 等不同來源的翻譯與定義。
+        CA/Browser Forum 基本要求、中華電信 HiPKI CA、TWCA、數位發展部主管法規等不同來源的翻譯與定義。
       </p>
     </header>
 
@@ -182,8 +184,10 @@ const srcShort = (s: string) => SOURCE_SHORT[s] ?? s;
             <p class="mb-2">翻譯參考來源：</p>
             <ul class="list-disc space-y-1 pl-6">
               <li>CA/Browser Forum 基本要求（§1.6 名詞定義與縮寫）</li>
-              <li>中華電信 HiPKI CA CP/CPS v1.1（附錄 1：縮寫及定義、附錄 2：名詞解釋）</li>
+              <li>中華電信 HiPKI CA CP/CPS v1.1／v1.2（附錄 1：縮寫及定義、附錄 2：名詞解釋）</li>
               <li>臺灣網路認證 TWCA Global CPS v3.1（附錄一：詞彙）</li>
+              <li>數位發展部主管法規：電子簽章法、數位簽章憑證實務作業基準應載明事項</li>
+              <li>本站彙整：上述來源皆未收錄的詞，由本站整理公開資料擬定</li>
             </ul>
           </footer>
         </>

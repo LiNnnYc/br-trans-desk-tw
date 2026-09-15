@@ -12,13 +12,19 @@ sources:
       被簽發憑證且受用戶協議或使用條款法律約束之自然人或法人。
     ref: "/server-cert-br/1-6-1/"
   - source: "HiPKICA"
-    version: "v1.1"
+    version: "v1.2"
     term_zh: "用戶"
     definition: |
       具下列特性之個體，包括（但不限於）個人、機構、應用程式或網路裝置：
       （a）憑證中所載明之主體；
       （b）擁有與憑證上所列公開金鑰相對應之私密金鑰；
       （c）本身不簽發憑證給其他方。
-    ref: "HiPKICA CP/CPS v1.1 附錄 2"
+    ref: "HiPKICA CP/CPS v1.2 附錄 2"
+  - source: "數位發展部"
+    version: "數授產經字第1134000891號"
+    term_zh: "用戶"
+    definition: |
+      指憑證中所命名或識別之主體，且其持有與憑證中所載公開金鑰相對應之私密金鑰者。
+    ref: "數位簽章憑證實務作業基準應載明事項第 1 章第 1 條第 5 項"
 tags: []
 ---

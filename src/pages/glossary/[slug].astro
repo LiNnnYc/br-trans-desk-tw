@@ -15,11 +15,21 @@ const { entry } = Astro.props;
 const d = entry.data;
 
 const SOURCE_LABELS: Record<string, string> = {
-  BR: 'CA/Browser Forum 基本要求（§1.6）',
+  // 節號改由各來源的 ref 顯示（不一定在 §1.6，如 Domain Contact 在 §3.2.2.4.12）
+  BR: 'CA/Browser Forum 基本要求',
   HiPKICA: '中華電信 HiPKI CA（CP/CPS）',
   TWCA: '臺灣網路認證 TWCA（CPS）',
+  數位發展部: '數位發展部（主管法規）',
+  'BR 翻譯小站': 'BR 翻譯小站（本站彙整）',
 };
 const sourceLabel = (s: string) => SOURCE_LABELS[s] ?? s;
+
+// ref 為站內章節路徑時顯示成「§3.2.2.4.12」並連結；其他站內路徑照原字串連結；外部引用字串純文字顯示
+const refLink = (ref: string) => {
+  if (!ref.startsWith('/')) return null;
+  const m = ref.match(/^\/server-cert-br\/(\d+(?:-\d+)*)\/$/);
+  return { href: ref, text: m ? `§${m[1].replace(/-/g, '.')}` : ref };
+};
 
 const title = `${d.recommended_zh}（${d.term_en}）`;
 const recDef = d.recommended_definition;
@@ -63,12 +73,17 @@ const jsonLd = {
 
   <article class="cabf-card bg-white border border-slate-200 rounded p-5 sm:p-7">
     <header class="border-b border-slate-200 pb-5">
-      <p class="font-mono text-sm text-slate-500">
-        {d.term_en}
-        {d.abbreviation && <span class="ml-1 text-slate-600">({d.abbreviation})</span>}
-      </p>
-      <h1 class="mt-1 text-2xl font-semibold text-slate-900 sm:text-3xl">
+      <!-- 英文原名與中文並列為標題的一部分（中英對照），避免小字被誤認為名詞解釋 -->
+      <h1 class="text-2xl font-semibold text-slate-900 sm:text-3xl">
         {d.recommended_zh}
+        <span lang="en" class="mt-1 block text-xl font-medium text-slate-700 sm:text-2xl">
+          {d.term_en}
+          {d.abbreviation && (
+            <span class="ml-2 align-middle inline-flex items-center rounded border border-slate-300 px-1.5 py-0.5 text-sm font-medium text-slate-600">
+              {d.abbreviation}
+            </span>
+          )}
+        </span>
       </h1>
       <p class="mt-2 text-sm text-slate-600">
         本站推薦譯名
@@ -100,6 +115,24 @@ const jsonLd = {
               來源：{sourceLabel(s.source)}
               {s.version && <span class="ml-1 font-mono text-slate-400">{s.version}</span>}
             </p>
+            {s.ref && (() => {
+              const link = refLink(s.ref);
+              return (
+                <p class="mt-1 text-xs text-slate-500">
+                  出處：
+                  {link ? (
+                    <a
+                      href={link.href}
+                      class="text-slate-700 underline decoration-slate-300 underline-offset-2 hover:decoration-slate-700"
+                    >
+                      {link.text}
+                    </a>
+                  ) : (
+                    s.ref
+                  )}
+                </p>
+              );
+            })()}
           </div>
         ))}
       </div>
