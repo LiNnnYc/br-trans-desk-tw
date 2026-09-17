@@ -200,10 +200,11 @@ inline `` `code` `` 另有 `.clause-body td code { white-space: nowrap }` 保護
 
 ### 4.1 優先順序
 
-1. **HiPKICA CP/CPS v1.1 附錄 1／附錄 2**（`web-spec-doc/HiPKICA-CP_CPS_v1.1.pdf`）— 最高優先
+1. **HiPKICA CP/CPS v1.2 附錄 1／附錄 2**（`web-spec-doc/HIPKI_CPS術語表.txt`；v1.1 PDF 在 `web-spec-doc/HiPKICA-CP_CPS_v1.1.pdf`，附錄 1 的 4 筆仍依 v1.1）— 最高優先
 2. **TWCA Global CPS v3.2 附錄一**（`web-spec-doc/TWCA_CPS術語表.txt`；v3.1 PDF 在 `web-spec-doc/TWCA-GLOBAL-CPS-V3.1.pdf`）— HiPKICA 未覆蓋時補入
-3. **既有 `src/content/glossary/` 條目**
-4. 自行擬定（記得 commit 到 glossary，並於 `source` 註明）
+3. **數位發展部主管法規**（電子簽章法〔華總一義字第11300039241號〕、數位簽章憑證實務作業基準應載明事項〔數授產經字第1134000891號〕）— 法規用語，前兩者未覆蓋時補入；已收錄者一律以 `sources` 併列保留，供爭議時引用
+4. **既有 `src/content/glossary/` 條目**
+5. 自行擬定（記得 commit 到 glossary，並於 `source` 註明）
 
 ### 4.2 鎖定譯名（不可使用其他譯法）
 

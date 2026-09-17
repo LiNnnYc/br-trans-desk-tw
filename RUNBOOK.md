@@ -55,7 +55,7 @@ git config core.hooksPath .githooks
 ### 2.2 新增術語
 
 1. 在 `src/content/glossary/` 新增 `.md`，欄位見 schema：`term_en`、`term_zh`、`definition`，可選 `abbreviation`、`first_seen_at`、`source`。
-2. 譯名來源優先順序：HiPKICA CP/CPS v1.1 附錄 1/2 → TWCA Global CPS v3.2 附錄一 → 自行擬定（並於 `source` 註明）。
+2. 譯名來源優先順序：HiPKICA CP/CPS v1.2 附錄 1/2 → TWCA Global CPS v3.2 附錄一 → 數位發展部主管法規（電子簽章法、數位簽章憑證實務作業基準應載明事項）→ 自行擬定（並於 `source` 註明）。
 3. 大量匯入見 `scripts/generate_glossary_from_hipkica.py` 與 `scripts/generate_glossary_from_twca.py`。
 
 ### 2.3 新增客服爭議卡片
