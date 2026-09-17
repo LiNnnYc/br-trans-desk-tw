@@ -60,3 +60,16 @@ export function sectionIdToLabel(id: string): string {
 export function sectionIdDepth(id: string): number {
   return id.split('.').length - 1;
 }
+
+/**
+ * glossary／acronyms 來源的 `ref` → 給人看的出處標籤。
+ *
+ * BR 來源存的是本站章節頁的路徑（`/server-cert-br/1-6-1/`），拿來當顯示文字
+ * 既不好讀、也看不出那是本站的翻譯而非 CA/Browser Forum 原文，所以一律轉成
+ * 「本站 BR 翻譯 §1.6.1」。其餘 ref（外部文件的描述字串、非章節的站內路徑）
+ * 原樣回傳——連結與否由呼叫端決定。
+ */
+export function sourceRefLabel(ref: string): string {
+  const m = /^\/server-cert-br\/(\d+(?:-\d+)*)\/$/.exec(ref);
+  return m ? `本站 BR 翻譯 §${m[1].replace(/-/g, '.')}` : ref;
+}

@@ -15,8 +15,9 @@ sources:
     expansion_en: "Online Certificate Status Protocol"
     ref: "HiPKICA CP/CPS v1.2 附錄 1"
   - source: "TWCA"
+    version: "v3.2"
     term_zh: "線上憑證狀態查詢"
     expansion_en: "Online Certificate Status Protocol"
-    ref: "TWCA Global CPS 縮寫（Acronyms and Abbreviations）"
+    ref: "TWCA Global CPS v3.2 縮寫（Acronyms and Abbreviations）"
 tags: []
 ---

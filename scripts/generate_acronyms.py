@@ -32,8 +32,7 @@ def source_meta(src: str, acronym: str) -> dict:
     if src == "HiPKICA":
         return {"version": "v1.2", "ref": "HiPKICA CP/CPS v1.2 附錄 1"}
     if src == "TWCA":
-        # 版號待使用者提供（較 v3.1 新的版本）
-        return {"ref": "TWCA Global CPS 縮寫（Acronyms and Abbreviations）"}
+        return {"version": "v3.2", "ref": "TWCA Global CPS v3.2 縮寫（Acronyms and Abbreviations）"}
     return {"version": "20260916查"}
 
 

@@ -10,8 +10,9 @@ sources:
     expansion_en: "Personal Identification Number"
     ref: "HiPKICA CP/CPS v1.2 附錄 1"
   - source: "TWCA"
+    version: "v3.2"
     term_zh: "個人識別碼"
     expansion_en: "Personal Identification Number"
-    ref: "TWCA Global CPS 縮寫（Acronyms and Abbreviations）"
+    ref: "TWCA Global CPS v3.2 縮寫（Acronyms and Abbreviations）"
 tags: []
 ---

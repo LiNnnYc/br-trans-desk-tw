@@ -10,7 +10,8 @@ sources:
     expansion_en: "Baseline Requirements for the Issuance and Management of Publicly-Trusted TLS Server Certificates"
     ref: "/server-cert-br/1-5/"
   - source: "TWCA"
+    version: "v3.2"
     expansion_en: "Baseline Requirements for the Issuance and Management of Publicly‐Trusted Certificates"
-    ref: "TWCA Global CPS 縮寫（Acronyms and Abbreviations）"
+    ref: "TWCA Global CPS v3.2 縮寫（Acronyms and Abbreviations）"
 tags: []
 ---

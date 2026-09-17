@@ -10,8 +10,9 @@ sources:
     expansion_en: "Multi-Perspective Issuance Corroboration"
     ref: "/server-cert-br/1-6-1/"
   - source: "TWCA"
+    version: "v3.2"
     term_zh: "多視角驗證"
     expansion_en: "Multi-Perspective Issuance Corroboration"
-    ref: "TWCA Global CPS 縮寫（Acronyms and Abbreviations）"
+    ref: "TWCA Global CPS v3.2 縮寫（Acronyms and Abbreviations）"
 tags: []
 ---

@@ -10,7 +10,8 @@ sources:
     expansion_en: "Public-Key Cryptography Standard"
     ref: "HiPKICA CP/CPS v1.2 附錄 1"
   - source: "TWCA"
+    version: "v3.2"
     expansion_en: "Public Key Cryptography Standard"
-    ref: "TWCA Global CPS 縮寫（Acronyms and Abbreviations）"
+    ref: "TWCA Global CPS v3.2 縮寫（Acronyms and Abbreviations）"
 tags: []
 ---

@@ -15,8 +15,9 @@ sources:
     expansion_en: "Object Identifier"
     ref: "HiPKICA CP/CPS v1.2 附錄 1"
   - source: "TWCA"
+    version: "v3.2"
     term_zh: "物件識別碼"
     expansion_en: "Object Identifier"
-    ref: "TWCA Global CPS 縮寫（Acronyms and Abbreviations）"
+    ref: "TWCA Global CPS v3.2 縮寫（Acronyms and Abbreviations）"
 tags: []
 ---

@@ -19,5 +19,11 @@ sources:
       （2）在加解密金鑰對中，用以對機密資訊解密的金鑰。
       在這兩種情境中，此金鑰皆須保密。
     ref: "HiPKICA CP/CPS v1.2 附錄 2"
+  - source: "TWCA"
+    version: "v3.2"
+    term_zh: "私密金鑰"
+    definition: |
+      指用以製作及驗證數位簽章具有配對關係之一組數位資料而由簽署人保有者，該數位資料除作為製作數位簽章之用外，尚可用作電子訊息解密之用。
+    ref: "TWCA Global CPS v3.2 附錄一"
 tags: []
 ---

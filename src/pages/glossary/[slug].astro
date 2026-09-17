@@ -5,6 +5,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import Breadcrumb from '../../components/Breadcrumb.astro';
 import { getCollection } from 'astro:content';
 import { siteConfig } from '../../config/site';
+import { sourceRefLabel } from '../../lib/section';
 
 export async function getStaticPaths() {
   const all = await getCollection('glossary');
@@ -24,11 +25,10 @@ const SOURCE_LABELS: Record<string, string> = {
 };
 const sourceLabel = (s: string) => SOURCE_LABELS[s] ?? s;
 
-// ref 為站內章節路徑時顯示成「§3.2.2.4.12」並連結；其他站內路徑照原字串連結；外部引用字串純文字顯示
+// ref 為站內章節路徑時顯示成「本站 BR 翻譯 §3.2.2.4.12」並連結；其他站內路徑照原字串連結；外部引用字串純文字顯示
 const refLink = (ref: string) => {
   if (!ref.startsWith('/')) return null;
-  const m = ref.match(/^\/server-cert-br\/(\d+(?:-\d+)*)\/$/);
-  return { href: ref, text: m ? `§${m[1].replace(/-/g, '.')}` : ref };
+  return { href: ref, text: sourceRefLabel(ref) };
 };
 
 const title = `${d.recommended_zh}（${d.term_en}）`;

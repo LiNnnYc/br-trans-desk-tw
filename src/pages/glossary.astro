@@ -4,6 +4,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Breadcrumb from '../components/Breadcrumb.astro';
 import { getCollection } from 'astro:content';
+import { sourceRefLabel } from '../lib/section';
 
 const all = await getCollection('glossary');
 
@@ -64,7 +65,8 @@ const sourceNote = (s: AcronymSource, recZh: string, recEn?: string) => {
   if (enDiff) parts.push(s.expansion_en!);
   return parts.length ? parts.join('　') : null;
 };
-const sourceTitle = (s: AcronymSource) => [s.version, s.ref].filter(Boolean).join('｜') || undefined;
+const sourceTitle = (s: AcronymSource) =>
+  [s.version, s.ref && sourceRefLabel(s.ref)].filter(Boolean).join('｜') || undefined;
 ---
 
 <BaseLayout
@@ -309,7 +311,7 @@ const sourceTitle = (s: AcronymSource) => [s.version, s.ref].filter(Boolean).joi
             <ul class="list-disc space-y-1 pl-6">
               <li>CA/Browser Forum 基本要求（§1.6 名詞定義與縮寫）</li>
               <li>中華電信 HiPKI CA CP/CPS v1.1／v1.2（附錄 1：縮寫及定義、附錄 2：名詞解釋）</li>
-              <li>臺灣網路認證 TWCA Global CPS v3.1（附錄一：詞彙）</li>
+              <li>臺灣網路認證 TWCA Global CPS v3.2（附錄一：詞彙）</li>
               <li>數位發展部主管法規：電子簽章法、數位簽章憑證實務作業基準應載明事項</li>
               <li>本站彙整：上述來源皆未收錄的詞，由本站整理公開資料擬定</li>
             </ul>

@@ -201,7 +201,7 @@ inline `` `code` `` 另有 `.clause-body td code { white-space: nowrap }` 保護
 ### 4.1 優先順序
 
 1. **HiPKICA CP/CPS v1.1 附錄 1／附錄 2**（`web-spec-doc/HiPKICA-CP_CPS_v1.1.pdf`）— 最高優先
-2. **TWCA Global CPS v3.1 附錄一**（`web-spec-doc/TWCA-GLOBAL-CPS-V3.1.pdf`）— HiPKICA 未覆蓋時補入
+2. **TWCA Global CPS v3.2 附錄一**（`web-spec-doc/TWCA_CPS術語表.txt`；v3.1 PDF 在 `web-spec-doc/TWCA-GLOBAL-CPS-V3.1.pdf`）— HiPKICA 未覆蓋時補入
 3. **既有 `src/content/glossary/` 條目**
 4. 自行擬定（記得 commit 到 glossary，並於 `source` 註明）
 
@@ -303,7 +303,7 @@ inline `` `code` `` 另有 `.clause-body td code { white-space: nowrap }` 保護
 > **「自動憑證更新環境」不是誤譯**（2026-09-13 審閱者說明）：`Management` 字面是「管理」，
 > 但台灣兩大 CA 都稱 ACME 為「自動憑證更新環境」——業界對 ACME 的認知就是憑證自動更新，
 > 而非管理整個憑證生命週期。glossary `automated-certificate-management-environment.md`
-> 早已收錄（來源 TWCA Global CPS v3.1 附錄一）。**依 §4.1 優先順序，國內 CA 既有譯名優先於字面直譯**，
+> 早已收錄（來源 TWCA Global CPS v3.2 附錄一）。**依 §4.1 優先順序，國內 CA 既有譯名優先於字面直譯**，
 > 質疑譯名前先查 glossary。
 
 > **附錄 B 有一處本站補充的括號說明**（2026-09-13 審閱加入）：v2.3.0 附錄 B.2.a 引用
