@@ -1,6 +1,6 @@
 ---
 name: 功能建議
-about: 對網站功能、排版、導覽、引用卡片格式等提出建議
+about: 對網站功能、排版、導覽、章節頁工具列等提出建議
 title: "[feature] "
 labels: ["enhancement"]
 assignees: []

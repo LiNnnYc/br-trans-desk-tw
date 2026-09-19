@@ -329,7 +329,9 @@ inline `` `code` `` 另有 `.clause-body td code { white-space: nowrap }` 保護
 | 章節細項 | 條款 |
 | 本翻譯為非官方翻譯，發生爭議時以 CA/Browser Forum 英文原文為準 | 本中譯為非官方… |
 
-引用卡（CitationCard）的免責文字**逐字硬編碼**於 `src/components/CitationCard.astro`，**不可改寫**。
+免責文字**逐字硬編碼**於 `src/components/SiteFooter.astro`（每頁頁尾），**不可改寫**。
+（原本另有一份硬編碼在引用卡 `CitationCard.astro` 的輸出格式中；「複製引用」功能已於 2026-09-19 廢除，
+該元件連同 `src/lib/citation.ts` 的 `buildCitation()` 一併移除。spec §4.3、PRD §4.4 與 CLAUDE.md 尚未同步。）
 
 ---
 
@@ -511,7 +513,7 @@ SubjectPublicKeyInfo  ::=  SEQUENCE  {
 
 常駐 remark／rehype plugins（`astro.config.mjs` 掛載，每次 build 自動生效）：
 
-- `scripts/remark-code-figure.mjs` — 為 code block 加語言標籤與複製按鈕 toolbar
+- `scripts/remark-code-figure.mjs` — 為 code block 加語言標籤（複製按鈕已於 2026-09-19 廢除）
 - `scripts/remark-table-nowrap.mjs` — 表格原子 token（短 token、長的純 ASCII 識別碼／OID、章節參照）nowrap、整欄收緊（col-shrink）
 - `scripts/remark-fancy-lists.mjs` — 字母（`a.`）／羅馬數字（`i.`）子清單重建成 `<ol type>`（見 §6）
 - `scripts/rehype-table-caption.mjs` — 把表格上方 `Table:`／`表：` 段落轉成表格底端 `<caption>`，並把每個 `<table>` 包進 `.table-wrap`（見 §2.2）

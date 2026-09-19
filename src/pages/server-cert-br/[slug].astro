@@ -1,11 +1,11 @@
 ---
 // /server-cert-br/{section-id-dashed}/ — Baseline Requirements 章節細項頁模板
-// （spec §1.1 / §2.1 / §3.1 / §4.3；milestones M1-8 章節頁子任務）。
+// （spec §1.1 / §2.1 / §3.1；milestones M1-8 章節頁子任務）。
 //
 // 模板職責：
 //   - 由 br collection 內每筆 entry 產生對應靜態頁
 //   - 麵包屑（依 section_id 拆出父鏈）
-//   - 章節標題列 + 工具列（整節引用、跳至原文）
+//   - 章節標題列 + 工具列（跳至原文、中英對照切換）
 //   - Markdown 內文（由 entry render() 取得 <Content />）
 //   - 章節後設資料（譯者／更新日／版本／狀態）
 //   - sidebar「本書章節」樹狀導覽（cabf-card 樣式）
@@ -15,7 +15,6 @@
 // 樣式機制詳見 global.css 內 `[data-en-original]` 規則。
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Breadcrumb from '../../components/Breadcrumb.astro';
-import CitationCard from '../../components/CitationCard.astro';
 import BrSidebarSubmenu from '../../components/BrSidebarSubmenu.astro';
 import { getCollection, render } from 'astro:content';
 import { sectionIdToPath } from '../../lib/citation';
@@ -35,38 +34,6 @@ const d = entry.data;
 
 // 去除標題前若已內含 section_id 前綴（避免麵包屑與 h1 重複顯示編號）
 const cleanTitle = d.title.replace(/^\s*\d+(?:\.\d+)*\s*[、：:.\-—]?\s*/, '').trim() || d.title;
-
-// 由 entry.body 抽出第一段中文散文，作為引用卡的摘要欄位。
-//
-// ⚠️ `>` 一定要跳過：每個章節檔的開頭固定是英文標題 blockquote
-// （`> **Certificate Usage**`），其後才是「英文原文 blockquote → 中文譯文」
-// 交錯的段落。少了這條，摘要抓到的會是英文標題而不是中文條文——客服按
-// 「複製引用」貼給客戶時，最需要的那一行就變成英文（曾全站 414 頁都中）。
-// 表格、程式碼區塊、註腳定義同樣不適合當摘要，一併跳過。
-// 純標題節（如 §1.4、§3.1.1，原文本來就沒有中文散文）回傳空字串，
-// 由 buildCitation 略去該行。
-const CITATION_SKIP_PREFIXES = ['#', '<', '---', '>', '|', '```', '[^'];
-function firstParagraph(body: string | undefined): string {
-  if (!body) return '';
-  const blocks = body.split(/\n\s*\n+/).map((b) => b.trim());
-  for (const b of blocks) {
-    if (!b) continue;
-    if (CITATION_SKIP_PREFIXES.some((p) => b.startsWith(p))) continue;
-    // 去除常見 markdown 標記
-    return b
-      .replace(/!\[[^\]]*\]\([^)]+\)/g, '')
-      .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
-      // 還原 markdown 逸出（如 §1.2.1 的 `\*`），否則下一步只吃掉星號、留下孤立反斜線
-      .replace(/\\([\\`*_[\]])/g, '$1')
-      // 不可把 `>` 一起剝掉：blockquote 已在區塊層級整塊跳過，這裡的 `>` 只會是
-      // 內文的角括號（如 §A.1.1 的 `contactemail <rfc6532emailaddress>`），剝了會缺右括號
-      .replace(/[*_`]+/g, '')
-      .replace(/\s+/g, ' ')
-      .trim();
-  }
-  return '';
-}
-const citationBody = firstParagraph(entry.body);
 
 // 麵包屑：拆出每層父節（如 3.2.2.4 → 3, 3.2, 3.2.2；appendix-a.1.1 → appendix-a, appendix-a.1）
 const parts = d.section_id.split('.');
@@ -161,13 +128,6 @@ const isoUpdated =
       </h1>
 
       <div class="mt-4 flex flex-wrap items-center gap-2">
-        <CitationCard
-          sectionId={d.section_id}
-          title={cleanTitle}
-          body={citationBody}
-          originalUrl={d.original_url}
-          originalVersion={d.original_version}
-        />
         <a
           href={d.original_url}
           target="_blank"
@@ -276,28 +236,4 @@ const isoUpdated =
     });
   }
 
-  // 程式碼區塊「複製」按鈕（由 Shiki transformer 在 SSR 時掛上 .code-figure-copy）。
-  document.querySelectorAll('.code-figure').forEach((fig) => {
-    const btn = fig.querySelector('.code-figure-copy');
-    const pre = fig.querySelector('pre');
-    if (!btn || !pre) return;
-    btn.addEventListener('click', async () => {
-      const text = pre.innerText;
-      try {
-        await navigator.clipboard.writeText(text);
-        btn.setAttribute('data-copy-state', 'copied');
-        const orig = btn.textContent;
-        btn.textContent = '已複製';
-        setTimeout(() => {
-          btn.setAttribute('data-copy-state', 'idle');
-          btn.textContent = orig;
-        }, 1500);
-      } catch (_) {
-        btn.textContent = '複製失敗';
-        setTimeout(() => {
-          btn.textContent = '複製';
-        }, 1500);
-      }
-    });
-  });
 </script>

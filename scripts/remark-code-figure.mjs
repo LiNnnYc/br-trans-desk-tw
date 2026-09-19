@@ -1,7 +1,10 @@
 /**
  * Remark plugin that wraps each fenced code block in a <figure> with a
- * toolbar (language label + copy button). The language is captured at the
- * mdast layer, BEFORE Astro/Shiki rewrites unknown languages to "plaintext".
+ * caption showing its language. The language is captured at the mdast layer,
+ * BEFORE Astro/Shiki rewrites unknown languages to "plaintext".
+ *
+ * The caption used to carry a copy button too; that feature was abolished
+ * on 2026-09-19 along with the clause citation card.
  *
  * Run by Astro via astro.config.mjs > markdown.remarkPlugins.
  *
@@ -35,7 +38,6 @@ export function remarkCodeFigure() {
           `<figure class="code-figure">` +
           `<figcaption class="code-figure-header">` +
           `<span class="code-figure-lang">${escapeHtml(lang)}</span>` +
-          `<button type="button" class="code-figure-copy" aria-label="複製程式碼" data-copy-state="idle">複製</button>` +
           `</figcaption>`,
       };
       const closer = { type: 'html', value: `</figure>` };

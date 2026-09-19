@@ -8,7 +8,6 @@
 import '../styles/global.css';
 import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
-import CitationToast from '../components/CitationToast.astro';
 import SearchModal from '../components/SearchModal.astro';
 import BackToTop from '../components/BackToTop.astro';
 import { siteConfig } from '../config/site';
@@ -88,7 +87,6 @@ const hasBreadcrumb = Astro.slots.has('breadcrumb');
 
       <SiteFooter />
     </div>
-    <CitationToast />
     <SearchModal />
     <BackToTop />
   </body>

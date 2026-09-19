@@ -36,8 +36,8 @@ git config core.hooksPath .githooks
 ### 1.3 注意事項
 
 - **`dev` 模式下沒有 Pagefind 索引**：搜尋按鈕會顯示「dev 模式無索引」提示。要驗搜尋必須 `build` 後跑 `preview`。
-- 中英對照 toggle 與 quotable 段落注入皆為 client-side script，dev 與 build 皆可運作。
-- 若改了 `src/config/site.ts` 的 `siteUrl`，引用卡複製出的網址會跟著變；正式部署前確認此值對齊實際網域。
+- 中英對照 toggle 為 client-side script，dev 與 build 皆可運作。
+- 若改了 `src/config/site.ts` 的 `siteUrl`，術語表詳細頁的結構化資料網址會跟著變；正式部署前確認此值對齊實際網域。
 
 ---
 
@@ -49,7 +49,7 @@ git config core.hooksPath .githooks
 2. 前置欄位依 [`src/content.config.ts`](./src/content.config.ts) 的 Zod schema 填入：必填 `section_id`、`original_url`、`original_version`、`status`、`translator`、`last_updated`、`order` 等。
 3. 譯稿格式、術語譯名、RFC 2119 規範詞加粗、表格／清單寫法等慣例見 [`TRANSLATION_CONVENTIONS.md`](./TRANSLATION_CONVENTIONS.md)。
 4. `npm run check` 確認 schema 通過。
-5. `npm run build && npm run preview` 確認頁面渲染、引用卡、段落 quotable、中英對照、Pagefind 搜尋命中。
+5. `npm run build && npm run preview` 確認頁面渲染、中英對照、Pagefind 搜尋命中。
 6. commit；翻譯主文件穩定前**只做本地 commit**，不 push 不建 remote（見 memory `feedback_local_only_until_content_ready`）。
 
 ### 2.2 新增術語
@@ -216,7 +216,7 @@ npm run preview
 
 - Chromium 系：DevTools → ⋮ → More tools → Rendering → Emulate CSS media → `print`。
 - 或直接 Ctrl/⌘+P 查看預覽。
-- 應隱藏：頁首 banner/nav、深底 footer、sidebar、搜尋 modal、複製按鈕、中英對照 toggle。
+- 應隱藏：頁首 banner/nav、深底 footer、sidebar、搜尋 modal、中英對照 toggle。
 - 應保留：麵包屑、章節標題、版本／Ballot 資訊、章節內文、譯者資訊、免責聲明。
 
 ### 5.4 確認術語一致性（M1-10 CI 上線前的人工流程）

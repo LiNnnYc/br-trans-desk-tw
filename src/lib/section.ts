@@ -7,7 +7,7 @@
 //   appendix-a.1.1   → /server-cert-br/appendix-a-1-1/
 //
 // 但這串前綴不是原文的章節號。凡是要給人看的地方（麵包屑、標題列、側邊欄、
-// 錨點導覽、引用卡）都必須改走 sectionIdToLabel()，才會顯示成原文的
+// 錨點導覽、術語表出處）都必須改走 sectionIdToLabel()，才會顯示成原文的
 // 「附錄 A」／「A.1.1」。正文的數字編號不受影響，原樣輸出。
 
 /** `appendix-a`、`appendix-a.1.1` → ['a', [1, 1]]；正文回傳 null。 */

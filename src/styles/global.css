@@ -193,36 +193,6 @@ body {
   letter-spacing: 0.05em;
   font-weight: 600;
 }
-.clause-body .code-figure-copy {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.3rem;
-  background: transparent;
-  color: #cbd5e1; /* slate-300 */
-  border: 1px solid #475569; /* slate-600 */
-  border-radius: 0.25rem;
-  padding: 0.15rem 0.55rem;
-  font-size: 0.72rem;
-  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
-  cursor: pointer;
-  transition: background 0.15s, color 0.15s, border-color 0.15s;
-}
-.clause-body .code-figure-copy:hover {
-  background: #334155; /* slate-700 */
-  color: #f1f5f9; /* slate-100 */
-  border-color: #64748b; /* slate-500 */
-}
-.clause-body .code-figure-copy[data-copy-state='copied'] {
-  background: #166534; /* green-800 */
-  color: #f0fdf4; /* green-50 */
-  border-color: #16a34a; /* green-600 */
-}
-/* 列印時隱藏複製按鈕 */
-@media print {
-  .clause-body .code-figure-copy {
-    display: none;
-  }
-}
 /* 程式碼區塊與其「後一個元素」的間距，不隨縮排改變。
    沒縮排時走 `.clause-body > * + *` 的 1rem；但清單項內的程式碼區塊不是
    .clause-body 的直接子元素，吃不到那條，只剩 `.clause-body li > p` 的 0.5rem，
@@ -592,10 +562,8 @@ html.show-bilingual [data-en-original] {
   #menu-btn-label,
   #open-search,
   #mobile-search-trigger,
-  #citation-toast,
   #search-modal,
   aside,
-  .citation-copy,
   #bilingual-toggle,
   a[href="#top"] {
     display: none !important;

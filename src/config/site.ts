@@ -10,7 +10,7 @@ export const siteConfig = {
     'WebPKI 相關文件的非官方繁體中文翻譯',
   // M0-1 建立 GitHub repo 後替換
   repoUrl: '#TODO-github-repo',
-  // 引用卡輸出絕對網址用；M0-3 部署網域定案時更新（含或不含 /repo-name 由 astro.config base 決定）
+  // 結構化資料（schema.org）等絕對網址用；M0-3 部署網域定案時更新（含或不含 /repo-name 由 astro.config base 決定）
   siteUrl: 'https://br-zh-tw.github.io',
   contactEmail: 'linnnyc5252@gmail.com',
   // spec §4.1 版本徽章資料來源。**不再手動維護**——由 src/lib/version.ts 推導：
