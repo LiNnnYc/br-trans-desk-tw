@@ -3,7 +3,9 @@
 // 兩種外觀：
 //   variant="light"（預設，banner 右上）— 白底淺色，給亮色 banner 用
 //   variant="dark" — 透明深底，給漢堡選單裡的暗色背景用
-// 內容：Ballot 標籤 + 版本 + 同步狀態指示燈 + 最後同步日期 + 完整版本歷程連結。
+// 內容：Ballot 標籤 + 版本 + 同步狀態指示燈 + 原文發布日。
+// 「完整版本歷程 →」連結已於 2026-09-19 依使用者指示移除（徽章不再可點）；
+// /changelog/ 的入口只留在《基本要求》側邊選單的「本站翻譯版本歷程」。
 import { siteConfig, type SyncStatus } from '../config/site';
 import { upstream as upstreamLatest } from '../lib/version';
 
@@ -58,7 +60,6 @@ const statusTextCls: Record<SyncStatus, string> = isDark
       pending: 'text-slate-700 font-medium',
     };
 const dateTextCls = isDark ? 'text-slate-500' : 'text-slate-500';
-const linkCls = 'mt-1 inline-block text-bs-primary hover:underline';
 ---
 
 <div class={wrapperCls}>
@@ -77,5 +78,4 @@ const linkCls = 'mt-1 inline-block text-bs-primary hover:underline';
       )
     }
   </div>
-  <a href="/changelog/" class={linkCls}>完整版本歷程 →</a>
 </div>
