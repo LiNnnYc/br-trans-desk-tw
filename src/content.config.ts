@@ -91,16 +91,22 @@ const acronyms = defineCollection({
 });
 
 // spec §3.3 — 客服爭議卡片
+// 兩層結構：front-matter 的 short_answer 是封面卡片的引用區塊簡答（1–2 句、白話、不引規範原文），
+// md 內文則是 /quick-reference/<slug>/ 詳細頁的完整說明（道理 → 範例 → 《基本要求》的規定）。
 const quickReference = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/quick-reference' }),
   schema: z.object({
     slug: z.string().regex(/^[a-z0-9-]+$/, 'slug 須為小寫英數與連字號'),
     question: z.string().min(1),
+    /** 封面卡片引用區塊的簡答：1–2 句講清楚「為什麼」，不寫節號、不引規範用詞 */
     short_answer: z.string().min(1),
+    /** 卡片顯示順序（由淺入深，非章節號順序）；未填者排在最後並以章節號排序 */
+    order: z.number().int().nonnegative().default(999),
     related_sections: z
       .array(z.string().regex(/^\d+(\.\d+)*$/))
       .min(1, '至少需關聯一節 BR 章節細項'),
     last_updated: z.coerce.date(),
+    tags: z.array(z.string()).default([]),
   }),
 });
 

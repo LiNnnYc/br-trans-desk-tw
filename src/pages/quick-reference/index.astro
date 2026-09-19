@@ -1,47 +1,36 @@
 ---
 // /quick-reference/ — 客服快速引用頁（spec §4.4、PRD §4.4、M1-7）。
-// 卡片網格：桌機 3 欄、手機 1 欄。
-// 6 張預設 placeholder 卡片（內容稿待 M2-Q 翻譯任務填入）。
+// 卡片網格：桌機 3 欄、手機 1 欄。封面只放「問題 + 引用區塊簡答」，
+// 對應章節與完整說明（道理／範例／《基本要求》規定）都在 /quick-reference/<slug>/ 詳細頁。
+// `related_sections` 在封面不顯示，但仍用於卡片排序的後備條件。
+// 內容全部來自 quick-reference collection；不再有寫死的 placeholder 清單。
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Breadcrumb from '../../components/Breadcrumb.astro';
 import { getCollection } from 'astro:content';
+import { compareSectionId } from '../../lib/section';
 
 const all = await getCollection('quick-reference');
-const sorted = [...all].sort((a, b) => a.data.slug.localeCompare(b.data.slug));
 
-// 預設清單（PRD §4.4 / milestones M2-Q1~Q6）；M2 填入正式內容前以骨架卡顯示。
-const placeholders = [
-  { slug: 'why-validate-domain', question: '為什麼申請憑證需要佐證網站控管權？', refs: ['3.2.2.4'] },
-  { slug: 'why-foreign-ip-needed', question: '為什麼佐證網站控管權需要開放國外 IP 存取？', refs: ['3.2.2.4'] },
-  { slug: 'why-shorter-validity', question: '為什麼 TLS／SSL 憑證效期縮短至 398／47 天？', refs: ['6.3.2'] },
-  { slug: 'why-no-internal-name', question: '為什麼不能申請內網主機網址或私有 IP？', refs: ['3.2.2.6', '7.1.4.2'] },
-  { slug: 'why-caa-check', question: '為什麼需要檢查 CAA 紀錄？', refs: ['3.2.2.8'] },
-  { slug: 'multi-domain-vs-wildcard', question: '多網域憑證與萬用網域憑證的差別？', refs: ['3.2.2.6'] },
-];
-
-const cards = placeholders.map((p) => {
-  const real = sorted.find((e) => e.data.slug === p.slug);
-  return real
-    ? {
-        slug: real.data.slug,
-        question: real.data.question,
-        shortAnswer: real.data.short_answer,
-        refs: real.data.related_sections,
-        ready: true as const,
-      }
-    : {
-        slug: p.slug,
-        question: p.question,
-        shortAnswer: '（內容撰寫中，將於 M2-Q 階段填入。）',
-        refs: p.refs,
-        ready: false as const,
-      };
-});
+// 顯示順序：`order`（由淺入深，人工決定）優先，未填者退回以最小的對應章節號排序
+const cards = [...all]
+  .map((entry) => ({
+    slug: entry.data.slug,
+    order: entry.data.order,
+    question: entry.data.question,
+    shortAnswer: entry.data.short_answer,
+    refs: [...entry.data.related_sections].sort(compareSectionId),
+  }))
+  .sort(
+    (a, b) =>
+      a.order - b.order ||
+      compareSectionId(a.refs[0], b.refs[0]) ||
+      a.slug.localeCompare(b.slug),
+  );
 ---
 
 <BaseLayout
   title="客服快速引用"
-  description="台灣 CA 客戶服務常被問到的憑證爭議點，附對應 Baseline Requirements 條款連結。"
+  description="台灣 CA 客戶服務常被問到的憑證爭議點，附對應 Baseline Requirements 章節細項連結。"
 >
   <Breadcrumb
     slot="breadcrumb"
@@ -53,46 +42,43 @@ const cards = placeholders.map((p) => {
       客服快速引用
     </h1>
     <p class="mt-2 text-sm text-slate-600 leading-relaxed">
-      台灣 CA 客戶服務常被問到的憑證爭議點，每張卡片連回對應的 Baseline Requirements 章節細項，方便直接複製引用。
+      台灣 CA 客戶服務常被問到的憑證爭議點。每張卡片先用一句話回答「為什麼」，點進去可看完整說明、實際例子，
+      以及對應的《基本要求》章節細項。
     </p>
   </header>
 
-  <ul role="list" class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-    {
-      cards.map((c) => (
-        <li class="cabf-card bg-white border border-slate-200 rounded p-5 flex flex-col">
-          <h2 class="font-serif-tc text-base font-bold text-slate-900 leading-snug">
-            {c.question}
-          </h2>
-          <p class="mt-3 text-sm text-slate-700 leading-relaxed flex-1">
-            {c.shortAnswer}
-          </p>
-          <div class="mt-4 pt-3 border-t border-slate-100 text-xs">
-            <div class="text-slate-500">對應章節：</div>
-            <ul class="mt-1 flex flex-wrap gap-x-3 gap-y-1">
-              {c.refs.map((r) => (
-                <li>
-                  <a
-                    href={`/server-cert-br/${r.replace(/\./g, '-')}/`}
-                    class="font-mono text-bs-secondary underline decoration-slate-300 underline-offset-2 hover:decoration-bs-secondary"
-                  >
-                    §{r}
-                  </a>
-                </li>
-              ))}
-            </ul>
-            {!c.ready && (
-              <span class="mt-2 inline-flex items-center rounded border border-amber-300 bg-amber-50 px-1.5 py-0.5 text-[10px] font-medium text-amber-800">
-                撰寫中
-              </span>
-            )}
-          </div>
-        </li>
-      ))
-    }
-  </ul>
+  {
+    cards.length === 0 ? (
+      <p class="mt-6 rounded border border-slate-200 bg-slate-50 p-5 text-sm text-slate-600">
+        尚未建立卡片內容。
+      </p>
+    ) : (
+      <ul role="list" class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {cards.map((c) => (
+          <li class="cabf-card flex flex-col rounded border border-slate-200 bg-white p-5">
+            <h2 class="font-serif-tc text-base font-bold leading-snug text-slate-900">
+              <a
+                href={`/quick-reference/${c.slug}/`}
+                class="hover:text-bs-secondary hover:underline decoration-slate-300 underline-offset-2"
+              >
+                {c.question}
+              </a>
+            </h2>
+            <blockquote class="mt-3 flex-1 border-l-4 border-bs-primary py-1 pl-3 text-sm leading-relaxed text-slate-700">
+              {c.shortAnswer}
+            </blockquote>
+            <div class="mt-4 flex justify-end border-t border-slate-100 pt-3 text-xs">
+              <a
+                href={`/quick-reference/${c.slug}/`}
+                class="font-medium text-bs-secondary underline decoration-slate-300 underline-offset-2 hover:decoration-bs-secondary"
+              >
+                詳細說明 →
+              </a>
+            </div>
+          </li>
+        ))}
+      </ul>
+    )
+  }
 
-  <p class="mt-8 text-xs leading-relaxed text-slate-500">
-    本頁卡片內容於 <strong>M2-Q</strong> 階段與主文件翻譯並行撰寫。引用對應章節時，請直接於章節頁使用「複製引用」按鈕，輸出格式內含免責聲明與原文連結。
-  </p>
 </BaseLayout>
