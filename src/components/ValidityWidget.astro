@@ -1,0 +1,194 @@
+---
+// 首頁側欄 widget（第二個）：現在申請憑證能拿到幾日的有效期。
+//
+// 2025–2029 是憑證有效期縮短最劇烈的五年（398 → 200 → 100 → 47 日），
+// 客服最常被追問的就是「現在到底能簽幾天」，所以天數本身就是主角，刻意放大。
+//
+// 資料來自 src/config/validity-schedule.ts（BR §6.3.2 的機器可讀版本）。
+//
+// ⚠️ 「現在」是**建置時**算的。站台是靜態產出，若跨過 2027-03-15 而沒有重新 build，
+// 顯示的天數就會過期——因此另有一段 inline script 於瀏覽器端重算並覆寫。
+// 無 JS 時仍看得到建置當下的正確值（漸進增強），只有「久未重建 + 無 JS」兩者同時成立才會失準。
+import { sectionIdToPath } from '../lib/citation';
+import {
+  stageIndexOn,
+  validitySourceSection,
+  validityStages,
+} from '../config/validity-schedule';
+
+const todayIso = new Date().toISOString().slice(0, 10);
+const idx = stageIndexOn(todayIso);
+const stage = validityStages[idx];
+const next = validityStages[idx + 1] ?? null;
+
+const clausePath = sectionIdToPath(validitySourceSection);
+
+// 距離下一階段還有幾天（建置時值；client 端會重算）
+const daysUntilNext =
+  next?.from != null
+    ? Math.max(
+        0,
+        Math.round((Date.parse(next.from) - Date.parse(todayIso)) / 86_400_000),
+      )
+    : null;
+---
+
+<section
+  aria-label="目前可申請的憑證有效期"
+  class="cabf-card rounded border border-slate-200 bg-white"
+  data-validity-widget
+  data-stages={JSON.stringify(validityStages)}
+>
+  <div class="border-b border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700">
+    憑證有效期上限
+  </div>
+
+  <div class="px-4 py-3">
+    <div class="text-xs text-slate-600">現在申請憑證，最長可拿到</div>
+
+    {/* 天數是主角：與上一行說明拉開、與下方分隔線貼近，視覺上歸屬於「這一格數字」。 */}
+    <div class="mt-3 flex items-baseline gap-1.5">
+      <span
+        class="font-mono text-5xl leading-none font-bold text-bs-secondary"
+        data-validity-days>{stage.maxDays}</span
+      >
+      <span class="text-lg font-semibold text-slate-700">日</span>
+    </div>
+
+    <dl class="mt-2 border-t border-slate-100 pt-3 text-xs">
+      <div class="flex items-baseline justify-between gap-2">
+        <dt class="text-slate-500">適用起迄</dt>
+        <dd class="font-mono text-slate-700" data-validity-range>
+          {stage.from ?? '—'} ～ {stage.to ?? '（此後）'}
+        </dd>
+      </div>
+      {
+        next && (
+          <div class="mt-1.5 flex items-baseline justify-between gap-2">
+            <dt class="text-slate-500">下一階段</dt>
+            <dd class="text-slate-700" data-validity-next>
+              <span class="font-mono">{next.from}</span> 起
+              <span class="font-mono font-semibold text-bs-secondary">{next.maxDays}</span> 日
+            </dd>
+          </div>
+        )
+      }
+      {
+        daysUntilNext !== null && (
+          <div class="mt-1.5 flex items-baseline justify-between gap-2">
+            <dt class="text-slate-500">距下次縮短</dt>
+            <dd class="text-slate-700">
+              還有 <span class="font-mono font-semibold" data-validity-countdown>{daysUntilNext}</span> 天
+            </dd>
+          </div>
+        )
+      }
+    </dl>
+
+    {/* 四階段一覽：目前這段標亮，已過去的變淡 */}
+    <ol class="mt-3 flex items-center gap-1 text-xs" data-validity-timeline>
+      {
+        validityStages.map((s, i) => (
+          <li
+            data-stage-chip={i}
+            class:list={[
+              'flex-1 rounded border px-1 py-1 text-center font-mono transition',
+              i === idx
+                ? 'border-bs-primary bg-bs-primary-soft font-bold text-bs-secondary'
+                : i < idx
+                  ? 'border-slate-200 bg-slate-50 text-slate-400'
+                  : 'border-slate-200 bg-white text-slate-600',
+            ]}
+          >
+            {s.maxDays}
+          </li>
+        ))
+      }
+    </ol>
+
+    <div class="mt-3 flex flex-col gap-1 border-t border-slate-100 pt-3 text-xs">
+      <a
+        href="/quick-reference/why-shorter-validity/"
+        class="text-bs-secondary underline decoration-slate-300 underline-offset-2 hover:decoration-bs-secondary"
+      >
+        為什麼有效期越來越短？ →
+      </a>
+      <a
+        href={clausePath}
+        class="text-slate-500 underline decoration-slate-300 underline-offset-2 hover:text-bs-secondary hover:decoration-bs-secondary"
+      >
+        依據：《基本要求》§{validitySourceSection}
+      </a>
+    </div>
+  </div>
+</section>
+
+{/* 靜態站台的「今天」問題：建置時算出的階段會隨時間過期，這段在瀏覽器端重算。
+    只改數字與標亮位置，不重建 DOM；任何一步失敗就保持建置當下的值。 */}
+<script>
+  try {
+    const root = document.querySelector('[data-validity-widget]');
+    if (root) {
+      // 與 src/config/validity-schedule.ts 的 ValidityStage 同形（script 內無法 import 型別）
+      interface Stage {
+        from: string | null;
+        to: string | null;
+        maxDays: number;
+        recommendedDays: number;
+      }
+      const stages: Stage[] = JSON.parse(root.getAttribute('data-stages') || '[]');
+      const today = new Date().toISOString().slice(0, 10);
+      let idx = stages.findIndex(
+        (s: Stage) => (!s.from || today >= s.from) && (!s.to || today < s.to),
+      );
+      if (idx === -1) idx = stages.length - 1;
+      const stage = stages[idx];
+      const next = stages[idx + 1] || null;
+
+      const set = (sel: string, value: string | number | null) => {
+        const el = root.querySelector(sel);
+        if (el && value != null) el.textContent = String(value);
+      };
+
+      set('[data-validity-days]', stage.maxDays);
+      set(
+        '[data-validity-range]',
+        `${stage.from || '—'} ～ ${stage.to || '（此後）'}`,
+      );
+      if (next && next.from) {
+        const nextFrom = next.from;
+        const nextEl = root.querySelector('[data-validity-next]');
+        if (nextEl) {
+          nextEl.innerHTML =
+            `<span class="font-mono">${nextFrom}</span> 起 ` +
+            `<span class="font-mono font-semibold text-bs-secondary">${next.maxDays}</span> 日`;
+        }
+        const days = Math.max(
+          0,
+          Math.round((Date.parse(nextFrom) - Date.parse(today)) / 86400000),
+        );
+        set('[data-validity-countdown]', days);
+      } else {
+        // 已進入最後一段（2029-03-15 之後）：建置時留下的「下一階段／距下次縮短」兩列要收掉，
+        // 否則久未重建的站台會顯示一個早就過去的日期。
+        for (const sel of ['[data-validity-next]', '[data-validity-countdown]']) {
+          const row = root.querySelector(sel)?.closest('div');
+          if (row instanceof HTMLElement) row.hidden = true;
+        }
+      }
+
+      root.querySelectorAll('[data-stage-chip]').forEach((el) => {
+        const i = Number(el.getAttribute('data-stage-chip'));
+        el.className =
+          'flex-1 rounded border px-1 py-1 text-center font-mono transition ' +
+          (i === idx
+            ? 'border-bs-primary bg-bs-primary-soft font-bold text-bs-secondary'
+            : i < idx
+              ? 'border-slate-200 bg-slate-50 text-slate-400'
+              : 'border-slate-200 bg-white text-slate-600');
+      });
+    }
+  } catch (_) {
+    /* 重算失敗就維持建置當下的值 */
+  }
+</script>
