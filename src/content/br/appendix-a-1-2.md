@@ -20,7 +20,7 @@ tags: []
 
 > The CAA contactphone property takes a phone number as its parameter. The entire parameter value MUST be a valid Global Number as defined in [RFC 3966, Section 5.1.4](https://datatracker.ietf.org/doc/html/rfc3966#section-5.1.4), or it cannot be used. Global Numbers MUST have a preceding + and a country code and MAY contain spaces as visual separators.
 
-CAA `contactphone` 屬性接受電話號碼作為其參數。整個參數值**應（MUST）**為 [RFC 3966 第 5.1.4 節](https://datatracker.ietf.org/doc/html/rfc3966#section-5.1.4) 所定義的有效全球號碼（Global Number），否則不得使用。全球號碼**應（MUST）**以 + 開頭並包含國碼，且**得（MAY）**包含空格做為視覺分隔符號。
+CAA `contactphone` 屬性接受電話號碼作為其參數。整個參數值**應（MUST）**為 [RFC 3966 第 5.1.4 節](https://datatracker.ietf.org/doc/html/rfc3966#section-5.1.4) 所定義的有效全球號碼（Global Number），否則不得使用。全球號碼**應（MUST）**以 + 開頭並包含國碼，且**得（MAY）**包含空格作為視覺分隔符號。
 
 > The following is an example where the holder of the domain specified the contact property using a phone number.
 
