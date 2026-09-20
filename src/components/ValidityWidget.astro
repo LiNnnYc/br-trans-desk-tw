@@ -44,7 +44,7 @@ const daysUntilNext =
   </div>
 
   <div class="px-4 py-3">
-    <div class="text-xs text-slate-600">現在申請憑證，最長可拿到</div>
+    <div class="text-xs text-slate-600">現在申請憑證，憑證有效期為</div>
 
     {/* 天數是主角：與上一行說明拉開、與下方分隔線貼近，視覺上歸屬於「這一格數字」。 */}
     <div class="mt-3 flex items-baseline gap-1.5">
@@ -57,7 +57,7 @@ const daysUntilNext =
 
     <dl class="mt-2 border-t border-slate-100 pt-3 text-xs">
       <div class="flex items-baseline justify-between gap-2">
-        <dt class="text-slate-500">適用起迄</dt>
+        <dt class="text-slate-500">適用期間</dt>
         <dd class="font-mono text-slate-700" data-validity-range>
           {stage.from ?? '—'} ～ {stage.to ?? '（此後）'}
         </dd>
@@ -76,7 +76,7 @@ const daysUntilNext =
       {
         daysUntilNext !== null && (
           <div class="mt-1.5 flex items-baseline justify-between gap-2">
-            <dt class="text-slate-500">距下次縮短</dt>
+            <dt class="text-slate-500">距下次有效期縮短</dt>
             <dd class="text-slate-700">
               還有 <span class="font-mono font-semibold" data-validity-countdown>{daysUntilNext}</span> 天
             </dd>
@@ -111,7 +111,7 @@ const daysUntilNext =
         href="/quick-reference/why-shorter-validity/"
         class="text-bs-secondary underline decoration-slate-300 underline-offset-2 hover:decoration-bs-secondary"
       >
-        為什麼有效期越來越短？ →
+        為什麼有效期會越來越短？ →
       </a>
       <a
         href={clausePath}
