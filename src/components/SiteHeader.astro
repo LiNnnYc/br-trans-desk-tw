@@ -22,6 +22,12 @@ const isActive = (href: string) =>
 // 規格 web-spec-doc/server-cert-br樣式變更.txt：
 // 只在 /server-cert-br 子頁面才把《基本要求》子選單整合進漢堡選單。
 const showBrSubmenuInMobile = currentPath.startsWith('/server-cert-br');
+
+// 版本徽章 2026-09-20 依使用者指示**只在首頁顯示**：
+//   桌機（lg+）— 首頁側欄的 SyncWidget（SyncWidget.astro）；banner 右上那顆已整個移除。
+//   手機（<lg）— 首頁漢堡選單內的 variant="dark"；側欄在 <lg 不顯示，靠這顆補上。
+// 其他頁面兩處都不顯示。⚠️ 這代表 VersionBadge 的 variant="light" 目前沒有呼叫端。
+const isHome = currentPath === '/';
 ---
 
 <header>
@@ -45,9 +51,6 @@ const showBrSubmenuInMobile = currentPath.startsWith('/server-cert-br');
         </div>
       </a>
 
-      <div class="hidden lg:block shrink-0">
-        <VersionBadge />
-      </div>
     </div>
   </div>
 </header>
@@ -142,13 +145,17 @@ const showBrSubmenuInMobile = currentPath.startsWith('/server-cert-br');
               }
             </ul>
 
-            <div class="lg:hidden mx-2 mt-3 border-t border-slate-700"></div>
+            {
+              isHome && (
+                <>
+                  <div class="lg:hidden mx-2 mt-3 border-t border-slate-700" />
 
-            <div
-              class="lg:hidden mx-2 mt-4 mb-3 rounded border border-slate-600 bg-black/20 px-3 py-3 text-xs text-slate-300"
-            >
-              <VersionBadge variant="dark" />
-            </div>
+                  <div class="lg:hidden mx-2 mt-4 mb-3 rounded border border-slate-600 bg-black/20 px-3 py-3 text-xs text-slate-300">
+                    <VersionBadge variant="dark" />
+                  </div>
+                </>
+              )
+            }
           </div>
 
           <button

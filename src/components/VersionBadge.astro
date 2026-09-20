@@ -1,8 +1,10 @@
 ---
 // spec §4.1 — 版本狀態徽章。
 // 兩種外觀：
-//   variant="light"（預設，banner 右上）— 白底淺色，給亮色 banner 用
+//   variant="light"（預設）— 白底淺色，原本給 banner 右上用；**2026-09-20 起沒有呼叫端**
+//     （徽章改成只在首頁顯示，banner 那顆已移除），保留以便日後要放回亮色背景時直接用
 //   variant="dark" — 透明深底，給漢堡選單裡的暗色背景用
+//   variant="plain" — 無外框無底色，給側欄 widget 用（外層卡片已經有框，不要框中框）
 // 內容：Ballot 標籤 + 版本 + 同步狀態指示燈 + 原文發布日。
 // 「完整版本歷程 →」連結已於 2026-09-19 依使用者指示移除（徽章不再可點）；
 // /changelog/ 的入口只留在《基本要求》側邊選單的「本站翻譯版本歷程」。
@@ -10,7 +12,7 @@ import { siteConfig, type SyncStatus } from '../config/site';
 import { upstream as upstreamLatest } from '../lib/version';
 
 interface Props {
-  variant?: 'light' | 'dark';
+  variant?: 'light' | 'dark' | 'plain';
 }
 
 const { variant = 'light' } = Astro.props;
@@ -39,9 +41,12 @@ const dateLabel = lastSyncedAt;
 
 const isDark = variant === 'dark';
 
-const wrapperCls = isDark
-  ? 'block text-xs text-slate-300'
-  : 'block rounded border border-slate-300 bg-white px-3 py-2 text-xs text-slate-600';
+const wrapperCls =
+  variant === 'dark'
+    ? 'block text-xs text-slate-300'
+    : variant === 'plain'
+      ? 'block text-xs text-slate-600'
+      : 'block rounded border border-slate-300 bg-white px-3 py-2 text-xs text-slate-600';
 const labelCls = isDark
   ? 'font-semibold uppercase tracking-wide text-slate-400'
   : 'font-semibold uppercase tracking-wide text-slate-500';

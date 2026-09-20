@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { siteConfig } from '../config/site';
+import SyncWidget from '../components/SyncWidget.astro';
 import { getCollection } from 'astro:content';
 import { newsCategoryClass, sortNews, toIsoDate } from '../lib/news';
 
@@ -21,6 +22,14 @@ const linkCls =
 ---
 
 <BaseLayout title="Coming Soon" description={siteConfig.description}>
+  {/* 側欄（blog 式一大一小兩欄）：BaseLayout 見到 sidebar slot 就把主欄改成 9/3 grid。
+      第一個 widget 是 TLS BR 翻譯同步資訊（原 banner 右上的版本徽章）。
+      ⚠️ BaseLayout 的 <aside> 是 hidden lg:block——手機版側欄整個不顯示，
+      徽章在漢堡選單內仍看得到，但日後加的 widget 要確認手機版沒有它也說得通。 */}
+  <div slot="sidebar">
+    <SyncWidget />
+  </div>
+
   <article class="cabf-card bg-white border border-slate-200 rounded p-5 sm:p-7">
     <h1 class="text-3xl font-semibold leading-tight text-slate-900 sm:text-4xl">
       歡迎來到 BR 翻譯小站<br />

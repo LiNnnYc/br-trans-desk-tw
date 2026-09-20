@@ -1,0 +1,20 @@
+---
+// 側欄 widget：TLS BR 翻譯同步資訊。
+// 內容即 banner 右上那顆版本徽章（VersionBadge），2026-09-20 依使用者指示移進首頁側欄；
+// 首頁的 banner 因此不再顯示徽章（見 SiteHeader.astro 的 hideBannerBadge），
+// 其他頁面維持原樣。手機版（< lg）側欄整個不顯示，徽章仍在漢堡選單內（variant="dark"）。
+// 卡片外觀比照 BrSidebarSubmenu 的 sidebar variant，讓側欄各 widget 一致。
+import VersionBadge from './VersionBadge.astro';
+---
+
+<section aria-label="TLS BR 翻譯同步資訊" class="cabf-card rounded border border-slate-200 bg-white">
+  <div class="border-b border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700">
+    TLS BR 翻譯同步資訊
+  </div>
+  <div class="px-4 py-3">
+    <VersionBadge variant="plain" />
+    <p class="mt-2 text-xs leading-relaxed text-slate-500">
+      顯示本站翻譯對應的原文版本與其發布日。
+    </p>
+  </div>
+</section>
