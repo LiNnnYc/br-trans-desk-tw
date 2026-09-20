@@ -1,0 +1,67 @@
+---
+// /news/ — 更新消息列表（政府網站「最新消息」式的日期 + 分類 + 標題列表）。
+// 首頁只列最近 5 則，本頁列出全部；每一則點進 /news/<slug>/ 詳細頁。
+// ⚠️ spec §1.1 的頂層路由清單沒有 /news/，此路由為使用者 2026-09-20 指示新增；web-spec-doc/ 未動。
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+import { getCollection } from 'astro:content';
+import { newsCategoryClass, sortNews, toIsoDate } from '../../lib/news';
+
+const items = sortNews(await getCollection('news'));
+---
+
+<BaseLayout
+  title="更新消息"
+  description="本站的翻譯更新、站務公告與 CA/Browser Forum 原文動態。"
+>
+  <Breadcrumb
+    slot="breadcrumb"
+    items={[{ label: '首頁', href: '/' }, { label: '更新消息' }]}
+  />
+
+  {/* mt-6：麵包屑與標題之間的留白，比照 /quick-reference/ */}
+  <header class="mt-6">
+    <h1 class="font-serif-tc text-2xl font-bold text-slate-900 sm:text-3xl">更新消息</h1>
+    <p class="mt-2 text-sm leading-relaxed text-slate-600">
+      本站的翻譯更新、站務公告，以及 CA/Browser Forum 原文的發布動態。
+    </p>
+  </header>
+
+  {
+    items.length === 0 ? (
+      <p class="mt-6 rounded border border-slate-200 bg-slate-50 p-5 text-sm text-slate-600">
+        尚無更新消息。
+      </p>
+    ) : (
+      <ul role="list" class="mt-6 divide-y divide-slate-200 border-y border-slate-200">
+        {items.map((entry) => {
+          const d = entry.data;
+          const iso = toIsoDate(d.date);
+          return (
+            <li class="py-4">
+              <div class="flex flex-wrap items-center gap-x-3 gap-y-1">
+                <time datetime={iso} class="font-mono text-xs text-slate-500">
+                  {iso}
+                </time>
+                <span
+                  class={`inline-flex shrink-0 rounded border px-2 py-0.5 text-xs ${newsCategoryClass(d.category)}`}
+                >
+                  {d.category}
+                </span>
+              </div>
+              <h2 class="mt-3 font-serif-tc text-base font-bold leading-snug text-slate-900 sm:text-lg">
+                <a
+                  href={`/news/${d.slug}/`}
+                  class="underline decoration-slate-300 underline-offset-2 hover:text-bs-secondary hover:decoration-bs-secondary"
+                >
+                  {d.title}
+                </a>
+              </h2>
+              <p class="mt-1.5 text-sm leading-relaxed text-slate-600">{d.summary}</p>
+            </li>
+          );
+        })}
+      </ul>
+    )
+  }
+</BaseLayout>

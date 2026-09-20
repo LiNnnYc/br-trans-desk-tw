@@ -1,63 +1,109 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { siteConfig } from '../config/site';
+import { getCollection } from 'astro:content';
+import { newsCategoryClass, sortNews, toIsoDate } from '../lib/news';
+
+// 首頁只放最近 5 則；完整列表在 /news/。
+const HOME_NEWS_LIMIT = 5;
+const news = sortNews(await getCollection('news')).slice(0, HOME_NEWS_LIMIT);
+
+// repoUrl 尚未填（'#TODO-github-repo'）時不給死連結，比照 /contact/ 的處理。
+const repoIsPlaceholder = siteConfig.repoUrl.startsWith('#');
+
+// 三個區塊的 h2 沿用 .clause-body h2 的視覺（font-serif-tc / 1.25rem / 底線分隔），
+// 但**不套 .clause-body**——那個 class 連 p、ul、blockquote 一起接管，
+// 會干擾本頁自訂的消息列表版面。故以 Tailwind 複製同樣的樣式。
+const h2Cls = 'font-serif-tc text-xl font-semibold leading-snug text-slate-900';
+const ruleCls = 'border-b border-slate-200 pb-1';
+const linkCls =
+  'text-bs-secondary underline decoration-slate-300 underline-offset-2 hover:decoration-bs-secondary';
 ---
 
 <BaseLayout title="Coming Soon" description={siteConfig.description}>
   <article class="cabf-card bg-white border border-slate-200 rounded p-5 sm:p-7">
     <h1 class="text-3xl font-semibold leading-tight text-slate-900 sm:text-4xl">
-      CA/Browser Forum<br />Server Cert Baseline Requirements<br />
-      <span class="text-slate-700">繁體中文翻譯（建置中）</span>
+      歡迎來到 BR 翻譯小站<br />
+      <span class="text-slate-700">Web PKI 相關文件非官方繁體中文翻譯</span>
     </h1>
 
     <p class="mt-6 text-base leading-relaxed text-slate-700 sm:text-lg">
-      長期以來 CA/Browser Forum 的 Server Certificate Baseline Requirements
-      沒有公開的繁體中文版本。本站是由社群維護的<strong class="font-semibold">非官方</strong>翻譯，
-      目標是讓台灣 CA 從業人員、購買憑證的企業窗口、與資安／法務人員
-      在面對「為什麼申請憑證這麼麻煩、為什麼憑證效期越來越短」這類問題時，
-      能有可引用的繁體中文翻譯內容。
+      以 CA/Browser Forum 為主的 Web PKI 體系相關文件，長期以來一直缺乏繁體中文翻譯供相關從業人員參考。<br />
+      本站試著以社群維護的方式，提供 Web PKI 相關文件的<strong class="font-semibold">非官方</strong>翻譯，
+      讓台灣 CA 從業人員、購買憑證的用戶、與資安／法務人員在面對 Web PKI、PKIX 體系相關問題時，能有可參考的繁體中文翻譯內容。
     </p>
 
-    <section class="mt-10 rounded-lg border border-slate-200 bg-slate-50 p-5 sm:p-6">
-    <h2 class="text-sm font-semibold tracking-wider text-slate-500 uppercase">預計時程</h2>
-    <ul class="mt-3 space-y-2 text-sm text-slate-700 sm:text-base">
-      <li>
-        <span class="font-medium text-slate-900">M0–M1</span>
-        ｜站台骨架、術語表、版本治理機制
-      </li>
-      <li>
-        <span class="font-medium text-slate-900">M2</span>
-        ｜Baseline Requirements 主文件翻譯（約 8–10 週）
-      </li>
-      <li>
-        <span class="font-medium text-slate-900">M3</span>
-        ｜附屬頁面（About、Certificate Contents、FAQ）翻譯
-      </li>
-      <li>
-        <span class="font-medium text-slate-900">M4</span>
-        ｜公開 Beta、進入跟進維運期
-      </li>
-    </ul>
-    <p class="mt-3 text-xs text-slate-500">
-      單人作業，時程估算為相對長度而非絕對日期；實際進度以 changelog 與 GitHub 進度為準。
-    </p>
-  </section>
+    {/* 更新消息：翻譯更新／站務公告／原文動態，最近 5 則；完整列表在 /news/。
+        取代原本寫死的「預計時程」清單（M0–M4 里程碑，已全數完成、不再具參考價值）。 */}
+    <section class="mt-12">
+      <div class={`flex items-baseline justify-between gap-4 ${ruleCls}`}>
+        <h2 class={h2Cls}>更新消息</h2>
+        <a href="/news/" class={`shrink-0 text-xs font-medium ${linkCls}`}>更多消息 →</a>
+      </div>
 
-    <section class="mt-8 grid gap-4 sm:grid-cols-2">
-      <a
-        href={`mailto:${siteConfig.contactEmail}`}
-        class="rounded-lg border border-slate-200 bg-slate-50 p-5 transition hover:border-slate-400 hover:bg-white"
-      >
-        <div class="text-sm font-semibold text-slate-900">勘誤與聯絡</div>
-        <div class="mt-1 text-sm break-all text-slate-600">{siteConfig.contactEmail}</div>
-      </a>
-      <a
-        href={siteConfig.repoUrl}
-        class="rounded-lg border border-slate-200 bg-slate-50 p-5 transition hover:border-slate-400 hover:bg-white"
-      >
-        <div class="text-sm font-semibold text-slate-900">GitHub Repo</div>
-        <div class="mt-1 text-sm text-slate-600">原始碼、Issue、PR（建置中）</div>
-      </a>
+      {
+        news.length === 0 ? (
+          <p class="mt-4 text-sm text-slate-600">尚無更新消息。</p>
+        ) : (
+          <ul role="list" class="mt-2 divide-y divide-slate-200">
+            {news.map((entry) => {
+              const d = entry.data;
+              const iso = toIsoDate(d.date);
+              return (
+                <li class="py-2.5">
+                  <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                    <time datetime={iso} class="font-mono text-xs text-slate-500">
+                      {iso}
+                    </time>
+                    <span
+                      class={`inline-flex shrink-0 rounded border px-2 py-0.5 text-xs ${newsCategoryClass(d.category)}`}
+                    >
+                      {d.category}
+                    </span>
+                    <a
+                      href={`/news/${d.slug}/`}
+                      class={`min-w-0 basis-full text-sm sm:basis-auto sm:flex-1 sm:text-base ${linkCls}`}
+                    >
+                      {d.title}
+                    </a>
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+        )
+      }
+    </section>
+
+    <section class="mt-12">
+      <h2 class={`${h2Cls} ${ruleCls}`}>GitHub Repo</h2>
+      <p class="mt-4 text-sm leading-relaxed text-slate-700 sm:text-base">
+        本站原始碼、翻譯內容與勘誤 Issue、PR 皆公開於 GitHub。
+      </p>
+      {
+        repoIsPlaceholder ? (
+          <p class="mt-2 text-sm text-slate-500">（GitHub repo 建置中，尚未公開。）</p>
+        ) : (
+          <p class="mt-2 text-sm break-all">
+            <a href={siteConfig.repoUrl} class={linkCls}>
+              {siteConfig.repoUrl}
+            </a>
+          </p>
+        )
+      }
+    </section>
+
+    <section class="mt-12">
+      <h2 class={`${h2Cls} ${ruleCls}`}>勘誤與聯絡</h2>
+      <p class="mt-4 text-sm leading-relaxed text-slate-700 sm:text-base">
+        翻譯若有錯字、誤譯或用詞建議，歡迎來信指正；其他管道與回報方式請見
+        <a href="/contact/" class={linkCls}>聯絡方式</a>。
+      </p>
+      <p class="mt-2 text-sm break-all">
+        <a href={`mailto:${siteConfig.contactEmail}`} class={linkCls}>
+          {siteConfig.contactEmail}
+        </a>
+      </p>
     </section>
   </article>
 </BaseLayout>

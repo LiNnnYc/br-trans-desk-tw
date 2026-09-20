@@ -110,9 +110,27 @@ const quickReference = defineCollection({
   }),
 });
 
+// 更新消息（站台最新消息）：首頁列出最近數則，/news/ 為完整列表、/news/<slug>/ 為詳細頁。
+// ⚠️ spec §1.1 的頂層路由清單沒有 /news/，此為使用者 2026-09-20 指示新增；web-spec-doc/ 未動。
+const news = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/news' }),
+  schema: z.object({
+    slug: z.string().regex(/^[a-z0-9-]+$/, 'slug 須為小寫英數與連字號'),
+    title: z.string().min(1),
+    /** 發布日期；列表一律以此由新到舊排序 */
+    date: z.coerce.date(),
+    /** 分類徽章。新增分類要同時改 src/lib/news.ts 的配色表 */
+    category: z.enum(['站務公告', '翻譯更新', '原文動態', '勘誤']),
+    /** 列表摘要（1–2 句）；同時用作詳細頁的 meta description */
+    summary: z.string().min(1),
+    tags: z.array(z.string()).default([]),
+  }),
+});
+
 export const collections = {
   br,
   glossary,
   acronyms,
   'quick-reference': quickReference,
+  news,
 };
