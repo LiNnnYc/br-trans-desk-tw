@@ -60,7 +60,10 @@ const isHome = currentPath === '/';
     放在 <header> 之外、與主內容平行，sticky 的 containing block 才會是
     BaseLayout 的長 flex column，而非 shrink-wrap 的 header。 */}
 <div class="sticky top-0 z-40 lg:static bg-bs-dark border-b-4 border-bs-primary shadow-sm lg:shadow-none">
-  <nav class="text-slate-200 px-3 py-1">
+  {/* lg:pb-0 —— 桌面版拿掉 nav 的下內距，讓選單項的 3px 底線直接貼上外層 div 的
+      4px border-b（同為 bs-primary），兩條藍線接成一塊、不留深色縫隙。
+      手機版仍保留 py-1：那裡的 active 標記走左側框線（border-l），與底線無關。 */}
+  <nav class="text-slate-200 px-3 py-1 lg:pb-0">
       <div class="flex flex-wrap items-center">
         <button
           id="menu-btn"
@@ -125,7 +128,7 @@ const isHome = currentPath === '/';
                 navItems.map((item) => {
                   const active = isActive(item.href);
                   const baseCls =
-                    'block px-3 py-3 lg:py-2 font-normal border-l-[3px] lg:border-l-0 lg:border-b-[3px]';
+                    'block px-3 py-3 lg:py-2 font-normal border-l-[3px] lg:border-l-0 lg:border-b-4';
                   const activeCls =
                     'text-white border-bs-primary bg-white/5';
                   const idleCls =
