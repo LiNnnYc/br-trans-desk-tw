@@ -1,20 +1,85 @@
 ---
-// 側欄 widget：TLS BR 翻譯同步資訊。
-// 內容即 banner 右上那顆版本徽章（VersionBadge），2026-09-20 依使用者指示移進首頁側欄；
-// 首頁的 banner 因此不再顯示徽章（見 SiteHeader.astro 的 hideBannerBadge），
-// 其他頁面維持原樣。手機版（< lg）側欄整個不顯示，徽章仍在漢堡選單內（variant="dark"）。
-// 卡片外觀比照 BrSidebarSubmenu 的 sidebar variant，讓側欄各 widget 一致。
-import VersionBadge from './VersionBadge.astro';
+// 首頁側欄 widget：TLS BR 翻譯同步資訊（2026-09-20 使用者指示的版面）。
+//
+//   官方                    ← 上游最新版（web-spec-doc/BR.md 的 front-matter）
+//   TLS BR        v2.3.0
+//   2026-09-07              ← 該版原文釋出日
+//                           （間距）
+//   本站                    ← 本站發布版（br-versions.ts 的 brVersions[0]）
+//   TLS BR        v2.3.0
+//   ● 已同步                ← 兩者是否相同
+//
+// ⚠️ 兩個版本號**絕不可混用**（見 src/lib/version.ts 開頭）：升版期間原文已換新、
+// 譯稿還沒跟上，此時上下兩塊會不同，燈號轉為「落後」。
+// 本元件自行排版、不再內嵌 VersionBadge——那顆的版型（單行 + 狀態 + 日期）與這裡不同；
+// VersionBadge 目前只剩首頁漢堡選單內那顆（variant="dark"）。
+import { siteConfig, type SyncStatus } from '../config/site';
+import { current, upstream } from '../lib/version';
+
+const { syncStatus } = siteConfig.upstream;
+
+// 燈號文字：官方版本號已在上方那塊顯示，這裡不再重複「上游 vX.Y.Z」。
+const statusLabel: Record<SyncStatus, string> = {
+  synced: '已同步',
+  behind: '落後上游',
+  pending: '建置中',
+};
+
+const statusDot: Record<SyncStatus, string> = {
+  synced: 'bg-emerald-500',
+  behind: 'bg-amber-500',
+  pending: 'bg-slate-400',
+};
+
+const statusTextCls: Record<SyncStatus, string> = {
+  synced: 'font-medium text-emerald-700',
+  behind: 'font-medium text-amber-800',
+  pending: 'font-medium text-slate-700',
+};
+
+// 讀不到上游版本時顯示破折號，不要猜（parseBrDate 認不得格式也會是 null）。
+const upstreamVersion = upstream.version ? `v${upstream.version}` : '—';
+const upstreamDate = upstream.date;
+const siteVersion = `v${current.version.replace(/^v/, '')}`;
+
+const groupCls = 'text-xs font-semibold tracking-wide text-slate-700';
+const docCls = 'text-xs font-semibold uppercase tracking-wide text-slate-500';
+const versionCls = 'font-mono text-xs font-bold text-bs-primary';
 ---
 
 <section aria-label="TLS BR 翻譯同步資訊" class="cabf-card rounded border border-slate-200 bg-white">
   <div class="border-b border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700">
     TLS BR 翻譯同步資訊
   </div>
+
   <div class="px-4 py-3">
-    <VersionBadge variant="plain" />
-    <p class="mt-2 text-xs leading-relaxed text-slate-500">
-      顯示本站翻譯對應的原文版本與其發布日。
-    </p>
+    <div>
+      <div class={groupCls}>官方</div>
+      <div class="mt-1 flex items-baseline justify-between gap-3">
+        <span class={docCls}>TLS BR</span>
+        <span class={versionCls}>{upstreamVersion}</span>
+      </div>
+      {
+        upstreamDate && (
+          <div class="mt-0.5 text-xs text-slate-500">
+            <time datetime={upstreamDate} title="官方最新版原文釋出日">
+              {upstreamDate}
+            </time>
+          </div>
+        )
+      }
+    </div>
+
+    <div class="mt-5">
+      <div class={groupCls}>本站</div>
+      <div class="mt-1 flex items-baseline justify-between gap-3">
+        <span class={docCls}>TLS BR</span>
+        <span class={versionCls}>{siteVersion}</span>
+      </div>
+      <div class="mt-1 flex items-center gap-1.5 text-xs">
+        <span class:list={['inline-block h-2 w-2 rounded-full', statusDot[syncStatus]]}></span>
+        <span class={statusTextCls[syncStatus]}>{statusLabel[syncStatus]}</span>
+      </div>
+    </div>
   </div>
 </section>
