@@ -1,5 +1,5 @@
 ---
-// /quick-reference/ — 客服快速引用頁（spec §4.4、PRD §4.4、M1-7）。
+// /quick-reference/ — 常見問題快速參考頁（spec §4.4、PRD §4.4、M1-7）。
 // 卡片網格：桌機 3 欄、手機 1 欄。封面只放「問題 + 引用區塊簡答」，
 // 對應章節與完整說明（道理／範例／《基本要求》規定）都在 /quick-reference/<slug>/ 詳細頁。
 // `related_sections` 在封面不顯示，但仍用於卡片排序的後備條件。
@@ -29,21 +29,22 @@ const cards = [...all]
 ---
 
 <BaseLayout
-  title="客服快速引用"
-  description="台灣 CA 客戶服務常被問到的憑證爭議點，附對應 Baseline Requirements 章節細項連結。"
+  title="常見問題快速參考"
+  description="申請憑證常見問題的快速參考解答。"
 >
   <Breadcrumb
     slot="breadcrumb"
     items={[{ label: '首頁', href: '/' }, { label: '快速參考' }]}
   />
 
-  <header>
+  {/* mt-6：麵包屑與標題之間的留白。BaseLayout 的麵包屑容器只給 mb-2，
+      這裡單獨加大，不影響其他頁面。 */}
+  <header class="mt-6">
     <h1 class="font-serif-tc text-2xl font-bold text-slate-900 sm:text-3xl">
-      客服快速引用
+      常見問題快速參考
     </h1>
     <p class="mt-2 text-sm text-slate-600 leading-relaxed">
-      台灣 CA 客戶服務常被問到的憑證爭議點。每張卡片先用一句話回答「為什麼」，點進去可看完整說明、實際例子，
-      以及對應的《基本要求》章節細項。
+      以下整理申請憑證時，常見問題的快速參考解答。每張問題卡片在封面先簡短回答「為什麼」，點擊詳細說明可看完整說明、實際例子。
     </p>
   </header>
 
