@@ -14,6 +14,18 @@ import {
 
 /** 該表是否需要「備註」欄 */
 const hasNotes = (rows: FieldRow[]) => rows.some((r) => r.note || r.warn);
+
+/**
+ * 表格用 table-fixed + colgroup 指定欄寬比例。
+ * 交給瀏覽器自動分配的話，備註欄的文字最長、會吃掉三成以上的寬度，
+ * 譯名欄被擠到換行；內層 div 限寬也擋不住——auto layout 仍會把剩餘空間按比例分給它。
+ */
+function columnWidths(showZh: boolean, notes: boolean): string[] {
+  if (showZh && notes) return ['21%', '16%', '22%', '22%', '19%'];
+  if (showZh) return ['24%', '20%', '28%', '28%'];
+  if (notes) return ['24%', '28%', '28%', '20%'];
+  return ['30%', '35%', '35%'];
+}
 ---
 
 <BaseLayout
@@ -69,6 +81,7 @@ const hasNotes = (rows: FieldRow[]) => rows.some((r) => r.note || r.warn);
       {
         certFieldTables.map((table) => {
           const notes = hasNotes(table.rows);
+          const widths = columnWidths(table.showZh, notes);
           return (
             <section id={table.id} aria-labelledby={`heading-${table.id}`}>
               <h2
@@ -84,7 +97,12 @@ const hasNotes = (rows: FieldRow[]) => rows.some((r) => r.note || r.warn);
                 <p class="mt-3 text-sm leading-relaxed text-slate-600">{table.intro}</p>
               )}
               <div class="mt-4 overflow-x-auto rounded-md border border-slate-200">
-                <table class="w-full text-sm">
+                <table class="w-full min-w-[60rem] table-fixed text-sm">
+                  <colgroup>
+                    {widths.map((w) => (
+                      <col style={`width:${w}`} />
+                    ))}
+                  </colgroup>
                   <thead class="bg-slate-50 text-left text-xs uppercase tracking-wider text-slate-500">
                     <tr>
                       <th scope="col" class="px-4 py-2 font-semibold">{table.keyHeader}</th>
@@ -101,7 +119,7 @@ const hasNotes = (rows: FieldRow[]) => rows.some((r) => r.note || r.warn);
                       <tr class="align-top">
                         <td
                           class={[
-                            'min-w-[12rem] px-4 py-3 font-medium text-slate-900',
+                            'px-4 py-3 font-medium text-slate-900 break-words',
                             table.mono ? 'font-mono text-[0.8125rem]' : '',
                           ].join(' ')}
                         >
@@ -111,7 +129,7 @@ const hasNotes = (rows: FieldRow[]) => rows.some((r) => r.note || r.warn);
                           )}
                         </td>
                         {table.showZh && (
-                          <td class="min-w-[9rem] px-4 py-3">
+                          <td class="px-4 py-3">
                             {row.zh ? (
                               <span class="font-medium text-slate-900">{row.zh}</span>
                             ) : (
@@ -119,7 +137,7 @@ const hasNotes = (rows: FieldRow[]) => rows.some((r) => r.note || r.warn);
                             )}
                           </td>
                         )}
-                        <td class="min-w-[11rem] px-4 py-3">
+                        <td class="px-4 py-3 break-words">
                           {row.winZh ? (
                             <>
                               <span>{row.winZh}</span>
@@ -133,7 +151,7 @@ const hasNotes = (rows: FieldRow[]) => rows.some((r) => r.note || r.warn);
                             <span class="text-slate-400">—</span>
                           )}
                         </td>
-                        <td class="min-w-[11rem] px-4 py-3">
+                        <td class="px-4 py-3 break-words">
                           {row.chromeZh ? (
                             <>
                               <span>{row.chromeZh}</span>
@@ -148,16 +166,18 @@ const hasNotes = (rows: FieldRow[]) => rows.some((r) => r.note || r.warn);
                           )}
                         </td>
                         {notes && (
-                          <td class="min-w-[14rem] px-4 py-3 text-xs leading-relaxed text-slate-500">
-                            {row.warn && (
-                              <span
-                                aria-label="三邊講法不一致"
-                                class="mr-1 inline-flex items-center rounded bg-amber-50 px-1.5 py-0.5 font-medium text-amber-700"
-                              >
-                                ⚠️ 不一致
-                              </span>
-                            )}
-                            {row.note}
+                          <td class="px-4 py-3 text-xs leading-relaxed text-slate-500">
+                            <div>
+                              {row.warn && (
+                                <span
+                                  aria-label="三邊講法不一致"
+                                  class="mr-1 inline-flex items-center rounded bg-amber-50 px-1.5 py-0.5 font-medium text-amber-700"
+                                >
+                                  ⚠️ 不一致
+                                </span>
+                              )}
+                              {row.note}
+                            </div>
                           </td>
                         )}
                       </tr>

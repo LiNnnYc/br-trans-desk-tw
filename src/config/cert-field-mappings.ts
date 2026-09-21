@@ -233,7 +233,7 @@ export const certFieldTables: FieldTable[] = [
         winZh: '基本限制',
         chromeZh: '憑證基本限制',
         warn: true,
-        note: '值的呈現差很多：Windows 是未翻譯的 Subject Type=CA, Path Length Constraint=None；Chrome 是「這是憑證授權單位」「中繼 CA 數目上限：無限制」。',
+        note: '兩邊「值」的呈現差很多，見「檢視器介面用語」表最後一列。',
       },
       {
         key: 'nameConstraints',
