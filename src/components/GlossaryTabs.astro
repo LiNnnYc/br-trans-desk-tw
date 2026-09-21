@@ -1,0 +1,43 @@
+---
+// 術語表底下的兩個分頁（/glossary/ 與 /glossary/cert-fields/）共用的分頁列。
+// 兩頁各有自己的網址，切換是整頁載入，不是 JS 切換——對照表要能被 Pagefind 索引、能單獨引用。
+interface Props {
+  current: 'glossary' | 'cert-fields';
+}
+const { current } = Astro.props;
+
+const tabs = [
+  { key: 'glossary', label: '術語表', href: '/glossary/' },
+  { key: 'cert-fields', label: '憑證欄位譯名對照', href: '/glossary/cert-fields/' },
+] as const;
+---
+
+<nav
+  aria-label="術語表分頁"
+  class="mt-5 border-b border-slate-200"
+  data-pagefind-ignore
+>
+  <ul class="-mb-px flex flex-wrap gap-1 text-sm">
+    {
+      tabs.map((tab) => {
+        const active = tab.key === current;
+        return (
+          <li>
+            <a
+              href={tab.href}
+              aria-current={active ? 'page' : undefined}
+              class={[
+                'inline-flex items-center border-b-2 px-3 py-2 font-medium focus:outline-none focus:ring-2 focus:ring-slate-400',
+                active
+                  ? 'border-bs-primary text-bs-primary'
+                  : 'border-transparent text-slate-500 hover:border-slate-300 hover:text-slate-800',
+              ].join(' ')}
+            >
+              {tab.label}
+            </a>
+          </li>
+        );
+      })
+    }
+  </ul>
+</nav>

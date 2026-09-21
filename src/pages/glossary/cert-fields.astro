@@ -1,0 +1,218 @@
+---
+// /glossary/cert-fields/ — 憑證欄位譯名對照（術語表的第二個分頁）。
+// 資料全部來自 src/config/cert-field-mappings.ts；中文欄位名是從 Windows 與 Chrome
+// 的在地化資源實際抽出來的，不是本站翻的，改動請看該檔開頭的註解。
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+import GlossaryTabs from '../../components/GlossaryTabs.astro';
+import {
+  certFieldTables,
+  certFieldGaps,
+  captureInfo,
+  type FieldRow,
+} from '../../config/cert-field-mappings';
+
+/** 該表是否需要「備註」欄 */
+const hasNotes = (rows: FieldRow[]) => rows.some((r) => r.note || r.warn);
+---
+
+<BaseLayout
+  title="憑證欄位譯名對照"
+  description="RFC 5280 憑證欄位、擴充欄位、DN 屬性在 Windows 憑證檢視器與 Chrome 憑證檢視器下的繁體中文顯示名稱對照，供客服對照客戶截圖使用。"
+>
+  <Breadcrumb
+    slot="breadcrumb"
+    items={[
+      { label: '首頁', href: '/' },
+      { label: '術語表', href: '/glossary/' },
+      { label: '憑證欄位譯名對照' },
+    ]}
+  />
+
+  <article class="cabf-card bg-white border border-slate-200 rounded p-5 sm:p-7">
+    <header>
+      <h1 class="text-2xl font-semibold text-slate-900 sm:text-3xl">憑證欄位譯名對照</h1>
+      <p class="mt-2 text-sm text-slate-600 leading-relaxed">
+        同一個憑證欄位，在 RFC 5280、本站譯文、Windows 憑證檢視器與 Chrome 憑證檢視器裡是四種講法。
+        客戶傳來檢視器截圖時，用這張表把畫面上的中文字對回 RFC 5280 的欄位名與《基本要求》第七章的規定。
+        Windows 與 Chrome 兩欄的中文，是從兩個產品的繁體中文資源檔實際抽出來的顯示字串，不是本站的翻譯。
+      </p>
+    </header>
+
+    <GlossaryTabs current="cert-fields" />
+
+    <nav
+      aria-label="表格索引"
+      class="mt-6 flex flex-wrap items-center gap-1 rounded-md border border-slate-200 bg-white p-2 text-sm"
+      data-pagefind-ignore
+    >
+      {
+        certFieldTables.map((t) => (
+          <a
+            href={`#${t.id}`}
+            class="inline-flex h-8 items-center justify-center rounded px-2 font-medium text-slate-700 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-slate-400"
+          >
+            {t.navLabel ?? t.title.split('（')[0].split('：')[0]}
+          </a>
+        ))
+      }
+      <span aria-hidden="true" class="mx-1 h-5 w-px bg-slate-200"></span>
+      <a
+        href="#gaps"
+        class="inline-flex h-8 items-center justify-center rounded px-2 font-medium text-slate-700 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-slate-400"
+      >
+        十個落差
+      </a>
+    </nav>
+
+    <div class="mt-8 space-y-10">
+      {
+        certFieldTables.map((table) => {
+          const notes = hasNotes(table.rows);
+          return (
+            <section id={table.id} aria-labelledby={`heading-${table.id}`}>
+              <h2
+                id={`heading-${table.id}`}
+                class="border-b border-slate-200 pb-1 text-lg font-semibold text-slate-800"
+              >
+                {table.title}
+                {table.ref && (
+                  <span class="ml-2 align-middle text-xs font-normal text-slate-500">{table.ref}</span>
+                )}
+              </h2>
+              {table.intro && (
+                <p class="mt-3 text-sm leading-relaxed text-slate-600">{table.intro}</p>
+              )}
+              <div class="mt-4 overflow-x-auto rounded-md border border-slate-200">
+                <table class="w-full text-sm">
+                  <thead class="bg-slate-50 text-left text-xs uppercase tracking-wider text-slate-500">
+                    <tr>
+                      <th scope="col" class="px-4 py-2 font-semibold">{table.keyHeader}</th>
+                      {table.showZh && (
+                        <th scope="col" class="px-4 py-2 font-semibold">本站譯名</th>
+                      )}
+                      <th scope="col" class="px-4 py-2 font-semibold">Windows 憑證檢視器</th>
+                      <th scope="col" class="px-4 py-2 font-semibold">Chrome 憑證檢視器</th>
+                      {notes && <th scope="col" class="px-4 py-2 font-semibold">備註</th>}
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-slate-100 text-slate-700">
+                    {table.rows.map((row) => (
+                      <tr class="align-top">
+                        <td
+                          class={[
+                            'min-w-[12rem] px-4 py-3 font-medium text-slate-900',
+                            table.mono ? 'font-mono text-[0.8125rem]' : '',
+                          ].join(' ')}
+                        >
+                          {row.key}
+                          {row.oid && (
+                            <div class="mt-0.5 font-mono text-xs font-normal text-slate-500">{row.oid}</div>
+                          )}
+                        </td>
+                        {table.showZh && (
+                          <td class="min-w-[9rem] px-4 py-3">
+                            {row.zh ? (
+                              <span class="font-medium text-slate-900">{row.zh}</span>
+                            ) : (
+                              <span class="text-slate-400">—</span>
+                            )}
+                          </td>
+                        )}
+                        <td class="min-w-[11rem] px-4 py-3">
+                          {row.winZh ? (
+                            <>
+                              <span>{row.winZh}</span>
+                              {row.winEn && (
+                                <div lang="en" class="mt-0.5 text-xs text-slate-500">{row.winEn}</div>
+                              )}
+                            </>
+                          ) : row.winRaw ? (
+                            <span lang="en" class="font-mono text-xs text-slate-600">{row.winRaw}</span>
+                          ) : (
+                            <span class="text-slate-400">—</span>
+                          )}
+                        </td>
+                        <td class="min-w-[11rem] px-4 py-3">
+                          {row.chromeZh ? (
+                            <>
+                              <span>{row.chromeZh}</span>
+                              {row.chromeEn && (
+                                <div lang="en" class="mt-0.5 text-xs text-slate-500">{row.chromeEn}</div>
+                              )}
+                            </>
+                          ) : row.chromeRaw ? (
+                            <span class="font-mono text-xs text-slate-600">{row.chromeRaw}</span>
+                          ) : (
+                            <span class="text-slate-400">—</span>
+                          )}
+                        </td>
+                        {notes && (
+                          <td class="min-w-[14rem] px-4 py-3 text-xs leading-relaxed text-slate-500">
+                            {row.warn && (
+                              <span
+                                aria-label="三邊講法不一致"
+                                class="mr-1 inline-flex items-center rounded bg-amber-50 px-1.5 py-0.5 font-medium text-amber-700"
+                              >
+                                ⚠️ 不一致
+                              </span>
+                            )}
+                            {row.note}
+                          </td>
+                        )}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </section>
+          );
+        })
+      }
+
+      <section id="gaps" aria-labelledby="heading-gaps">
+        <h2
+          id="heading-gaps"
+          class="border-b border-slate-200 pb-1 text-lg font-semibold text-slate-800"
+        >
+          十個落差
+        </h2>
+        <p class="mt-3 text-sm leading-relaxed text-slate-600">
+          以下是三邊講法不一致、最容易在客戶爭議時各說各話的地方。
+        </p>
+        <ol class="mt-4 space-y-4">
+          {
+            certFieldGaps.map((gap, i) => (
+              <li class="rounded-md border border-slate-200 bg-slate-50 p-4">
+                <p class="text-sm font-semibold text-slate-900">
+                  <span class="mr-1.5 font-mono text-slate-500">{i + 1}.</span>
+                  {gap.title}
+                </p>
+                <p class="mt-1.5 text-sm leading-relaxed text-slate-700">{gap.body}</p>
+              </li>
+            ))
+          }
+        </ol>
+      </section>
+    </div>
+
+    <footer class="mt-12 border-t border-slate-200 pt-6 text-sm text-slate-500">
+      <p class="mb-2">中文顯示名稱的擷取來源（{captureInfo.date} 擷取）：</p>
+      <ul class="list-disc space-y-1 pl-6">
+        <li>
+          Windows 憑證檢視器：{captureInfo.windows} 的 <code class="font-mono text-xs">cryptui.dll.mui</code>（檢視器版面）與
+          <code class="font-mono text-xs">crypt32.dll.mui</code>（擴充欄位、DN 屬性、EKU 名稱），繁體中文與英文兩份字串表以字串 ID 對接。
+        </li>
+        <li>
+          Chrome 憑證檢視器：Chrome {captureInfo.chromeVersion} 的
+          <code class="font-mono text-xs">Locales\zh-TW.pak</code> 與
+          <code class="font-mono text-xs">Locales\en-US.pak</code>，以 resource id 對接。
+        </li>
+        <li>RFC 5280 欄位、ASN.1 與 OID：RFC 5280 Appendix A。</li>
+      </ul>
+      <p class="mt-3 text-xs leading-relaxed">
+        兩個檢視器的顯示字串會隨版本改變，表中內容為上列版本的擷取結果。Windows 的分頁名稱與「顯示」下拉選單標籤寫在對話框樣板、不在字串表，未收錄。
+      </p>
+    </footer>
+  </article>
+</BaseLayout>

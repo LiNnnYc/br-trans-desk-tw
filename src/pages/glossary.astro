@@ -3,6 +3,7 @@
 // 每詞只顯示「推薦譯名」，點入 /glossary/<slug>/ 看各來源譯名與定義。
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Breadcrumb from '../components/Breadcrumb.astro';
+import GlossaryTabs from '../components/GlossaryTabs.astro';
 import { getCollection } from 'astro:content';
 import { sourceRefLabel } from '../lib/section';
 
@@ -87,6 +88,8 @@ const sourceTitle = (s: AcronymSource) =>
         CA/Browser Forum 基本要求、中華電信 HiPKI CA、TWCA、數位發展部主管法規等不同來源的翻譯與定義。頁面下方另附縮寫表。
       </p>
     </header>
+
+    <GlossaryTabs current="glossary" />
 
     {
       letters.length === 0 ? (
