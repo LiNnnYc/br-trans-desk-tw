@@ -30,6 +30,22 @@ body {
   font-family: var(--font-serif-tc);
 }
 
+/* 頁首 logo 右側的英文標記（BR TRANS DESK）。
+   參照 cabforum.org 頁首 logo 旁的「CA/BROWSER FORUM」：全大寫、寬字距、常規字重、深灰。
+   那串字在官網是 SVG 外框字（cabforum-logo-tag-right.svg）不是 CSS 文字，
+   規格是量出來的：cap height 140px、字母間隙平均 47.8px＝0.34 cap height，
+   換算約 0.2em；顏色取該檔的 .s2 #4d4d4f。
+   ⚠️ letter-spacing 會在最後一個字母後面也加一份空白，用等量負 margin 抵銷，
+   否則與右側元素的間距會多出一格、視覺上不齊。 */
+.site-wordmark {
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  font-weight: 400;
+  letter-spacing: 0.2em;
+  margin-right: -0.2em;
+  color: #4d4d4f;
+  text-transform: uppercase;
+}
+
 /* Bootstrap-like card motif：底部 4px primary 橫條 + 內框線 */
 .cabf-card {
   background: #fff;

@@ -37,10 +37,11 @@ const isHome = currentPath === '/';
     {/* 2026-09-22：原本的藍色「BR」方塊換成站台 logo（public/br-logo.svg，見 scripts/build_logo.py，
         由 web-spec-doc/BR_logo/BR_Desk_Logo_2.png 這張扁平風原圖按色分層描邊而成）。
         上下內距配合 logo 比例（viewBox 760×437）加大，讓 logo 有呼吸空間；
-        站名（siteConfig.name）依使用者指示移除，只留「Web PKI 繁中資訊站」，
-        並以 items-center 對齊 logo 中心線。 */}
+        站名（siteConfig.name）依使用者指示移除，只留右側的英文標記並以 items-center
+        對齊 logo 中心線；該標記的字體規格見 global.css 的 .site-wordmark（仿 cabforum.org
+        logo 旁的「CA/BROWSER FORUM」）。 */}
     <div class="px-4 py-4 lg:py-5 flex items-center justify-between gap-4">
-      <a href="/" class="inline-flex items-center gap-3 lg:gap-5 min-w-0">
+      <a href="/" class="inline-flex items-center gap-3 lg:gap-7 min-w-0">
         <img
           src="/br-logo.svg"
           width="760"
@@ -48,9 +49,10 @@ const isHome = currentPath === '/';
           alt="BR 翻譯小站"
           class="h-24 lg:h-28 w-auto shrink-0"
         />
-        <span class="hidden sm:block h-8 lg:h-12 w-px bg-slate-200 shrink-0"></span>
-        <span class="font-serif-tc text-sm sm:text-base lg:text-xl text-slate-700 leading-snug min-w-0">
-          Web PKI 繁中資訊站
+        {/* cabforum.org 的 logo 與「CA/BROWSER FORUM」之間沒有分隔線，只靠間距，
+            這裡跟著拿掉，字級也放大到接近該處的比例（標記 cap height ≈ logo 高的 1/6）。 */}
+        <span class="site-wordmark text-xs sm:text-lg lg:text-[1.75rem] leading-none min-w-0 sm:whitespace-nowrap">
+          BR Trans Desk
         </span>
       </a>
 
