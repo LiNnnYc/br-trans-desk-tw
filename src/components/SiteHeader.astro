@@ -1,9 +1,9 @@
 ---
-// spec §1.2 頁首：banner（站名 + 版本徽章）+ 全寬深色 navbar。
+// spec §1.2 頁首：banner（站台 logo + 標語）+ 全寬深色 navbar。
+// 2026-09-22 起 banner 不再顯示站名文字，改由 logo 承擔（見下方註解）。
 // 行動端漢堡 collapse 內含搜尋輸入、主選單、Ballot 摘要。
 // 中英對照 toggle 改放至章節頁工具列（M2 時接 Quotable 區）；本元件僅維持站台導覽。
 // 搜尋按鈕（桌面 + 漢堡內輸入）皆透過 window.__openSearchModal 開啟 Pagefind modal（M1-9）。
-import { siteConfig } from '../config/site';
 import VersionBadge from './VersionBadge.astro';
 import BrSidebarSubmenu from './BrSidebarSubmenu.astro';
 
@@ -34,21 +34,24 @@ const isHome = currentPath === '/';
   <div class="hidden lg:block h-4"></div>
 
   <div class="bg-white shadow-sm border-t-4 border-bs-primary">
-    <div class="px-4 pt-5 pb-3 flex items-start justify-between gap-4">
-      <a href="/" class="inline-flex items-center gap-3 min-w-0">
-        <div
-          class="flex h-14 w-14 lg:h-16 lg:w-16 items-center justify-center rounded-md bg-bs-primary text-white font-mono font-bold text-2xl shrink-0"
-        >
-          BR
-        </div>
-        <div class="min-w-0">
-          <div class="font-serif-tc text-xl lg:text-2xl font-bold text-slate-900 leading-tight">
-            {siteConfig.name}
-          </div>
-          <div class="text-xs lg:text-sm text-slate-600 mt-0.5">
-            Baseline Requirements 非官方繁體中文翻譯
-          </div>
-        </div>
+    {/* 2026-09-22：原本的藍色「BR」方塊換成站台 logo（public/br-logo.svg，見 scripts/build_logo.py，
+        由 web-spec-doc/BR_logo/BR_Desk_Logo_2.png 這張扁平風原圖按色分層描邊而成）。
+        上下內距配合 logo 比例（viewBox 760×437）加大，讓 logo 有呼吸空間；
+        站名（siteConfig.name）依使用者指示移除，只留「Web PKI 繁中資訊站」，
+        並以 items-center 對齊 logo 中心線。 */}
+    <div class="px-4 py-4 lg:py-5 flex items-center justify-between gap-4">
+      <a href="/" class="inline-flex items-center gap-3 lg:gap-5 min-w-0">
+        <img
+          src="/br-logo.svg"
+          width="760"
+          height="437"
+          alt="BR 翻譯小站"
+          class="h-24 lg:h-28 w-auto shrink-0"
+        />
+        <span class="hidden sm:block h-8 lg:h-12 w-px bg-slate-200 shrink-0"></span>
+        <span class="font-serif-tc text-sm sm:text-base lg:text-xl text-slate-700 leading-snug min-w-0">
+          Web PKI 繁中資訊站
+        </span>
       </a>
 
     </div>

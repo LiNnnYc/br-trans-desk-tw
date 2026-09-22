@@ -39,3 +39,7 @@ TRANSLATION_BRIEF.md
 # Python
 __pycache__/
 *.pyc
+
+# logo 原圖與匯出檔（ChatGPT 產的點陣稿，體積大、不入庫；
+# scripts/build_logo.py 需要它才能重跑，留在本機即可）
+web-spec-doc/BR_logo/
