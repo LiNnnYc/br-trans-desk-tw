@@ -41,7 +41,7 @@ const isHome = currentPath === '/';
         對齊 logo 中心線；該標記的字體規格見 global.css 的 .site-wordmark（仿 cabforum.org
         logo 旁的「CA/BROWSER FORUM」）。 */}
     <div class="px-4 py-4 lg:py-5 flex items-center justify-between gap-4">
-      <a href="/" class="inline-flex items-center gap-3 lg:gap-7 min-w-0">
+      <a href="/" class="inline-flex items-center gap-3 lg:gap-6 min-w-0">
         <img
           src="/br-logo.svg"
           width="760"
@@ -49,8 +49,9 @@ const isHome = currentPath === '/';
           alt="BR 翻譯小站"
           class="h-24 lg:h-28 w-auto shrink-0"
         />
-        {/* cabforum.org 的 logo 與「CA/BROWSER FORUM」之間沒有分隔線，只靠間距，
-            這裡跟著拿掉，字級也放大到接近該處的比例（標記 cap height ≈ logo 高的 1/6）。 */}
+        {/* cabforum.org 的 lockup 沒有分隔線，但使用者要留著（2026-09-22 指示），
+            所以只跟進字體規格與比例：字級放大到標記 cap height ≈ logo 高的 1/6。 */}
+        <span class="hidden sm:block h-8 lg:h-12 w-px bg-slate-200 shrink-0"></span>
         <span class="site-wordmark text-xs sm:text-lg lg:text-[1.75rem] leading-none min-w-0 sm:whitespace-nowrap">
           BR Trans Desk
         </span>
