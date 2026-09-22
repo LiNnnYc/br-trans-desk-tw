@@ -75,21 +75,24 @@ FONT = Path(r"C:\Windows\Fonts\NotoSansTC-VF.ttf")
 # 齒輪與飾線用純幾何並加粗，在頁首尺寸才站得住。
 # 以下座標是從原圖量出來的（畫布 760×437）：字塊 x 227–535、y 321–386，齒輪中心 y≈358。
 TEXT = "翻譯小站"
-# 凹槽（飾板中央的純深色帶）在字區其實有 y 290–401 可用，原圖只用了 65px 高，
-# 這裡放大到 78 並讓字、齒輪、飾線共用同一條中心線 y=350，縮到頁首尺寸才讀得清楚。
-TEXT_CENTER = (381.0, 350.0)
-TEXT_INK_HEIGHT = 78.0   # 原圖約 65
-TEXT_TRACKING = 7.0
+# ⚠️ 飾板中央的凹槽（純深色帶）只有 y 314–393（高 79、中心 353.5），齒輪那一段是 y 317–394。
+# 這些數字是從原圖量的：整列都必須是深色才算凹槽。字與齒輪一旦超出就會壓到上方的板金，
+# 使用者退過一次（當時字放到 78 高、中心移到 350）。放大前先回頭量，別再憑感覺調。
+# 現在字高 68（原圖 65）、上下各留約 5.5 的邊；齒輪維持原圖的中心與外徑。
+TEXT = "翻譯小站"
+TEXT_CENTER = (381.0, 353.5)
+TEXT_INK_HEIGHT = 68.0   # 原圖約 65；凹槽高 79，別超過 70
+TEXT_TRACKING = 6.0
 TEXT_WEIGHT = 700
-GEAR_CENTERS = ((71.5, 350.0), (689.0, 350.0))
-GEAR_OUTER_R = 28.0
-GEAR_RING_W = 9.0
-GEAR_DOT_R = 7.5
-ACCENT_Y = 350.0
+GEAR_CENTERS = ((71.5, 358.0), (689.0, 358.0))  # 與原圖同位置
+GEAR_OUTER_R = 26.0      # 與原圖同大小；齒紋簡化掉、環加粗
+GEAR_RING_W = 8.0
+GEAR_DOT_R = 7.0
+ACCENT_Y = 358.0
 ACCENT_OUTER_X = (104.0, 658.0)  # 飾線最外側（靠齒輪那端）
 ACCENT_GAP = 16.0                # 飾線與文字之間留白
-ACCENT_HALF_T = 3.4              # 飾線半厚
-ACCENT_TAPER = 12.0              # 兩端收尖長度
+ACCENT_HALF_T = 3.0              # 飾線半厚
+ACCENT_TAPER = 11.0              # 兩端收尖長度
 
 
 def load_rgba(path: Path) -> Image.Image:
@@ -242,7 +245,7 @@ def accent_paths(text_left: float, text_right: float) -> list[str]:
         )
         inner = x0 + 28 if x0 == ACCENT_OUTER_X[0] else x1 - 48
         for i in range(3):
-            out.append(f'<circle cx="{inner + i * 11:.1f}" cy="{y + 15:.1f}" r="2.8"/>')
+            out.append(f'<circle cx="{inner + i * 10:.1f}" cy="{y + 13:.1f}" r="2.4"/>')
     return out
 
 
