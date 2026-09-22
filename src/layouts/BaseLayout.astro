@@ -40,6 +40,13 @@ const hasBreadcrumb = Astro.slots.has('breadcrumb');
     <meta name="generator" content={Astro.generator} />
     <meta name="description" content={description} />
     <title>{fullTitle}</title>
+    {/* 站台 icon（scripts/build_logo.py 一併產生，只有「BR」兩個字）：
+        SVG 給支援的瀏覽器、ICO 給舊瀏覽器與 Windows 捷徑、180 PNG 給 iOS 加入主畫面。
+        ⚠️ 日後若替 GitHub Pages 加上 astro.config 的 base，這些絕對路徑要一起改
+        （站內其他連結也是同樣寫法）。 */}
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     {/* spec §4.2 — 在 body 渲染前套用 bilingual class，避免切換時 FOUC */}
     <script is:inline>
       try {

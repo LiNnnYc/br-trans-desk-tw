@@ -17,6 +17,10 @@
     python scripts/build_logo.py --detail 3       # 描邊解析度倍率（越大越細、檔案越肥）
     python scripts/build_logo.py --art-cyan       # 青色保留原圖的 #33c8fb（預設換成站台主色）
     python scripts/build_logo.py --weight 600     # 「翻譯小站」的字重（那一層是重畫的，見下）
+    python scripts/build_logo.py --no-icons       # 不要一併更新 public/ 的 favicon
+
+順帶產生 favicon（`public/favicon.svg`／`favicon.ico`／`apple-touch-icon.png`）——只有「BR」兩個字，
+細節見下面 ICON_* 常數的註解。
 
 ⚠️ 產出的 SVG 已進版控，平時不需要重跑。檢視產出可用 `pip install resvg-py` 把 SVG 描繪成 PNG
 （本機沒有 cairo，cairosvg 裝了也跑不動）。
@@ -41,6 +45,7 @@ from scipy import ndimage
 ROOT = Path(__file__).resolve().parents[1]
 SRC = ROOT / "web-spec-doc" / "BR_logo" / "BR_Desk_Logo_2.png"
 OUT = ROOT / "public" / "br-logo.svg"
+PUBLIC = ROOT / "public"
 
 CANVAS_W = 760  # 輸出畫布寬；高度依原圖比例算
 
@@ -75,6 +80,16 @@ FONT = Path(r"C:\Windows\Fonts\NotoSansTC-VF.ttf")
 # 齒輪與飾線用純幾何並加粗，在頁首尺寸才站得住。
 # 以下座標是從原圖量出來的（畫布 760×437）：字塊 x 227–535、y 321–386，齒輪中心 y≈358。
 TEXT = "翻譯小站"
+# favicon：只有「BR」兩個字（使用者指示，飾板與金色橫幅在 16px 會變噪點）。
+# ⚠️ 字身要加一圈**與底色同色**的描邊：外圈看不見，但 B 與 R 交疊處會被切出一條縫——
+# 原稿是靠深色外框把兩個字分開的，只留青色層的話兩個字會黏成一塊。
+# apple-touch-icon 不能透明（iOS 會合成成黑底），所以底色是實色。
+ICON_BG = "#0a1a2c"
+ICON_MARGIN = 0.10
+ICON_STROKE = 8.0
+ICON_PNG_SIZES = {"apple-touch-icon.png": 180}
+ICON_ICO_SIZES = (16, 32, 48)
+
 # ⚠️ 飾板中央的凹槽（純深色帶）只有 y 314–393（高 79、中心 353.5），齒輪那一段是 y 317–394。
 # 這些數字是從原圖量的：整列都必須是深色才算凹槽。字與齒輪一旦超出就會壓到上方的板金，
 # 使用者退過一次（當時字放到 78 高、中心移到 350）。放大前先回頭量，別再憑感覺調。
@@ -249,11 +264,69 @@ def accent_paths(text_left: float, text_right: float) -> list[str]:
     return out
 
 
+def letters_path(cyan_mask: np.ndarray, detail: float) -> tuple[str, tuple[float, float, float, float]]:
+    """從青色遮罩取最大的兩塊連通區（＝B 與 R），描邊後回傳路徑與 bbox。"""
+    lab, n = ndimage.label(cyan_mask)
+    if n < 2:
+        raise SystemExit("找不到 BR 兩個字的青色區塊，原圖或門檻有變")
+    sizes = ndimage.sum(cyan_mask, lab, range(1, n + 1))
+    letters = np.isin(lab, np.argsort(sizes)[::-1][:2] + 1)
+    ys, xs = np.nonzero(letters)
+    bbox = (xs.min() / detail, ys.min() / detail, xs.max() / detail, ys.max() / detail)
+    return trace(letters, detail, turdsize=round(12 * detail)), bbox
+
+
+def icon_svg(d: str, bbox: tuple[float, float, float, float], cyan: str, size: int | None = None) -> str:
+    """方形 icon。size=None 產生不綁尺寸的向量版（favicon.svg）。"""
+    box = 512.0
+    x0, y0, x1, y1 = bbox
+    bw, bh = x1 - x0, y1 - y0
+    s = min(box * (1 - 2 * ICON_MARGIN) / bw, box * (1 - 2 * ICON_MARGIN) / bh)
+    tx, ty = (box - bw * s) / 2 - x0 * s, (box - bh * s) / 2 - y0 * s
+    dim = f'width="{size}" height="{size}" ' if size else ""
+    return (
+        f'<svg xmlns="http://www.w3.org/2000/svg" {dim}viewBox="0 0 {box:g} {box:g}" '
+        f'role="img" aria-label="BR 翻譯小站"><title>BR 翻譯小站</title>'
+        f'<rect width="{box:g}" height="{box:g}" fill="{ICON_BG}"/>'
+        f'<g transform="translate({tx:.2f} {ty:.2f}) scale({s:.5f})">'
+        f'<path d="{d}" fill="{cyan}" fill-rule="evenodd" stroke="{ICON_BG}" '
+        f'stroke-width="{ICON_STROKE:g}" stroke-linejoin="round"/></g></svg>'
+    )
+
+
+def write_icons(d: str, bbox: tuple[float, float, float, float], cyan: str) -> None:
+    """寫出 public/favicon.svg、apple-touch-icon.png、favicon.ico。"""
+    svg = icon_svg(d, bbox, cyan)
+    (PUBLIC / "favicon.svg").write_text(svg, encoding="utf-8")
+    print(f"icon   public/favicon.svg ({len(svg) / 1024:.1f} KB)", file=sys.stderr)
+
+    try:
+        import io
+
+        import resvg_py
+    except ImportError:
+        print("icon   ⚠️ 沒有 resvg-py，跳過 PNG／ICO（pip install resvg-py）", file=sys.stderr)
+        return
+
+    def raster(size: int) -> Image.Image:
+        png = resvg_py.svg_to_bytes(svg_string=icon_svg(d, bbox, cyan, size), width=size)
+        return Image.open(io.BytesIO(bytes(png))).convert("RGBA")
+
+    for name, size in ICON_PNG_SIZES.items():
+        raster(size).save(PUBLIC / name)
+        print(f"icon   public/{name} ({size}×{size})", file=sys.stderr)
+
+    base = raster(max(ICON_ICO_SIZES) * 4)
+    base.save(PUBLIC / "favicon.ico", sizes=[(s, s) for s in ICON_ICO_SIZES])
+    print(f"icon   public/favicon.ico ({'／'.join(str(s) for s in ICON_ICO_SIZES)})", file=sys.stderr)
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--detail", type=float, default=2.0, help="描邊解析度是輸出畫布的幾倍")
     ap.add_argument("--art-cyan", action="store_true", help="青色保留原圖的 #33c8fb")
     ap.add_argument("--weight", type=int, default=TEXT_WEIGHT, help="「翻譯小站」的字重（100–900）")
+    ap.add_argument("--no-icons", action="store_true", help="不要一併更新 public/ 的 favicon")
     ap.add_argument("--src", type=Path, default=SRC)
     ap.add_argument("--out", type=Path, default=OUT)
     args = ap.parse_args()
@@ -270,6 +343,7 @@ def main() -> int:
     if args.art_cyan:
         palette["cyan"] = ART_CYAN
 
+    icon_source = None
     body = []
     for name in LAYER_ORDER:
         mask = masks[name]
@@ -277,6 +351,8 @@ def main() -> int:
             mask = clean(mask, area // 2000, area // 400)
         else:
             mask = clean(mask, area // 4000, area // 4000)
+        if name == "cyan":
+            icon_source = mask
         d = trace(mask, args.detail, turdsize=max(4, round(area / 60000)))
         body.append(f'<path fill="{palette[name]}" fill-rule="evenodd" d="{d}"/>')
         print(f"{name:6s} px={int(mask.sum()):8d}  d={len(d):6d} chars", file=sys.stderr)
@@ -297,6 +373,10 @@ def main() -> int:
     )
     args.out.write_text(svg, encoding="utf-8")
     print(f"wrote {args.out} ({len(svg) / 1024:.1f} KB, viewBox 0 0 {w} {h})", file=sys.stderr)
+
+    if not args.no_icons and icon_source is not None:
+        d_letters, bbox = letters_path(icon_source, args.detail)
+        write_icons(d_letters, bbox, palette["cyan"])
     return 0
 
 
