@@ -3,10 +3,11 @@
 
 ### 現行版本
 
-- [CA-Browser-Forum TLS BR 2.2.9](https://cabforum.org/working-groups/server/baseline-requirements/documents/CA-Browser-Forum-TLS-BR-2.2.9.pdf)（[修訂對照](https://cabforum.org/working-groups/server/baseline-requirements/documents/CA-Browser-Forum-TLS-BR-2.2.9-redlined.pdf)）——由投票案 [SC101v2](https://cabforum.org/2026/07/01/ballot-sc-101v2-clarify-authorization-domain-names) 通過採納
+- [CA-Browser-Forum TLS BR 2.3.0](https://cabforum.org/working-groups/server/baseline-requirements/documents/CA-Browser-Forum-TLS-BR-2.3.0.pdf)（[修訂對照](https://cabforum.org/working-groups/server/baseline-requirements/documents/CA-Browser-Forum-TLS-BR-2.3.0-redlined.pdf)）——由投票案 [SC100](https://cabforum.org/2026/08/06/ballot-sc-100-dnssec-clarification-and-consolidation) 通過採納
 
 ### 歷史版本
 
+- [CA-Browser-Forum TLS BR 2.2.9](https://cabforum.org/working-groups/server/baseline-requirements/documents/CA-Browser-Forum-TLS-BR-2.2.9.pdf)（[修訂對照](https://cabforum.org/working-groups/server/baseline-requirements/documents/CA-Browser-Forum-TLS-BR-2.2.9-redlined.pdf)）——由投票案 [SC101v2](https://cabforum.org/2026/07/01/ballot-sc-101v2-clarify-authorization-domain-names) 通過採納
 - [CA-Browser-Forum TLS BR 2.2.8](https://cabforum.org/working-groups/server/baseline-requirements/documents/CA-Browser-Forum-TLS-BR-2.2.8.pdf)（[修訂對照](https://cabforum.org/working-groups/server/baseline-requirements/documents/CA-Browser-Forum-TLS-BR-2.2.8-redlined.pdf)）——由投票案 [SC098](https://cabforum.org/2026/05/13/ballot-sc-98-process-rfc-8657-caa-parameters) 通過採納
 - [CA-Browser-Forum TLS BR 2.2.7](https://cabforum.org/working-groups/server/baseline-requirements/documents/CA-Browser-Forum-TLS-BR-2.2.7.pdf)（[修訂對照](https://cabforum.org/working-groups/server/baseline-requirements/documents/CA-Browser-Forum-TLS-BR-2.2.7-redlined.pdf)）——由投票案 [SC099](https://cabforum.org/2026/04/18/ballot-sc-99-improve-recording-of-validation-method) 通過採納
 - [CA-Browser-Forum TLS BR 2.2.6](https://cabforum.org/working-groups/server/baseline-requirements/documents/CA-Browser-Forum-TLS-BR-2.2.6.pdf)（[修訂對照](https://cabforum.org/working-groups/server/baseline-requirements/documents/CA-Browser-Forum-TLS-BR-2.2.6-redlined.pdf)）——由投票案 [SC095](https://cabforum.org/2026/02/27/ballot-sc-95-clean-up-2025) 通過採納
