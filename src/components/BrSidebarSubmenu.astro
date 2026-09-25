@@ -14,11 +14,11 @@ const { currentPath = '', variant = 'sidebar' } = Astro.props;
 const items = [
   { label: '全文內容', href: '/server-cert-br/' },
   { label: '章節目錄', href: '/server-cert-br/table-of-contents/' },
+  { label: '關於《基本要求》（原文內容）', href: '/about-base-req/' },
   { label: '《基本要求》官方 FAQ', href: '/faq-for-base-req/' },
-  { label: 'SSL 憑證內容物之基本要求', href: '/cert-contents-for-base/' },
-  { label: '關於《基本要求》', href: '/about-base-req/' },
-  { label: '官方文件與歷史版本', href: '/other-br-docs/' },
-  { label: '本站翻譯版本歷程', href: '/changelog/' },
+  { label: '《基本要求》規定的 SSL 憑證內容', href: '/cert-contents-for-base/' },
+  { label: '官方文件與歷史版本（原文）', href: '/other-br-docs/' },
+  { label: '本站翻譯的版本歷史', href: '/changelog/' },
 ];
 
 const isActive = (href: string) => {

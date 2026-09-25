@@ -19,21 +19,21 @@ const LAST_SYNCED = '2026-08-20';
 ---
 
 <BaseLayout
-  title="SSL 憑證內容物之基本要求"
-  description="CA/Browser Forum「Certificate Contents for Baseline SSL」非官方繁體中文翻譯，並標註與現行《基本要求》不符之處。"
+  title="《基本要求》規定的 SSL 憑證內容"
+  description="CA/Browser Forum 官方網站「Certificate Contents for Baseline SSL」頁面之非官方繁體中文翻譯，並標註與現行《基本要求》不符之處。"
 >
   <Breadcrumb
     slot="breadcrumb"
-    items={[{ label: '首頁', href: '/' }, { label: 'SSL 憑證內容物之基本要求' }]}
+    items={[{ label: '首頁', href: '/' }, { label: '《基本要求》規定的 SSL 憑證內容' }]}
   />
 
   <article class="cabf-card bg-white border border-slate-200 rounded p-5 sm:p-7">
     <header class="border-b border-slate-200 pb-4">
       <h1 class="font-serif-tc text-2xl font-bold text-slate-900 sm:text-3xl leading-tight">
-        SSL 憑證內容物之基本要求
+        《基本要求》規定的 SSL 憑證內容
       </h1>
       <p class="mt-2 text-sm text-slate-600 leading-relaxed">
-        CA/Browser Forum 官方「Certificate Contents for Baseline SSL」頁面之繁體中文翻譯。
+        CA/Browser Forum 官方網站「Certificate Contents for Baseline SSL」頁面之非官方繁體中文翻譯。
       </p>
       <div class="mt-4 flex flex-wrap items-center gap-2">
         <a
@@ -44,7 +44,7 @@ const LAST_SYNCED = '2026-08-20';
           aria-label="在新分頁開啟 cabforum.org 原文：Certificate Contents for Baseline SSL"
         >
           <span aria-hidden="true">↗</span>
-          <span>跳至原文</span>
+          <span>原文</span>
         </a>
       </div>
     </header>
@@ -56,11 +56,11 @@ const LAST_SYNCED = '2026-08-20';
       <p class="font-semibold">⚠️ 原頁面內容已過時</p>
       <p class="mt-1.5">
         本頁原文標示日期為 <span class="font-mono">{ORIGINAL_DATE}</span>，CA/Browser Forum
-        其後未再更新。原文所引<strong>條號</strong>沿用《基本要求》1.0 版的編排，
-        現行版本已改採 RFC 3647 架構、章節編號完全不同；<strong>SHA-1 與 1024 位元 RSA 的過渡安排</strong>、
-        <strong>AIA 的 OCSP 必要性</strong>與 <strong>extKeyUsage 的 emailProtection</strong>
+        其後未再更新。原文所引<strong>章節編號</strong>沿用《基本要求》1.0 版的編排，
+        現行版本已改採 RFC 3647 架構，章節編號跟早期版本完全不同；<strong>SHA-1 與 1024 位元 RSA 的過渡期安排</strong>、
+        <strong>AIA 擴充欄位中的 OCSP 必要性</strong>與 <strong>extKeyUsage 擴充欄位中的 emailProtection</strong>
         亦均已變更。譯文中以「編按」標出並指向現行條文；<strong>「編按」為本站補充，不屬於原文</strong>。
-        對外引用請一律以<a href="/server-cert-br/" class="underline decoration-amber-400 underline-offset-2 hover:decoration-amber-700">《基本要求》本文</a>為準。
+        對外引用請以<a href="/server-cert-br/" class="underline decoration-amber-400 underline-offset-2 hover:decoration-amber-700">現行《基本要求》規定</a>為準。
       </p>
     </aside>
 

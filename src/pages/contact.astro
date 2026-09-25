@@ -9,7 +9,7 @@ const repoIsPlaceholder = siteConfig.repoUrl.startsWith('#');
 
 <BaseLayout
   title="聯絡方式"
-  description="本站勘誤回報、聯絡 Email、GitHub Issue 樣板入口。"
+  description="本站勘誤回報、聯絡 Email、GitHub Issue 連結。"
 >
   <Breadcrumb
     slot="breadcrumb"
@@ -29,7 +29,7 @@ const repoIsPlaceholder = siteConfig.repoUrl.startsWith('#');
     <div class="clause-body mt-6">
       <h2>勘誤回報（建議）</h2>
       <p>
-        最快、最公開的方式是直接於 GitHub repo 建立 Issue，已備妥三個樣板：
+        最快、最公開的方式是直接於 GitHub repo 建立 Issue，可選擇下列三個樣板：
       </p>
       <ul>
         <li><strong>錯字／誤譯</strong>：指出須修改頁面與段落，附上建議的翻譯。</li>
@@ -58,7 +58,7 @@ const repoIsPlaceholder = siteConfig.repoUrl.startsWith('#');
 
       <h2>Email</h2>
       <p>
-        如不便使用 GitHub，可寄信至：
+        若不便使用 GitHub，可寄信至：
         <a href={`mailto:${siteConfig.contactEmail}`}>{siteConfig.contactEmail}</a>
       </p>
       <p class="text-sm text-slate-500">
@@ -70,13 +70,13 @@ const repoIsPlaceholder = siteConfig.repoUrl.startsWith('#');
         歡迎引用本站翻譯內容（CC BY 4.0 授權）。
       </p>
       <p>
-        請一併註明章節細項頁網址、對應原文版本，以及「本翻譯為非官方翻譯，發生爭議時以<span style="font-style: italic;"> &lt;文件名稱&gt; </span>原文內容為準」等免責聲明。
+        請一併註明本站文章網址、對應原文版本，以及「本翻譯為非官方翻譯，發生爭議時以<span style="font-style: italic;"> &lt;文件名稱&gt; </span>原文內容為準」等免責聲明。
       </p>
 
       <h2>不受理項目</h2>
       <ul>
         <li>請求協助憑證申請、操作、安裝、或評估各廠商服務（請洽各 CA 客服）。</li>
-        <li>對 CA/Browser Forum 原文政策的爭議（請至官方 Github 討論）。</li>
+        <li>對 CA/Browser Forum 原文政策的爭議（請至 CA/Browser Forum 官方 GitHub 討論）。</li>
         <li>商業合作、廣告、贊助代購等。</li>
       </ul>
     </div>
