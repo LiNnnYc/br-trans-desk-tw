@@ -247,8 +247,11 @@ const chapterLabel = wantAll
     : `第 ${chFrom}–${chTo} 章`;
 const title = `CA/Browser Forum 基本要求 非官方繁體中文翻譯（${chapterLabel}）`;
 
+// 與全站 footer（src/components/SiteFooter.astro）同一套文案；那邊改了這裡要跟著改。
+// 2026-09-25 以前是「本翻譯為非官方翻譯，發生爭議時以 CA/Browser Forum 英文原文為準。」，
+// v2.2.7 的離線存檔仍是舊文案（已發布的存檔不回頭重出）。
 const DISCLAIMER =
-  '本翻譯為非官方翻譯，發生爭議時以 CA/Browser Forum 英文原文為準。';
+  '本站為 Web PKI 相關文件的非官方繁體中文翻譯，由社群維護。發生爭議時以原文內容為準。本網站內容不構成法律意見。';
 
 const html = `<!doctype html>
 <html lang="zh-Hant-TW">
@@ -276,6 +279,10 @@ ${css}
     body { background: #fff; }
     .export-card { border: 0; padding: 0; }
     .export-toc { break-after: page; }
+    /* 內嵌的站台列印樣式會藏掉所有 header／footer（含本檔的免責聲明）並把外部連結展開成網址 */
+    .export-card > header, .export-card > footer.export-foot { display: block !important; }
+    a[href]::after { content: none !important; }
+    a[title="cabforum.org 原文"], a[title="本節錨點連結"] { display: none !important; }
   }
 </style>
 </head>
@@ -311,7 +318,7 @@ ${keptFootnotes > 0 ? parse5.serializeOuter(footnotesSection) : ''}
 
     <footer class="export-foot">
       <p>⚠️ ${DISCLAIMER}</p>
-      <p>本檔由「BRs 翻譯小站」原始碼於 ${today} 匯出，僅含${chapterLabel}。翻譯狀態、後續修訂與其餘章節以站台版本為準。</p>
+      <p>本檔由「BR 翻譯小站」原始碼於 ${today} 匯出，僅含${chapterLabel}。翻譯狀態、後續修訂與其餘章節以站台版本為準。</p>
     </footer>
   </div>
 </div>

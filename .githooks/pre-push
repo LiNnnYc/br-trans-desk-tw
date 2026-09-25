@@ -7,7 +7,8 @@
 # 日常 build／dev／commit 都不受影響，只有 git push 會跑這支。
 # 確定要推出未完成狀態時：git push --no-verify
 #
-# 檢查內容見 scripts/lint_version_consistency.py。
+# 檢查內容見 scripts/lint_version_consistency.py 與 scripts/lint_downloads.py
+# （後者：/changelog/ 的下載檔是否齊全、最新版是否跟得上章節內容）。
 
 set -e
 
@@ -19,12 +20,19 @@ for py in python python3 py; do
 done
 
 if [ -z "$PY" ]; then
-  echo "pre-push：找不到 python，略過版本一致性檢查" >&2
+  echo "pre-push：找不到 python，略過版本一致性與下載檔檢查" >&2
   exit 0
 fi
 
 echo "pre-push：檢查版本一致性…"
 if ! PYTHONIOENCODING=utf-8 "$PY" scripts/lint_version_consistency.py; then
+  echo "" >&2
+  echo "pre-push：已擋下這次 push。" >&2
+  exit 1
+fi
+
+echo "pre-push：檢查下載檔…"
+if ! PYTHONIOENCODING=utf-8 "$PY" scripts/lint_downloads.py; then
   echo "" >&2
   echo "pre-push：已擋下這次 push。" >&2
   exit 1

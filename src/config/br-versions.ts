@@ -21,8 +21,10 @@ export interface BrVersionEntry {
   /** git tag 名稱（嚴封該版全文） */
   gitTag?: string;
   /**
-   * 離線存檔檔名（相對於 public/archive/）。
-   * 由 scripts/export_chapters_html.mjs 產出，讓客服不必 checkout git 也能查舊版。
+   * 下載檔的檔名主體（不含副檔名，相對於 public/archive/）。同名的 `.html`／`.pdf`／`.md`
+   * 三個檔都要在（全文、只有中文），由 `node scripts/build_downloads.mjs` 產生；
+   * pre-push 以 scripts/lint_downloads.py 檢查齊全與否、最新版是否跟得上內容。
+   * 讓客服不必 checkout git 也能離線查閱或轉寄。
    */
   archive?: string;
 }
@@ -34,6 +36,7 @@ export const brVersions: BrVersionEntry[] = [
     date: '2026-09-07',
     ballot: 'SC100',
     translatedAt: '2026-09-13',
+    archive: 'BR_v2.3.0_zh-TW',
   },
   {
     version: '2.2.7',
@@ -41,6 +44,6 @@ export const brVersions: BrVersionEntry[] = [
     ballot: 'SC099',
     translatedAt: '2026-09-06',
     gitTag: 'br-v2.2.7',
-    archive: 'BR_v2.2.7_zh-TW.html',
+    archive: 'BR_v2.2.7_zh-TW',
   },
 ];
