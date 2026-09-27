@@ -7,8 +7,8 @@
 
 兩種來源都吃，優先序如下（都不必手動保存檔案）：
 
-1. `web-spec-doc/BR_archive/BR-v<版本>.md`——升版前封存的副本（檔名帶版本號，好找）
-2. `git show br-v<版本>:web-spec-doc/BR.md`——tag 裡的原文
+1. `upstream/BR_archive/BR-v<版本>.md`——升版前封存的副本（檔名帶版本號，好找）
+2. `git show br-v<版本>:upstream/BR.md`——tag 裡的原文
 
 ## 用法
 
@@ -38,8 +38,8 @@ for _stream in (sys.stdout, sys.stderr):
         _stream.reconfigure(encoding="utf-8", errors="replace")
 
 ROOT = Path(__file__).resolve().parent.parent
-BR_MD = ROOT / "web-spec-doc" / "BR.md"
-ARCHIVE_DIR = ROOT / "web-spec-doc" / "BR_archive"
+BR_MD = ROOT / "upstream" / "BR.md"
+ARCHIVE_DIR = ROOT / "upstream" / "BR_archive"
 CONTENT_DIR = ROOT / "src" / "content" / "br"
 
 # `# 1. INTRODUCTION` / `## 1.1 Overview` / `# Appendix A – …` / `## A.1. CAA Methods`
@@ -120,7 +120,7 @@ def load_old(spec: str | None) -> tuple[str, str]:
         return f"檔案 {_display_path(p)}", p.read_text(encoding="utf-8")
 
     r = subprocess.run(
-        ["git", "show", f"{spec}:web-spec-doc/BR.md"],
+        ["git", "show", f"{spec}:upstream/BR.md"],
         cwd=ROOT, capture_output=True, text=True, encoding="utf-8",
     )
     if r.returncode != 0:
@@ -136,7 +136,7 @@ def content_file(sid: str) -> Path:
 def main() -> int:
     ap = argparse.ArgumentParser(add_help=True)
     ap.add_argument("--old", help="舊版來源：git tag 或檔案路徑（預設自動挑最新封存）")
-    ap.add_argument("--new", default=str(BR_MD), help="新版原文路徑（預設 web-spec-doc/BR.md）")
+    ap.add_argument("--new", default=str(BR_MD), help="新版原文路徑（預設 upstream/BR.md）")
     ap.add_argument("--show-diff", metavar="SECTION", help="顯示指定章節的逐行差異")
     ap.add_argument("--mark-outdated", action="store_true",
                     help="把內容變動的章節檔 status 改為 outdated")

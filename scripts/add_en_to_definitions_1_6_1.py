@@ -2,7 +2,7 @@
 """一次性：把 §1.6.1（src/content/br/1-6-1.md）由「**英文詞（中譯）**：中文釋義」
 改成標準 Style A：每條定義上方加 BR.md 英文原文 blockquote，中文行的粗體改為中譯。
 
-- 英文原文取自 web-spec-doc/BR.md 的 ### 1.6.1 Definitions 區（行 280–531）。
+- 英文原文取自 upstream/BR.md 的 ### 1.6.1 Definitions 區（行 280–531）。
 - BR 區塊以 `^\\*\\*<ASCII 開頭的詞>\\*\\*:` 為界，多行／多段定義一併納入；
   其中 `**Note**:` 不視為新詞（屬 Request Token 內文）。
 - 中文單元以 `^\\*\\*<ASCII 開頭>\\*\\*：` 為界（全形冒號）；`**註**` 為 CJK 開頭，
@@ -14,7 +14,7 @@ import re
 import pathlib
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
-BR = ROOT / "web-spec-doc" / "BR.md"
+BR = ROOT / "upstream" / "BR.md"
 TARGET = ROOT / "src" / "content" / "br" / "1-6-1.md"
 
 DEF_START, DEF_END = 280, 531  # BR.md 行號（1-based），含頭尾

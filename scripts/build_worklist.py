@@ -12,7 +12,7 @@ import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-BR_MD = ROOT / "web-spec-doc" / "BR.md"
+BR_MD = ROOT / "upstream" / "BR.md"
 BR_DIR = ROOT / "src" / "content" / "br"
 HEADING_RE = re.compile(r"^#{1,6}\s+(\d+(?:\.\d+)*|Appendix\s+[A-Z])\b\s*(.*)$")
 

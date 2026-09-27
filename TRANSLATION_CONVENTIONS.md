@@ -2,7 +2,7 @@
 
 > 給未來版本（v2.2.8、v2.3.0…）的翻譯者／審閱者依循。本檔為長期約定，與
 > 一次性的 `TRANSLATION_BRIEF.md`（gitignored、特定版次的潤稿提示）分工不同。
-> 對應 `CLAUDE.md` 的「Language」原則與 `RUNBOOK.md` §2.1 新增章節流程。
+> 對應 `RUNBOOK.md` §2.1 新增章節流程。
 
 ---
 
@@ -75,7 +75,7 @@ Table: My caption
 
 本站以 **`scripts/rehype-table-caption.mjs`**（rehype plugin）支援之：把緊鄰 `<table>` 上方的 `Table:`／`表：` 段落轉成 `<caption>` 並置於表格內，由 `global.css` 的 `caption-side: bottom` 顯示在表格底端，對齊 cabforum.org（Pandoc）的渲染。
 
-> **沿革**：早期（commit `c233144`）因 remark 不認 Pandoc caption、`Table:` 被當純文字而**整批移除**；2026-06 改為「保留＋plugin 轉 `<caption>`」（本節即新慣例），caption 由 `scripts/restore_table_captions.py` 從 BR.md（英文）＋ git `c233144^`（已譯中文）回填。
+> **沿革**：早期（commit `69b7baf`）因 remark 不認 Pandoc caption、`Table:` 被當純文字而**整批移除**；2026-06 改為「保留＋plugin 轉 `<caption>`」（本節即新慣例），caption 由 `scripts/restore_table_captions.py` 從 BR.md（英文）＋ git `69b7baf^`（已譯中文）回填。
 
 **做法**（plugin 依賴的格式，務必遵守）：caption 段落須**緊鄰**其表格的上方（中間僅一個空白行），中英各自貼著自己的表格：
 
@@ -200,8 +200,8 @@ inline `` `code` `` 另有 `.clause-body td code { white-space: nowrap }` 保護
 
 ### 4.1 優先順序
 
-1. **HiPKICA CP/CPS v1.2 附錄 1／附錄 2**（`web-spec-doc/HIPKI_CPS術語表.txt`；v1.1 PDF 在 `web-spec-doc/HiPKICA-CP_CPS_v1.1.pdf`，附錄 1 的 4 筆仍依 v1.1）— 最高優先
-2. **TWCA Global CPS v3.2 附錄一**（`web-spec-doc/TWCA_CPS術語表.txt`；v3.1 PDF 在 `web-spec-doc/TWCA-GLOBAL-CPS-V3.1.pdf`）— HiPKICA 未覆蓋時補入
+1. **HiPKICA CP/CPS v1.2 附錄 1／附錄 2**（附錄 1 的 4 筆仍依 v1.1）— 最高優先
+2. **TWCA Global CPS v3.2 附錄一**— HiPKICA 未覆蓋時補入
 3. **數位發展部主管法規**（電子簽章法〔華總一義字第11300039241號〕、數位簽章憑證實務作業基準應載明事項〔數授產經字第1134000891號〕）— 法規用語，前兩者未覆蓋時補入；已收錄者一律以 `sources` 併列保留，供爭議時引用
 4. **既有 `src/content/glossary/` 條目**
 5. 自行擬定（記得 commit 到 glossary，並於 `source` 註明）
@@ -331,7 +331,7 @@ inline `` `code` `` 另有 `.clause-body td code { white-space: nowrap }` 保護
 
 免責文字**逐字硬編碼**於 `src/components/SiteFooter.astro`（每頁頁尾），**不可改寫**。
 （原本另有一份硬編碼在引用卡 `CitationCard.astro` 的輸出格式中；「複製引用」功能已於 2026-09-19 廢除，
-該元件連同 `src/lib/citation.ts` 的 `buildCitation()` 一併移除。spec §4.3、PRD §4.4 與 CLAUDE.md 尚未同步。）
+該元件連同 `src/lib/citation.ts` 的 `buildCitation()` 一併移除。）
 
 ---
 
@@ -497,7 +497,7 @@ SubjectPublicKeyInfo  ::=  SEQUENCE  {
 
 ## 10. 上游版本切換（v2.2.7 → 下一版）流程
 
-1. 更新 `web-spec-doc/BR.md` 為新版本原文（從 [`cabforum/servercert`](https://github.com/cabforum/servercert) 抓 main 分支）。
+1. 更新 `upstream/BR.md` 為新版本原文（從 [`cabforum/servercert`](https://github.com/cabforum/servercert) 抓 main 分支）。
 2. 跑 **`scripts/diff_br_versions.py`** 看哪些章節變動（自動取 `BR_archive/` 的封存版或 `br-v*` tag 當基準）。
 3. 把改動的章節 `status` 改為 `outdated`，重新翻譯後再升回 `translated`。
 4. ~~更新 `src/config/site.ts` 的 `upstream.version` 與 `lastSyncedAt`。~~
@@ -527,12 +527,12 @@ SubjectPublicKeyInfo  ::=  SEQUENCE  {
 
 - `scripts/lint_rfc2119.py` — RFC 2119 加粗對照：英文 blockquote 大寫關鍵字 vs 中文 `（關鍵字）` 括註（見 §3.7）；另含 bare 粗體與畸形括註檢查
 - `scripts/lint_term_consistency.py` — 譯名一致性：以 §1.6.1/§1.6.2 定版掃 chapter ≥ 3 的 `變體（English）` 分歧
-- `scripts/lint_version_consistency.py` — **發布前把關**：全庫 `original_version` 是否一致、是否等於 `br-versions.ts` 宣告的發布版、是否還有 `draft`／`outdated`、`web-spec-doc/BR.md` 是否不低於發布版（上游較新只提示，較舊則報錯）。升版做到一半必然混版，故不擋 build／commit，只由 `.githooks/pre-push` 在 `git push` 前擋（安裝：`git config core.hooksPath .githooks`）
+- `scripts/lint_version_consistency.py` — **發布前把關**：全庫 `original_version` 是否一致、是否等於 `br-versions.ts` 宣告的發布版、是否還有 `draft`／`outdated`、`upstream/BR.md` 是否不低於發布版（上游較新只提示，較舊則報錯）。升版做到一半必然混版，故不擋 build／commit，只由 `.githooks/pre-push` 在 `git push` 前擋（安裝：`git config core.hooksPath .githooks`）
 - `scripts/lint_table_indent.py` — 表格欄位階層縮排檢查：抓「U+2007 混半形空白」與「中英表層級不一致」（見 §2.3）
 - `scripts/lint_list_nesting.py` — 巢狀清單掉層檢查：抓「縮排清單項前面隔著第 0 欄 blockquote」導致 render 少一層縮排（見 §6.1）。中英兩側各自判定；只在該項確實有上層清單項時才報，故 `  a.` `  b.` 這種前面只有散文引言、縮排純屬排版的頂層清單不會誤報。純掃 markdown，不需先 build
 - `scripts/lint_translation_style.py` — 翻譯風格 lint（審閱加速器 Phase A）：以 §1.6/glossary/CURATED 為基準掃 chapter ≥ 4 的譯名分歧與機翻 artifact；報告寫 `web-spec-doc/翻譯工作區/風格審查_PhaseA報告.md`。逐節語意審查（Phase B）由 Claude 對照英文執行，產出 `PhaseB_ch<N>_worklist.md`
 
-- `scripts/diff_br_versions.py` — 上游兩版 BR.md 的逐節比對：列出內容變動／新增／刪除各幾節並對應到本站檔名。舊版原文自動取自 `web-spec-doc/BR_archive/BR-v*.md`（升版前封存，檔名帶版本號）或 `br-v*` git tag，兩者都不必手動保存。`--show-diff <節號>` 看單節差異，`--mark-outdated --write` 把變動章節標記為待重譯
+- `scripts/diff_br_versions.py` — 上游兩版 BR.md 的逐節比對：列出內容變動／新增／刪除各幾節並對應到本站檔名。舊版原文自動取自 `upstream/BR_archive/BR-v*.md`（升版前封存，檔名帶版本號）或 `br-v*` git tag，兩者都不必手動保存。`--show-diff <節號>` 看單節差異，`--mark-outdated --write` 把變動章節標記為待重譯
 
 一次性轉換腳本：
 
@@ -542,9 +542,9 @@ SubjectPublicKeyInfo  ::=  SEQUENCE  {
 - `scripts/preserve_table_indent.py` — 把 BR.md 表格儲存格前導空白轉成 U+2007 對齊縮排
 - `scripts/add_en_to_definitions_1_6_1.py` — 從 BR.md 把 §1.6.1 定義改成 Style A（補英文原文）；BR 版本升級時若 §1.6.1 定義有增減，調整後可重跑（會重寫整個 `1-6-1.md`）
 - `scripts/add_en_footnote_defs.py` — 把註腳補成中英對照：英文側引用改用 `<label>_en`、從 BR.md 補上英文定義（見 §13）。可重跑（已補過的會跳過）；BR 升版若註腳有增減可再跑一次。`--write` 才實際寫入；`--doc <路徑>` 產出「改註腳翻譯要動哪些檔」的審閱清單（含各副本位置與不一致警示），已產出 `web-spec-doc/翻譯工作區/註腳翻譯修改清單.md`。
-- `scripts/restore_table_captions.py` — 把 BR.md 的 `Table:` caption（英文）與 git `c233144^` 的「表：」（中文）以「緊鄰表格上方」格式回填各章節檔，供 `rehype-table-caption.mjs` 轉 `<caption>`（見 §2.2）。以表格內容簽章比對、idempotent，BR 升版後可重跑；`--write` 才實際寫入。
+- `scripts/restore_table_captions.py` — 把 BR.md 的 `Table:` caption（英文）與 git `69b7baf^` 的「表：」（中文）以「緊鄰表格上方」格式回填各章節檔，供 `rehype-table-caption.mjs` 轉 `<caption>`（見 §2.2）。以表格內容簽章比對、idempotent，BR 升版後可重跑；`--write` 才實際寫入。
 
-不在 repo 中的 hot-fix 腳本（補英文表 blockquote 等）已在歷史 commit 訊息中說明做法，未來如需重做可參考 commit `f3bfc41`、`6a0c970`、本檔對應的整理 commit。
+不在 repo 中的 hot-fix 腳本（補英文表 blockquote 等）已在歷史 commit 訊息中說明做法，未來如需重做可參考 commit `54eee2b`、`2185aba`、本檔對應的整理 commit。
 
 ---
 

@@ -40,26 +40,10 @@ TRANSLATION_BRIEF.md
 __pycache__/
 *.pyc
 
-# logo 原圖與匯出檔（ChatGPT 產的點陣稿，體積大、不入庫；
-# scripts/build_logo.py 需要它才能重跑，留在本機即可）
-web-spec-doc/BR_logo/
-
-# 製作過程的本機資料（2026-09-27 上線前自版控與歷史中移除，只留在本機）
-.claude/
+# 規劃文件、製作過程收集的資料與工作筆記（只留本機，2026-09-27 起不入庫，也已自歷史移除）：
+# web-spec-doc/（PRD／spec／milestones、翻譯工作區、第三方 CPS 抄本、logo 原圖…）、CLAUDE.md、
+# public/mockups/（設計原型）、.claude/
+web-spec-doc/
+CLAUDE.md
 public/mockups/
-web-spec-doc/翻譯工作區/
-web-spec-doc/BR全文合併指令.txt
-web-spec-doc/CAB_BR_Logo.png
-web-spec-doc/HIPKI_CPS術語表.txt
-web-spec-doc/HiPKICA-CP_CPS_v1.1.pdf
-web-spec-doc/Screenshot*
-web-spec-doc/TWCA-GLOBAL-CPS-V3.1.pdf
-web-spec-doc/TWCA_CPS術語表.txt
-web-spec-doc/X509憑證_欄位可用模組.txt
-web-spec-doc/X509憑證ˍ欄位可用模組_簡明版.txt
-web-spec-doc/hipkica.txt
-web-spec-doc/server-cert-br樣式變更.txt
-web-spec-doc/twca-cps.txt
-web-spec-doc/twca-glossary.txt
-web-spec-doc/twca.txt
-web-spec-doc/縮寫及定義.txt
+.claude/

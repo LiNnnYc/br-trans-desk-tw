@@ -4,7 +4,7 @@
 拆檔時只帶了中文註腳定義，英文側（`> ` blockquote）的引用標記指向同一條中文
 註腳，是全站唯一沒做中英對照的內容。本腳本：
 
-1. 從 web-spec-doc/BR.md 取出英文註腳定義（`[^label]: ...`）。
+1. 從 upstream/BR.md 取出英文註腳定義（`[^label]: ...`）。
 2. 把各章節檔「英文側」的引用標記改成獨立 label：`[^eku_ca]` → `[^eku_ca_en]`
    （只改 `> ` 開頭的行；中文側維持原 label）。
 3. 在中文定義上方補一行 blockquote 形式的英文定義：
@@ -26,7 +26,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-BR_MD = ROOT / 'web-spec-doc' / 'BR.md'
+BR_MD = ROOT / 'upstream' / 'BR.md'
 CONTENT = ROOT / 'src' / 'content' / 'br'
 
 DEF_RE = re.compile(r'^\[\^([A-Za-z0-9_]+)\]:[ ](.*)$')

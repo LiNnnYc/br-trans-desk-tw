@@ -18,7 +18,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-BR_PATH = ROOT / "web-spec-doc" / "BR.md"
+BR_PATH = ROOT / "upstream" / "BR.md"
 MASTER_PATH = ROOT / "web-spec-doc" / "翻譯工作區" / "BR_T_master.md"
 OUT_PATH = ROOT / "web-spec-doc" / "翻譯工作區" / "BR_T_master.normalized.md"
 LOG_PATH = ROOT / "web-spec-doc" / "翻譯工作區" / "heading_diff.log"

@@ -1,6 +1,6 @@
 """從 cabforum.org 的 BR「Documents」頁原文產生 `src/md/other-br-docs.md`（中文索引）。
 
-輸入：`web-spec-doc/BR_側邊欄/documents_index.md`（自 cabforum.org 抓下的 markdown）
+輸入：`upstream/BR_側邊欄/documents_index.md`（自 cabforum.org 抓下的 markdown）
 輸出：`src/md/other-br-docs.md`
 
 這頁是**連結索引**而非條文散文，故不採 Style A 中英對照（英文側與中文側會幾乎
@@ -22,7 +22,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-SRC = ROOT / "web-spec-doc" / "BR_側邊欄" / "documents_index.md"
+SRC = ROOT / "upstream" / "BR_側邊欄" / "documents_index.md"
 OUT = ROOT / "src" / "md" / "other-br-docs.md"
 
 SITE = "https://cabforum.org"

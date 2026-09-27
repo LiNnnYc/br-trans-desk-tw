@@ -4,8 +4,8 @@
 供 rehype-table-caption plugin 轉成表格底端 <caption>。
 
 來源：
-- EN caption（權威）：web-spec-doc/BR.md 的 41 個 `Table: ...`
-- CN caption（已譯）：git c233144^ 各章節檔被移除的 `表：...`（commit c233144 移除）
+- EN caption（權威）：upstream/BR.md 的 41 個 `Table: ...`
+- CN caption（已譯）：git 69b7baf^ 各章節檔被移除的 `表：...`（commit 69b7baf 移除）
 比對鍵：表格內容簽章（normalize 後的 header + data rows，吸收 U+2007/空白差異）。
 
 用法：
@@ -19,9 +19,9 @@ import subprocess
 from collections import defaultdict
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-BR_MD = os.path.join(ROOT, "web-spec-doc", "BR.md")
+BR_MD = os.path.join(ROOT, "upstream", "BR.md")
 CONTENT_DIR = os.path.join(ROOT, "src", "content", "br")
-REMOVE_COMMIT = "c233144"
+REMOVE_COMMIT = "69b7baf"
 
 WS = "".join([" ", " ", " ", "​", "\t"])
 _ws_re = re.compile("[" + re.escape(WS) + "]+")
@@ -95,7 +95,7 @@ def parse_br_captions():
     return caps
 
 
-# ---------- 2. 從 c233144^ 取 CN caption：signature -> cn_caption ----------
+# ---------- 2. 從 69b7baf^ 取 CN caption：signature -> cn_caption ----------
 def parse_cn_captions():
     # 列出當時被改的檔
     out = subprocess.run(
@@ -223,7 +223,7 @@ def main():
     print(f"  sig conflicts (同表異標題): {len(conflicts)}")
     for sig, a, b in conflicts:
         print(f"    - [{a}] vs [{b}]  sig={sig[:50]!r}")
-    print(f"CN captions recovered (c233144^): {len(sig2cn)} signatures")
+    print(f"CN captions recovered (69b7baf^): {len(sig2cn)} signatures")
     if cn_orphans:
         print(f"  CN orphan (無對應表格): {len(cn_orphans)}")
 
@@ -311,8 +311,8 @@ def write_doc(path, br_caps, sig2cn):
 
     out = []
     out.append("# BR 表格 caption 清單\n")
-    out.append("> 來源：`web-spec-doc/BR.md`（v2.2.7）的 Pandoc `Table:` caption。")
-    out.append("> 英文＝BR.md 原文；中文＝已回填譯文（git `c233144^` 回收）。")
+    out.append("> 來源：`upstream/BR.md`（v2.2.7）的 Pandoc `Table:` caption。")
+    out.append("> 英文＝BR.md 原文；中文＝已回填譯文（git `69b7baf^` 回收）。")
     out.append("> 顯示位置：各表格**底端**（`rehype-table-caption.mjs` → `<caption>` + `caption-side: bottom`）。\n")
     total = len(rows)
     uniq = len(sig_counts)

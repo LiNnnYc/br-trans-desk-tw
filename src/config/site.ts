@@ -15,7 +15,7 @@ export const siteConfig = {
   // spec §4.1 版本徽章資料來源。**不再手動維護**——由 src/lib/version.ts 推導：
   //   version      = 本站發布版（src/config/br-versions.ts 的 brVersions[0]）
   //   lastSyncedAt = 該版原文發布日（取自當時 BR.md 標頭的 date）
-  //   syncStatus   = 與 web-spec-doc/BR.md 標頭的上游版本比對
+  //   syncStatus   = 與 upstream/BR.md 標頭的上游版本比對
   // 升版只需在 br-versions.ts 加一列，全站顯示自動跟著更新。
   upstream: {
     version: current.version,

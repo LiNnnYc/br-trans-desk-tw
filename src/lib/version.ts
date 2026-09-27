@@ -3,7 +3,7 @@
 //
 // ## 兩個版本號，不要混為一談
 //
-//   上游最新版  ← `web-spec-doc/BR.md` 的 front-matter（cabforum 在 GitHub 的原文）
+//   上游最新版  ← `upstream/BR.md` 的 front-matter（cabforum 在 GitHub 的原文）
 //   本站發布版  ← `src/config/br-versions.ts` 的 brVersions[0]
 //
 // 升版流程中這兩個必然會有一段時間不同（原文已抓下來、譯稿還沒跟上），此時徽章
@@ -15,7 +15,7 @@
 
 // 以 Vite 的 `?raw` 匯入原文，而非 node:fs——免裝 @types/node，且 Vite 會把 BR.md
 // 納入依賴追蹤（改了原文，dev 會自動重載）。
-import brMdRaw from '../../web-spec-doc/BR.md?raw';
+import brMdRaw from '../../upstream/BR.md?raw';
 import { brVersions, type BrVersionEntry } from '../config/br-versions';
 
 const MONTHS: Record<string, string> = {
@@ -51,7 +51,7 @@ export interface UpstreamInfo {
   date: string | null;
 }
 
-/** 讀 web-spec-doc/BR.md 的 front-matter，取得上游最新版與日期。 */
+/** 讀 upstream/BR.md 的 front-matter，取得上游最新版與日期。 */
 function readUpstream(): UpstreamInfo {
   const head = brMdRaw.slice(0, 2048);
   const version = /^subtitle:\s*Version\s+(\S+)\s*$/m.exec(head)?.[1] ?? null;

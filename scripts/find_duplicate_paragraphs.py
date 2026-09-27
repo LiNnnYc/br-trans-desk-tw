@@ -5,7 +5,7 @@ import re
 import sys
 from collections import defaultdict
 
-SRC = "web-spec-doc/BR.md"
+SRC = "upstream/BR.md"
 
 with open(SRC, encoding="utf-8") as f:
     lines = f.readlines()

@@ -14,7 +14,7 @@
    （＝版本徽章與全站顯示的版本）
 3. 是否還有 `status: draft` / `outdated` / `pending-review` 的檔案
    （＝該版尚未譯完或審完；pending-review 是升版重譯完但還沒人工審閱）
-4. `web-spec-doc/BR.md` 的版本是否**不低於**發布版——上游較新是升版中的正常狀態
+4. `upstream/BR.md` 的版本是否**不低於**發布版——上游較新是升版中的正常狀態
    （徽章會顯示「落後」），但比發布版還舊代表有人誤把舊原文還原回去了
 
 用法：
@@ -33,7 +33,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 BR_DIR = ROOT / "src" / "content" / "br"
 VERSIONS_TS = ROOT / "src" / "config" / "br-versions.ts"
-BR_MD = ROOT / "web-spec-doc" / "BR.md"
+BR_MD = ROOT / "upstream" / "BR.md"
 
 VERSION_RE = re.compile(r'^original_version:\s*"([^"]+)"', re.M)
 # `[\w-]+` 而非 `\w+`：狀態值含連字號（pending-review），\w 不吃 `-` 會把它截成
@@ -103,7 +103,7 @@ def main() -> int:
     except OSError:
         upstream = None
     if upstream is None:
-        problems.append("讀不到 web-spec-doc/BR.md 的 `subtitle: Version X`")
+        problems.append("讀不到 upstream/BR.md 的 `subtitle: Version X`")
     elif declared:
         if upstream == declared:
             upstream_note = f"上游原文 BR.md 為 {upstream}，與發布版相同"
@@ -112,7 +112,7 @@ def main() -> int:
                              "——升版中的正常狀態，徽章會顯示「落後」")
         else:
             problems.append(
-                f"web-spec-doc/BR.md 是 {upstream}，比發布版 {declared} 還舊"
+                f"upstream/BR.md 是 {upstream}，比發布版 {declared} 還舊"
                 "——是不是不小心把舊原文還原回去了？"
             )
 

@@ -1,7 +1,7 @@
-# RUNBOOK — CA/Browser BR 中譯站維運手冊
+# RUNBOOK — BR 翻譯小站維運手冊
 
 > 本檔對應 milestone **M1-13**，內容為「常做的事」與「出狀況時怎麼辦」。
-> 長期約定請看 [`CLAUDE.md`](./CLAUDE.md) 與 [`web-spec-doc/`](./web-spec-doc/)；當前進度看 [`HANDOFF.md`](./HANDOFF.md)。
+> 譯名與排版慣例請看 [`TRANSLATION_CONVENTIONS.md`](./TRANSLATION_CONVENTIONS.md)。
 
 ---
 
@@ -72,14 +72,14 @@ git config core.hooksPath .githooks
 |---|---|
 | 本站發布版（徽章上的 `v2.2.7`） | `src/config/br-versions.ts` 的 `brVersions[0].version` |
 | 原文發布日（徽章上的日期） | 同上 `.date`——取自**該版 BR.md 標頭的 `date:`**（cabforum 在 GitHub 釋出的值） |
-| 上游最新版（落後時顯示） | build 時讀 `web-spec-doc/BR.md` 的 `subtitle: Version X` |
+| 上游最新版（落後時顯示） | build 時讀 `upstream/BR.md` 的 `subtitle: Version X` |
 
 兩個版本號不同時，徽章自動變成「上游 vX.Y.Z」，`/changelog/` 也會出現提醒。
 **上游版本永遠不會被拿來當本站版本顯示**——否則客服會誤以為站上已是新版。
 
 #### 升版流程（v2.2.7 → 下一版）
 
-> **順序很重要：先封存舊版，再換原文。** `web-spec-doc/BR.md` 檔名不帶版本號
+> **順序很重要：先封存舊版，再換原文。** `upstream/BR.md` 檔名不帶版本號
 > （上游 cabforum 每一版都叫 BR.md），一旦覆蓋掉，比對基準就沒了。所以**步驟 0
 > 必須在動 BR.md 之前完成**——不要像早期版本的 SOP 那樣把打 tag 排到最後，
 > 那會逼你事後回頭指認「該版最後一個 commit」，指錯就前功盡棄。
@@ -95,7 +95,7 @@ git status                       # 必須乾淨——存檔要對應得上 commi
 2. 封存英文原文（**檔名帶版本號，方便人找**）：
 
    ```sh
-   cp web-spec-doc/BR.md web-spec-doc/BR_archive/BR-v<舊版>.md
+   cp upstream/BR.md upstream/BR_archive/BR-v<舊版>.md
    ```
 
 3. 產出中文離線存檔：
@@ -230,9 +230,7 @@ npm run preview
 ## 6. 已知雷區
 
 - **不要 `--no-verify` 跳過 git hooks**：上游若新增 lint hook（M1-10），跳過會讓不一致內容進 main。
-- **不要動 `web-spec-doc/`**：那是使用者的規劃原稿。需要更新時請改 `HANDOFF.md` 與本檔。
-- **`siteConfig.repoUrl` 為 `#TODO-github-repo`**：M0-1 建 repo 後再填入；目前 footer / contact 已做 placeholder 判斷。
-- **`src/content/br/3-2-2-4.md`**：是模板驗證 fixture，不是正式翻譯。M2 啟動時先 `git rm` 或直接覆寫。
+- **不要刪 `upstream/BR.md`**：建置時 `src/lib/version.ts` 會讀它取得上游版本與日期，刪掉會建置失敗。
 - **改 remark／rehype plugin 後 build 沒變化 → 是 content layer 快取**：Astro 把章節檔的 render 結果存在 `node_modules/.astro/data-store.json`（另有 `.astro/data-store.json`），失效條件只看 markdown 內容與 `astro.config.mjs`，**不看 `scripts/*.mjs`**。改 plugin 後請先刪這兩個檔再 build：
 
   ```sh
