@@ -17,18 +17,6 @@ recommended_definition: |
 
   該繫結機制**應（SHALL）**至少使用與憑證請求簽章所用之同等強度數位簽章演算法或密碼學雜湊演算法。
 
-  **註**：請求符記之範例，包括但不限於：
-
-    i. 公開金鑰之雜湊；或
-    ii. Subject Public Key Info [X.509] 之雜湊；或
-    iii. PKCS#10 憑證請求檔（CSR）之雜湊。
-
-  請求符記亦可與時間戳記或其他資料串接。若 CA 希望一律以 PKCS#10 憑證請求檔（CSR）之雜湊作為請求符記，且不欲納入時間戳記、又欲允許憑證金鑰對重複使用，則申請者於使用 OpenSSL 建立憑證請求檔時可加入挑戰密碼（Challenge Password），以確保即使後續請求檔使用相同之主體與金鑰，仍能維持其唯一性。
-
-  **註**：以下這個簡單的 shell 指令會產生一個包含時間戳記及憑證請求檔（CSR）雜湊之請求符記（Request Token）：
-    ``echo `date -u +%Y%m%d%H%M` `sha256sum <r2.csr` \| sed "s/[ -]//g"``
-  其指令輸出如下：
-    `201602251811c9c863405fe7675a3988b97664ea6baf442019e4e52fa335f406f7c5f26cf14f`
 recommended_source: "BR"
 sources:
   - source: "BR"
@@ -50,18 +38,6 @@ sources:
 
       該繫結機制**應（SHALL）**至少使用與憑證請求簽章所用之同等強度數位簽章演算法或密碼學雜湊演算法。
 
-      **註**：請求符記之範例，包括但不限於：
-
-        i. 公開金鑰之雜湊；或
-        ii. Subject Public Key Info [X.509] 之雜湊；或
-        iii. PKCS#10 憑證請求檔（CSR）之雜湊。
-
-      請求符記亦可與時間戳記或其他資料串接。若 CA 希望一律以 PKCS#10 憑證請求檔（CSR）之雜湊作為請求符記，且不欲納入時間戳記、又欲允許憑證金鑰對重複使用，則申請者於使用 OpenSSL 建立憑證請求檔時可加入挑戰密碼（Challenge Password），以確保即使後續請求檔使用相同之主體與金鑰，仍能維持其唯一性。
-
-      **註**：以下這個簡單的 shell 指令會產生一個包含時間戳記及憑證請求檔（CSR）雜湊之請求符記（Request Token）：
-        ``echo `date -u +%Y%m%d%H%M` `sha256sum <r2.csr` \| sed "s/[ -]//g"``
-      其指令輸出如下：
-        `201602251811c9c863405fe7675a3988b97664ea6baf442019e4e52fa335f406f7c5f26cf14f`
     ref: "/server-cert-br/1-6-1/"
   - source: "HiPKICA"
     version: "v1.2"

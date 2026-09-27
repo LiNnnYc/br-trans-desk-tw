@@ -3,15 +3,9 @@ term_en: "Domain Name System"
 abbreviation: "DNS"
 recommended_zh: "網域名稱系統"
 recommended_definition: |
-  《基本要求》第 1.6.2 節縮寫表所列，全稱為「Domain Name System」。
-recommended_source: "BR"
+  用來自動轉換 IP 位址與網域名稱的分散式資料庫。
+recommended_source: "HiPKICA"
 sources:
-  - source: "BR"
-    version: "v2.2.7"
-    term_zh: "網域名稱系統"
-    definition: |
-      《基本要求》第 1.6.2 節縮寫表所列，全稱為「Domain Name System」。
-    ref: "/server-cert-br/1-6-2/"
   - source: "HiPKICA"
     version: "v1.2"
     term_zh: "網域名稱系統"

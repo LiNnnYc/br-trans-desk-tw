@@ -3,16 +3,10 @@ term_en: "Certification Authority Authorization"
 abbreviation: "CAA"
 recommended_zh: "授權憑證機構簽發憑證"
 recommended_definition: |
-  《基本要求》第 1.6.2 節縮寫表所列，全稱為「Certification Authority Authorization」。
-recommended_source: "BR"
+  是一種 DNS 資源紀錄，它允許網站所有者指定哪些 CA 有權為其網域發行 TLS 憑證。透過設定 CAA 紀錄，網站管理者可以限制憑證的發行權限，有效防止未經授權的 CA 意外或惡意地為其網域頒發憑證，從而增強網域憑證的安全性。
+recommended_source: "TWCA"
 first_seen_at: "/server-cert-br/3-2-2-8/"
 sources:
-  - source: "BR"
-    version: "v2.2.7"
-    term_zh: "授權憑證機構簽發憑證"
-    definition: |
-      《基本要求》第 1.6.2 節縮寫表所列，全稱為「Certification Authority Authorization」。
-    ref: "/server-cert-br/1-6-2/"
   - source: "HiPKICA"
     version: "v1.2"
     term_zh: "授權憑證機構簽發憑證"

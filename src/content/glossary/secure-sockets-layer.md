@@ -3,15 +3,9 @@ term_en: "Secure Sockets Layer"
 abbreviation: "SSL"
 recommended_zh: "安全通訊端層"
 recommended_definition: |
-  《基本要求》第 1.6.2 節縮寫表所列，全稱為「Secure Sockets Layer」。
-recommended_source: "BR"
+  由網景公司（Netscape）推出 Web 瀏覽器時所提出的協定，可於傳輸層對網路通信進行加密，並確保傳送資料之完整性以及對於伺服器端與用戶端進行身分鑑別。
+recommended_source: "HiPKICA"
 sources:
-  - source: "BR"
-    version: "v2.2.7"
-    term_zh: "安全通訊端層"
-    definition: |
-      《基本要求》第 1.6.2 節縮寫表所列，全稱為「Secure Sockets Layer」。
-    ref: "/server-cert-br/1-6-2/"
   - source: "HiPKICA"
     version: "v1.2"
     term_zh: "安全插座層"
