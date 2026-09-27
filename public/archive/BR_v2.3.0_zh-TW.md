@@ -1,6 +1,6 @@
 # CA/Browser Forum《Baseline Requirements for the Issuance and Management of Publicly-Trusted TLS Server Certificates》非官方繁體中文翻譯
 
-對應原文版本 `2.3.0` · 匯出日期 2026-09-25 · 本檔僅含中文翻譯，未附英文原文。
+對應原文版本 `2.3.0` · 匯出日期 2026-09-27 · 本檔僅含中文翻譯，未附英文原文。
 
 ⚠️ 本站為 Web PKI 相關文件的非官方繁體中文翻譯，由社群維護。發生爭議時以原文內容為準。本網站內容不構成法律意見。
 本檔為參考用途，非 CA/Browser Forum 官方文件；原文請見 <https://cabforum.org/working-groups/server/baseline-requirements/documents/>。
@@ -104,9 +104,9 @@
 
 公開信賴 TLS 伺服器憑證簽發與管理之憑證政策（Certificate Policy，CP）描述憑證機構（Certification Authority，CA）簽發公開信賴 TLS 伺服器憑證所應符合之要求的一部分內容。本文件具有兩個目的：明定《基本要求》（Baseline Requirements）內容以及針對 CA 在其憑證實務作業基準（Certification Practice Statement，CPS）中宜包含的內容提供指引與要求。除非另有明確說明，否則本文件要求規定僅適用於 2012-07-01（本文件的原始生效日（effective date））或之後發生的相關事件。
 
-本文件並未涵蓋簽發與管理公開信賴 TLS 伺服器憑證過程中所涉及的全部議題。為了依循 [RFC 3647](https://datatracker.ietf.org/doc/html/rfc3647) 規範，且利於與其他憑證政策（CP）及憑證實務作業基準（CPS）進行比對（例如用於政策對照（policy mapping）），本文件包含 [RFC 3647](https://datatracker.ietf.org/doc/html/rfc3647) 架構之所有章節。然而，CA/Browser Forum 並非在所有空白章節中皆以「不作規定」（no stipulation）註解開頭，而是將此類章節先保持空白，直到做出「不作規定」的決定為止。CA/Browser Forum 得不定期更新本文件要求規定，以因應現有及新興的網路安全（online security）威脅。具體而言，預計未來版本將針對受委託作業（delegated functions）包含更正式且全面的稽核要求（audit requirements）。
+本文件並未涵蓋簽發與管理公開信賴 TLS 伺服器憑證過程中所涉及的全部議題。為了依循 [RFC 3647](https://datatracker.ietf.org/doc/html/rfc3647) 規範，且利於與其他憑證政策（CP）及憑證實務作業基準（CPS）進行比對（例如用於政策對應（policy mapping）），本文件包含 [RFC 3647](https://datatracker.ietf.org/doc/html/rfc3647) 架構之所有章節。然而，CA/Browser Forum 並非在所有空白章節中皆以「不作規定」（no stipulation）註解開頭，而是將此類章節先保持空白，直到做出「不作規定」的決定為止。CA/Browser Forum 得不定期更新本文件要求規定，以因應現有及新興的網路安全（online security）威脅。具體而言，預計未來版本將針對受委託作業（delegated functions）包含更正式且全面的稽核要求（audit requirements）。
 
-本文件要求規定僅針對用於鑑別（authenticating）可透過網際網路（Internet）存取之伺服器的憑證（Certificates）。針對程式碼簽章（code signing）、S/MIME、時戳（time-stamping）、VoIP、IM、Web 服務（Web services）等類似要求，可能會在未來版本中涵蓋。
+本文件要求規定僅針對用於鑑別（authenticating）可透過網際網路（Internet）存取之伺服器的憑證。針對程式碼簽章（code signing）、S/MIME、時戳（time-stamping）、VoIP、IM、Web 服務（Web services）等類似要求，可能會在未來版本中涵蓋。
 
 本文件要求規定不涉及企業（enterprises）僅供內部用途（internal purposes）而自行營運的公開金鑰基礎建設（Public Key Infrastructure，PKI），及其所進行的憑證簽發或管理，且其根憑證（Root Certificate）未經任何應用軟體供應商（Application Software Supplier）配發。
 
@@ -1270,7 +1270,7 @@ Token（定義於《Automated Certificate Management Environment (ACME) DNS Labe
 
 ##### 3.2.2.5 IP 位址之鑑別
 
-本節定義憑證機構（Certification Authority，CA）驗證申請者（Applicant）對憑證（Certificate）中所列 IP 位址（IP Address）的所有權或控管權之允許流程與程序。
+本節定義憑證機構（Certification Authority，CA）驗證申請者（Applicant）對憑證中所列 IP 位址（IP Address）的所有權或控管權之允許流程與程序。
 
 CA **應（SHALL）**於簽發前確認，CA 至少已使用本節指定的一種方法驗證憑證中所列 IP 位址。
 
@@ -1373,7 +1373,7 @@ CA **得（MAY）**全文重送電子郵件、傳真、簡訊或郵寄信件，�
 
 ##### 3.2.2.6 萬用網域名稱之驗證
 
-於簽發萬用網域憑證（Wildcard Certificate）之前，憑證機構（Certification Authority，CA）**應（MUST）**建立並遵從一套書面程序，以判斷憑證（Certificate）中任何萬用網域名稱（Wildcard Domain Name）之完全吻合網域名稱（Fully-Qualified Domain Name，FQDN）字串是否屬於「註冊表控制網域（registry-controlled）」或「公開字尾（public suffix）」（例如："\*.com"、"\*.co.uk"，進一步說明請參見 [RFC 6454 第 8.2 節](https://datatracker.ietf.org/doc/html/rfc6454#section-8.2)）。
+於簽發萬用網域憑證（Wildcard Certificate）之前，憑證機構（Certification Authority，CA）**應（MUST）**建立並遵從一套書面程序，以判斷憑證中任何萬用網域名稱（Wildcard Domain Name）之完全吻合網域名稱（Fully-Qualified Domain Name，FQDN）字串是否屬於「註冊表控制網域（registry-controlled）」或「公開字尾（public suffix）」（例如："\*.com"、"\*.co.uk"，進一步說明請參見 [RFC 6454 第 8.2 節](https://datatracker.ietf.org/doc/html/rfc6454#section-8.2)）。
 
 若任何萬用網域名稱之 FQDN 字串屬於「註冊表控制網域」或「公開字尾」，CA **應（MUST）**拒絕簽發，除非申請者（Applicant）證明其對整個網域名稱空間具有合法控管權。（例如：CA **不得（MUST NOT）**簽發 "\*.co.uk" 或 "\*.local"，但**得（MAY）**簽發 "\*.example.com" 給 Example Co.）。
 
@@ -1512,7 +1512,7 @@ CA **應（SHALL）**使用可靠通訊方式（Reliable Method of Communication
 
 #### 3.2.5 組織授權之驗證
 
-若申請者（Applicant）申請之憑證（Certificate）包含主體識別資訊（Subject Identity Information），且申請者為組織，則憑證機構（Certification Authority，CA）**應（SHALL）**使用可靠通訊方式（Reliable Method of Communication）驗證申請者代表（Applicant Representative）所提出之憑證申請的真實性。
+若申請者（Applicant）申請之憑證包含主體識別資訊（Subject Identity Information），且申請者為組織，則憑證機構（Certification Authority，CA）**應（SHALL）**使用可靠通訊方式（Reliable Method of Communication）驗證申請者代表（Applicant Representative）所提出之憑證申請的真實性。
 
 CA **得（MAY）**使用[第 3.2.2.1 節](#3221-identity)所列之來源，確認申請者的可靠通訊方式。在使用可靠通訊方式的前提下，CA **得（MAY）**直接向申請者代表或申請者組織內的權威來源（authoritative source；例如申請者的主要營業處所、公司辦事處、人力資源部門、資訊科技部門，或 CA 認為適當的其他單位）確認憑證申請的真實性。
 
@@ -1578,7 +1578,7 @@ CA **宜（SHOULD）**取得其認定為符合本文件要求規定所需之任�
 
 #### 4.2.1 執行識別與鑑別作業
 
-憑證申請**得（MAY）**包含擬記載於憑證（Certificate）中之所有與申請者（Applicant）相關的事實資料，以及憑證機構（Certification Authority，CA）為了遵循本文件要求規定及其憑證政策（Certificate Policy，CP）及／或憑證實務作業基準（Certification Practice Statement，CPS）而有必要向申請者取得之其他資訊。若憑證申請未包含全部所需的申請者資訊，CA **應（SHALL）**向申請者取得其餘所需資訊，或先從可靠且獨立的第三方資料來源取得該資訊，再向申請者確認其內容。CA **應（SHALL）**建立並遵從書面程序，以驗證申請者要求記載於憑證中的所有資料。
+憑證申請**得（MAY）**包含擬記載於憑證中之所有與申請者（Applicant）相關的事實資料，以及憑證機構（Certification Authority，CA）為了遵循本文件要求規定及其憑證政策（Certificate Policy，CP）及／或憑證實務作業基準（Certification Practice Statement，CPS）而有必要向申請者取得之其他資訊。若憑證申請未包含全部所需的申請者資訊，CA **應（SHALL）**向申請者取得其餘所需資訊，或先從可靠且獨立的第三方資料來源取得該資訊，再向申請者確認其內容。CA **應（SHALL）**建立並遵從書面程序，以驗證申請者要求記載於憑證中的所有資料。
 
 申請者資訊**應（MUST）**包括（但不限於）至少一個將記載於憑證 `subjectAltName` 擴充欄位中的完全吻合網域名稱（Fully-Qualified Domain Name，FQDN）或 IP 位址（IP Address）。
 
@@ -1616,7 +1616,7 @@ CA **應（SHALL）**建立、維護並實施書面程序，以識別高風險�
 
 #### 4.2.2 憑證申請之核准或拒絕
 
-憑證機構（Certification Authority，CA）**不得（SHALL NOT）**簽發含有內部名稱（Internal Name）或保留 IP 位址（Reserved IP Address）之憑證（Certificate），因其無法依[第 3.2.2.4 節](#3224-validation-of-domain-authorization-or-control)或[第 3.2.2.5 節](#3225-authentication-for-an-ip-address)之規定完成驗證。
+憑證機構（Certification Authority，CA）**不得（SHALL NOT）**簽發含有內部名稱（Internal Name）或保留 IP 位址（Reserved IP Address）之憑證，因其無法依[第 3.2.2.4 節](#3224-validation-of-domain-authorization-or-control)或[第 3.2.2.5 節](#3225-authentication-for-an-ip-address)之規定完成驗證。
 
 自 2026-03-15 起，CA **不得（SHALL NOT）**簽發其所含網域名稱係以 IP 反向區域後綴（IP Reverse Zone Suffix）結尾之憑證。
 
@@ -4065,10 +4065,10 @@ OCSP 回應伺服器憑證**不得（MUST NOT）**為 CA 憑證。簽發憑證�
 | **`AttributeType` 屬性名稱** | **必要性** | **`value`** | **驗證方法** |
 | --- | -- | ---- | - |
 | `countryName` | 應（MUST） | 為 CA 營業所在地國家之兩字母 ISO 3166-1 國家代碼。 | [第 3.2.2.3 節](#3223-verification-of-country) |
-| `stateOrProvinceName` | 得（MAY） | 若存在，為 CA 所在地之州或省資訊。 | [第 3.2.2.1 節](#3221-identity) |
-| `localityName` | 得（MAY） | 若存在，為 CA 所在地之縣市地區資訊。 | [第 3.2.2.1 節](#3221-identity) |
-| `postalCode` | 得（MAY） | 若存在，為 CA 所在地之郵遞區號資訊。 | [第 3.2.2.1 節](#3221-identity) |
-| `streetAddress` | 得（MAY） | 若存在，為 CA 所在地之街道地址資訊。**得（MAY）**包含多個實體地址。 | [第 3.2.2.1 節](#3221-identity) |
+| `stateOrProvinceName` | 得（MAY） | 若存在，為 CA 營業所在地之州或省份資訊。 | [第 3.2.2.1 節](#3221-identity) |
+| `localityName` | 得（MAY） | 若存在，為 CA 營業所在地之縣市地區資訊。 | [第 3.2.2.1 節](#3221-identity) |
+| `postalCode` | 得（MAY） | 若存在，為 CA 營業所在地之郵遞區號資訊。 | [第 3.2.2.1 節](#3221-identity) |
+| `streetAddress` | 得（MAY） | 若存在，為 CA 營業所在地之街道地址資訊。**得（MAY）**包含多個實體地址。 | [第 3.2.2.1 節](#3221-identity) |
 | `organizationName` | 應（MUST） | 為 CA 之名稱或商業名稱（DBA）。CA **得（MAY）**在此欄位包含與已驗證名稱略有出入之資訊，例如常見之變體或縮寫，前提是 CA 須以書面文件記錄其差異及所使用之縮寫為當地公認之縮寫；例如：若官方記錄顯示為「Company Name Incorporated」，CA **得（MAY）**使用「Company Name Inc.」或「Company Name」。 | [第 3.2.2.2 節](#3222-dbatradename) |
 | `organizationalUnitName` | [第 7.1.2.1 節](#7121-root-ca-certificate-profile)所定義之根憑證機構憑證、[第 7.1.2.5 節](#7125-technically-constrained-tls-subordinate-ca-certificate-profile)所定義之 TLS 下屬憑證機構憑證，或[第 7.1.2.6 節](#7126-tls-subordinate-ca-certificate-profile)所定義之受技術約束之 TLS 下屬憑證機構憑證**不得（MUST NOT）**包含此屬性。其他類型之 CA 憑證**不宜（SHOULD NOT）**包含此屬性。 | - | - |
 | `commonName` | 應（MUST） | 其內容**宜（SHOULD）**作為該憑證之識別資訊，以確保該憑證 `Name` 在同一簽發者所簽發之所有憑證中具有唯一性。 | |
@@ -5208,4 +5208,4 @@ DNS TXT 紀錄**應（MUST）**置於待驗證網域名稱的「`_validation-con
 
 ⚠️ 本站為 Web PKI 相關文件的非官方繁體中文翻譯，由社群維護。發生爭議時以原文內容為準。本網站內容不構成法律意見。
 
-本檔由「BR 翻譯小站」原始碼於 2026-09-25 匯出。翻譯狀態與後續修訂以站台版本為準。
+本檔由「BR 翻譯小站」原始碼於 2026-09-27 匯出。翻譯狀態與後續修訂以站台版本為準。
