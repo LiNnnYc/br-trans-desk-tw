@@ -8,8 +8,7 @@ export const siteConfig = {
   shortName: 'BR 小站',
   description:
     'WebPKI 相關文件的非官方繁體中文翻譯',
-  // M0-1 建立 GitHub repo 後替換
-  repoUrl: '#TODO-github-repo',
+  repoUrl: 'https://github.com/LiNnnYc/br-trans-desk-tw',
   // 結構化資料（schema.org）等絕對網址用；M0-3 部署網域定案時更新（含或不含 /repo-name 由 astro.config base 決定）
   siteUrl: 'https://br-zh-tw.github.io',
   contactEmail: 'linnnyc5252@gmail.com',

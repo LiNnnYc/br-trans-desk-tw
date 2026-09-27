@@ -1,0 +1,27 @@
+---
+// 404 — GitHub Pages 找不到頁面時回傳 dist/404.html。
+// 章節網址是永久的（CLAUDE.md），上游改號時保留舊路徑並加轉址，所以這裡不做猜測式導向。
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="找不到頁面" description="您要找的頁面不存在或已移動。">
+  <article class="cabf-card bg-white border border-slate-200 rounded p-5 sm:p-7" data-pagefind-ignore="all">
+    <header class="border-b border-slate-200 pb-4">
+      <h1 class="font-serif-tc text-2xl font-bold text-slate-900 sm:text-3xl leading-tight">
+        找不到頁面
+      </h1>
+      <p class="mt-2 text-sm text-slate-600">您要找的頁面不存在，或網址已經變更。</p>
+    </header>
+
+    <div class="clause-body mt-6">
+      <p>可以從下列入口繼續：</p>
+      <ul>
+        <li><a href="/">首頁</a></li>
+        <li><a href="/server-cert-br/">《基本要求》全文</a></li>
+        <li><a href="/glossary/">術語表</a></li>
+        <li><a href="/quick-reference/">快速參考</a></li>
+      </ul>
+      <p>也可以使用頁首的搜尋功能。若是站內連結失效，歡迎到<a href="/contact/">聯絡方式</a>回報。</p>
+    </div>
+  </article>
+</BaseLayout>

@@ -75,7 +75,7 @@ Table: My caption
 
 本站以 **`scripts/rehype-table-caption.mjs`**（rehype plugin）支援之：把緊鄰 `<table>` 上方的 `Table:`／`表：` 段落轉成 `<caption>` 並置於表格內，由 `global.css` 的 `caption-side: bottom` 顯示在表格底端，對齊 cabforum.org（Pandoc）的渲染。
 
-> **沿革**：早期（commit `237ce19`）因 remark 不認 Pandoc caption、`Table:` 被當純文字而**整批移除**；2026-06 改為「保留＋plugin 轉 `<caption>`」（本節即新慣例），caption 由 `scripts/restore_table_captions.py` 從 BR.md（英文）＋ git `237ce19^`（已譯中文）回填。
+> **沿革**：早期（commit `c233144`）因 remark 不認 Pandoc caption、`Table:` 被當純文字而**整批移除**；2026-06 改為「保留＋plugin 轉 `<caption>`」（本節即新慣例），caption 由 `scripts/restore_table_captions.py` 從 BR.md（英文）＋ git `c233144^`（已譯中文）回填。
 
 **做法**（plugin 依賴的格式，務必遵守）：caption 段落須**緊鄰**其表格的上方（中間僅一個空白行），中英各自貼著自己的表格：
 
@@ -542,9 +542,9 @@ SubjectPublicKeyInfo  ::=  SEQUENCE  {
 - `scripts/preserve_table_indent.py` — 把 BR.md 表格儲存格前導空白轉成 U+2007 對齊縮排
 - `scripts/add_en_to_definitions_1_6_1.py` — 從 BR.md 把 §1.6.1 定義改成 Style A（補英文原文）；BR 版本升級時若 §1.6.1 定義有增減，調整後可重跑（會重寫整個 `1-6-1.md`）
 - `scripts/add_en_footnote_defs.py` — 把註腳補成中英對照：英文側引用改用 `<label>_en`、從 BR.md 補上英文定義（見 §13）。可重跑（已補過的會跳過）；BR 升版若註腳有增減可再跑一次。`--write` 才實際寫入；`--doc <路徑>` 產出「改註腳翻譯要動哪些檔」的審閱清單（含各副本位置與不一致警示），已產出 `web-spec-doc/翻譯工作區/註腳翻譯修改清單.md`。
-- `scripts/restore_table_captions.py` — 把 BR.md 的 `Table:` caption（英文）與 git `237ce19^` 的「表：」（中文）以「緊鄰表格上方」格式回填各章節檔，供 `rehype-table-caption.mjs` 轉 `<caption>`（見 §2.2）。以表格內容簽章比對、idempotent，BR 升版後可重跑；`--write` 才實際寫入。
+- `scripts/restore_table_captions.py` — 把 BR.md 的 `Table:` caption（英文）與 git `c233144^` 的「表：」（中文）以「緊鄰表格上方」格式回填各章節檔，供 `rehype-table-caption.mjs` 轉 `<caption>`（見 §2.2）。以表格內容簽章比對、idempotent，BR 升版後可重跑；`--write` 才實際寫入。
 
-不在 repo 中的 hot-fix 腳本（補英文表 blockquote 等）已在歷史 commit 訊息中說明做法，未來如需重做可參考 commit `13558e3`、`17e34ed`、本檔對應的整理 commit。
+不在 repo 中的 hot-fix 腳本（補英文表 blockquote 等）已在歷史 commit 訊息中說明做法，未來如需重做可參考 commit `f3bfc41`、`6a0c970`、本檔對應的整理 commit。
 
 ---
 

@@ -21,7 +21,7 @@ const idx = stageIndexOn(todayIso);
 const stage = validityStages[idx];
 const next = validityStages[idx + 1] ?? null;
 
-const clausePath = sectionIdToPath(validitySourceSection);
+const clausePath = `/server-cert-br/${sectionIdToPath(validitySourceSection)}/`;
 
 // 距離下一階段還有幾天（建置時值；client 端會重算）
 const daysUntilNext =

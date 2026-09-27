@@ -1,12 +1,14 @@
-# CA/Browser BR 中文化（zh-TW）
+# BR 翻譯小站（BR TRANS DESK）
 
-CA/Browser Forum **(Server Cert) Baseline Requirements** 的非官方繁體中文翻譯，由社群維護。
+Web PKI 相關文件的非官方繁體中文翻譯，由社群維護。第一份是 CA/Browser Forum 的
+**TLS Server Certificate Baseline Requirements**（《基本要求》）。
 
-> ⚠️ 本翻譯為非官方翻譯，發生爭議時以 [CA/Browser Forum 英文原文](https://cabforum.org/working-groups/server/baseline-requirements/requirements/)為準。本翻譯不構成法律意見。
+> ⚠️ 本站為 Web PKI 相關文件的**非官方繁體中文翻譯**，由社群維護。發生爭議時以**原文內容為準**
+> （《基本要求》原文見 [cabforum.org](https://cabforum.org/working-groups/server/baseline-requirements/requirements/)）。本網站內容不構成法律意見。
 
 ## 專案宗旨
 
-長期以來 CA/Browser Forum 的 Server Certificate Baseline Requirements 沒有公開的繁體中文版本。本站讓台灣 CA 從業人員、購買憑證的企業窗口，以及資安／法務人員，在面對「為什麼申請憑證需要驗證」、「為什麼憑證效期越來越短」這類問題時，能有可引用的中文翻譯內容。
+長期以來 CA/Browser Forum 的 Server Certificate Baseline Requirements 沒有公開的繁體中文版本。本站讓台灣 CA 從業人員、購買憑證的企業窗口，以及資安／法務人員，在面對「為什麼申請憑證需要驗證」、「為什麼憑證有效期越來越短」這類問題時，能有可引用的中文翻譯內容。
 
 完整背景與目標請見 [`web-spec-doc/PRD.md`](./web-spec-doc/PRD.md)。
 
@@ -27,7 +29,7 @@ CA/Browser Forum **(Server Cert) Baseline Requirements** 的非官方繁體中�
 - **靜態產生器**：Astro 5（TypeScript strict + Tailwind 4）
 - **搜尋**：Pagefind
 - **部署**：GitHub Pages（GitHub Actions）
-- **分析**：GoatCounter（隱私友善、無 cookie）
+- **分析**：GoatCounter（隱私友善、無 cookie；尚未啟用）
 
 詳見 [`web-spec-doc/spec.md`](./web-spec-doc/spec.md) §6。
 
@@ -36,12 +38,35 @@ CA/Browser Forum **(Server Cert) Baseline Requirements** 的非官方繁體中�
 ```sh
 npm install
 npm run dev      # 開發 server：http://localhost:4321/
-npm run build    # 靜態產出至 dist/
+npm run build    # 靜態產出至 dist/（含 Pagefind 索引）
 npm run preview  # 預覽 build 結果
 npm run check    # Astro / TypeScript 檢查
 ```
 
-需要 Node.js ≥ 20。
+需要 Node.js ≥ 20。`scripts/` 底下的 lint 與升版工具需要 Python 3。
+
+clone 之後請安裝 pre-push hook（每個 clone 做一次），push 前會擋下「升版做到一半」與「下載檔沒重出」：
+
+```sh
+git config core.hooksPath .githooks
+```
+
+升版、重出下載檔等維運流程見 [`RUNBOOK.md`](./RUNBOOK.md)；譯名與排版慣例見
+[`TRANSLATION_CONVENTIONS.md`](./TRANSLATION_CONVENTIONS.md)。
+
+## 目錄結構
+
+| 路徑 | 內容 |
+|---|---|
+| `src/content/br/` | 《基本要求》譯文，一節一檔（中英對照 markdown） |
+| `src/content/glossary/`、`acronyms/`、`quick-reference/`、`news/` | 術語表、縮寫表、快速參考、更新消息 |
+| `src/config/` | 版本表、憑證欄位譯名對照等資料 |
+| `public/archive/` | 各版全文下載檔（HTML／PDF／Markdown），由 `scripts/build_downloads.mjs` 產生 |
+| `scripts/` | remark／rehype plugin、lint、匯出與升版工具 |
+| `web-spec-doc/BR.md` | 上游英文原文（現行版），**建置時會讀取**，不可刪除 |
+| `web-spec-doc/BR_archive/` | 上游原文的歷史版本快照，升版比對用 |
+| `web-spec-doc/BR_側邊欄/` | 側邊欄四頁的上游原文 |
+| `web-spec-doc/PRD.md`、`spec.md`、`milestones.md` | 規劃文件 |
 
 ## 參與貢獻
 
@@ -62,6 +87,8 @@ npm run check    # Astro / TypeScript 檢查
 
 - **原文**採 [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) 授權（CA/Browser Forum）。
 - **本翻譯**亦採 [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) 釋出，鼓勵引用；引用時請註明出處並附原文連結。
+
+授權全文見 [`LICENSE`](./LICENSE)。
 
 ## 維護狀態與死人開關
 
