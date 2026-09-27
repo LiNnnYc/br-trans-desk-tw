@@ -57,6 +57,15 @@ const hasBreadcrumb = Astro.slots.has('breadcrumb');
         /* localStorage 不可用時靜默退回預設（純中文） */
       }
     </script>
+    {/* spec §6.3 GoatCounter：無 cookie 的匿名流量統計，只在 production build 載入 */}
+    {import.meta.env.PROD && siteConfig.goatcounterCode && (
+      <script
+        is:inline
+        data-goatcounter={`https://${siteConfig.goatcounterCode}.goatcounter.com/count`}
+        async
+        src="https://gc.zgo.at/count.js"
+      ></script>
+    )}
   </head>
   <body class="min-h-screen bg-slate-100 text-slate-900 antialiased" id="top">
     {/* cabforum.org 模式：單一 outer container，

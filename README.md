@@ -51,7 +51,7 @@
 - **靜態產生器**：Astro 5（TypeScript strict + Tailwind 4）
 - **搜尋**：Pagefind
 - **部署**：GitHub Pages（GitHub Actions）
-- **分析**：GoatCounter（隱私友善、無 cookie；尚未啟用）
+- **分析**：GoatCounter（隱私友善、無 cookie）
 
 ## 專案目錄結構
 

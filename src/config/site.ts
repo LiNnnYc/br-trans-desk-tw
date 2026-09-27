@@ -12,6 +12,9 @@ export const siteConfig = {
   // 結構化資料（schema.org）等絕對網址用；須與 astro.config.mjs 的 site 一致
   siteUrl: 'https://tls.brdesk.tw',
   contactEmail: 'linnnyc5252@gmail.com',
+  // spec §6.3 GoatCounter 站台代碼（https://<code>.goatcounter.com）。空字串＝不載入統計 script；
+  // 只在 production build 載入（見 BaseLayout），本機 dev 不計數。
+  goatcounterCode: 'brdesk',
   // spec §4.1 版本徽章資料來源。**不再手動維護**——由 src/lib/version.ts 推導：
   //   version      = 本站發布版（src/config/br-versions.ts 的 brVersions[0]）
   //   lastSyncedAt = 該版原文發布日（取自當時 BR.md 標頭的 date）
