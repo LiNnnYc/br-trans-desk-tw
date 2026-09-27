@@ -34,8 +34,6 @@ export interface FieldRow {
   chromeEn?: string;
   chromeRaw?: string;
   note?: string;
-  /** 三邊講法不一致、客服容易被咬的列 */
-  warn?: boolean;
 }
 
 export interface FieldTable {
@@ -104,7 +102,6 @@ export const certFieldTables: FieldTable[] = [
         winEn: 'Issuer／Issued by',
         chromeZh: '發行者',
         chromeEn: 'Issuer／Issued By',
-        warn: true,
       },
       {
         key: 'validity.notBefore',
@@ -113,7 +110,6 @@ export const certFieldTables: FieldTable[] = [
         winEn: 'Valid from',
         chromeZh: '此日期之後：（一般分頁作「發行日期」）',
         chromeEn: 'Not Before／Issued On',
-        warn: true,
         note: 'Chrome 的「此日期之後／此日期之前」翻譯與英文原文語意相反，原文語意為「不早於／不晚於」。',
       },
       {
@@ -123,7 +119,6 @@ export const certFieldTables: FieldTable[] = [
         winEn: 'Valid to',
         chromeZh: '此日期之前：（一般分頁作「到期日」）',
         chromeEn: 'Not After／Expires On',
-        warn: true,
       },
       {
         key: 'subject',
@@ -140,7 +135,6 @@ export const certFieldTables: FieldTable[] = [
         winEn: 'Public key／Public key parameters',
         chromeZh: '主體公開金鑰資訊',
         chromeEn: 'Subject Public Key Info',
-        warn: true,
         note: 'Chrome 於這個欄位下還會再區分「主體公開金鑰演算法」與「主體的公開金鑰」兩個子項目。',
       },
       {
@@ -155,7 +149,6 @@ export const certFieldTables: FieldTable[] = [
         winEn: 'Extensions',
         chromeZh: '擴充功能',
         chromeEn: 'Extensions',
-        warn: true,
         note: 'Chrome 的「擴充功能」譯名與外掛功能 Chrome Extensions 同名，容易誤會。',
       },
       {
@@ -172,7 +165,6 @@ export const certFieldTables: FieldTable[] = [
         zh: '簽章值',
         chromeZh: '憑證簽署值',
         chromeEn: 'Certificate Signature Value',
-        warn: true,
         note: 'Windows 憑證檢視器未列出此欄位。',
       },
       {
@@ -181,7 +173,6 @@ export const certFieldTables: FieldTable[] = [
         winEn: 'Thumbprint／Thumbprint algorithm',
         chromeZh: 'SHA-256 指紋',
         chromeEn: 'SHA-256 Fingerprints',
-        warn: true,
         note: '檢視器自己算出來的值，RFC 5280 規範未包含此欄位。若有人說「指紋不一樣」時，多半是計算演算法的不同。',
       },
     ],
@@ -203,7 +194,6 @@ export const certFieldTables: FieldTable[] = [
         winEn: 'Authority Key Identifier',
         chromeZh: '憑證授權單位金鑰識別碼',
         chromeEn: 'Certification Authority Key ID',
-        warn: true,
         note: 'Windows 於此欄位的 Identifier 翻譯採用「識別元」、同一個分頁裡的主體金鑰 Identifier 翻譯則採用「識別碼」。',
       },
       {
@@ -223,7 +213,6 @@ export const certFieldTables: FieldTable[] = [
         winEn: 'Key Usage',
         chromeZh: '憑證金鑰用途',
         chromeEn: 'Certificate Key Usage',
-        warn: true,
       },
       {
         key: 'certificatePolicies',
@@ -243,7 +232,6 @@ export const certFieldTables: FieldTable[] = [
         winEn: 'Subject Alternative Name',
         chromeZh: '憑證主體替代名稱',
         chromeEn: 'Certificate Subject Alternative Name',
-        warn: true,
       },
       {
         key: 'basicConstraints',
@@ -253,7 +241,7 @@ export const certFieldTables: FieldTable[] = [
         winEn: 'Basic Constraints',
         chromeZh: '憑證基本限制',
         chromeEn: 'Certificate Basic Constraints',
-        note: '兩邊於「值」的表現上差很多，見「檢視器介面用語」表最後一項。',
+        note: '兩邊於「值」的表現上差很多，見「檢視器介面用語」表的「basicConstraints 的內容值」列。',
       },
       {
         key: 'nameConstraints',
@@ -272,7 +260,6 @@ export const certFieldTables: FieldTable[] = [
         winEn: 'Enhanced Key Usage',
         chromeZh: '擴充金鑰使用方法',
         chromeEn: 'Extended Key Usage',
-        warn: true,
         note: 'Windows 詳細資料另有一欄位「增強金鑰使用方法 (內容)」，那是本機存放區的設定、不是憑證裡的欄位。',
       },
       {
@@ -291,28 +278,26 @@ export const certFieldTables: FieldTable[] = [
         zh: '憑證機構資訊存取',
         winZh: '授權資訊存取',
         winEn: 'Authority Information Access',
-        warn: true,
         chromeZh: '授權單位資訊存取',
         chromeEn: 'Authority Information Access',
       },
       {
-        key: 'SCT 清單',
+        key: 'signedCertificateTimestampList',
         oid: '1.3.6.1.4.1.11129.2.4.2',
         zh: '已簽章憑證時間戳記（SCT）清單',
         winZh: 'SCT 清單',
         winEn: 'SCT List',
         chromeZh: '憑證簽署的時間戳記清單',
         chromeEn: 'Signed Certificate Timestamp List',
-        warn: true,
-        note: '此欄位定義於 RFC 6962 §3.3，不在 RFC 5280。',
+        note: '非 RFC 5280 擴充欄位，此欄位定義於 RFC 6962 §3.3。',
       },
       {
-        key: '預簽憑證 Poison',
+        key: 'Precertificate Poison',
         oid: '1.3.6.1.4.1.11129.2.4.3',
         zh: '預簽憑證 Poison',
         winRaw: '直接顯示 OID',
         chromeRaw: '直接顯示 OID',
-        note: '此欄位定義於 RFC 6962 §3.1，兩個檢視器都沒有在地化名稱。',
+        note: '非 RFC 5280 擴充欄位，此欄位定義於 RFC 6962 §3.1，兩個檢視器都沒有在地化名稱。',
       },
       {
         key: 'id-pkix-ocsp-nocheck',
@@ -320,7 +305,7 @@ export const certFieldTables: FieldTable[] = [
         winZh: 'OCSP 無撤銷檢查',
         winEn: 'OCSP No Revocation Checking',
         chromeRaw: '直接顯示 OID',
-        note: '此欄位定義於 RFC 6960 §4.2.2.2.1。',
+        note: '非 RFC 5280 擴充欄位，此欄位定義於 RFC 6960 §4.2.2.2.1。',
       },
     ],
   },
@@ -341,7 +326,6 @@ export const certFieldTables: FieldTable[] = [
         winEn: 'Policy Mappings',
         chromeZh: '憑證政策對應關聯',
         chromeEn: 'Certificate Policy Mappings',
-        warn: true,
         note: 'Windows 用「原則」，本站與 Chrome 用「政策」。',
       },
       {
@@ -351,7 +335,6 @@ export const certFieldTables: FieldTable[] = [
         winEn: 'Issuer Alternative Name',
         chromeZh: '憑證發行者替代名稱',
         chromeEn: 'Certificate Issuer Alternative Name',
-        warn: true,
       },
       {
         key: 'subjectDirectoryAttributes',
@@ -370,7 +353,6 @@ export const certFieldTables: FieldTable[] = [
         winEn: 'Policy Constraints',
         chromeZh: '憑證原則限制',
         chromeEn: 'Certificate Policy Constraints',
-        warn: true,
       },
       {
         key: 'inhibitAnyPolicy',
@@ -594,7 +576,7 @@ export const certFieldTables: FieldTable[] = [
     id: 'general-name',
     title: 'GeneralName 型別（SAN／IAN／AIA 裡面的子項目）',
     ref: '引用 RFC 5280 §4.2.1.6',
-    intro: 'GeneralName 型別是 ASN.1 語法的型別之一，也是設計 X.509 憑證的常見型別。Windows 對 GeneralName 型別完全不翻譯，在畫面顯示上為英文加等號的格式。',
+    intro: 'GeneralName 型別是 ASN.1 語法的型別之一，也是設計 X.509 憑證的常見型別。Windows 對 GeneralName 型別完全不翻譯，畫面顯示為英文加等號的格式。',
     keyHeader: 'RFC 5280 型別',
     showZh: false,
     mono: true,
@@ -608,7 +590,6 @@ export const certFieldTables: FieldTable[] = [
         winRaw: 'Directory Address:',
         chromeZh: 'X.500 姓名',
         chromeEn: 'X.500 Name',
-        warn: true,
         note: 'Chrome 把 X.500 Name 的 Name 當成一種人名；其實這裡的 Name 也是個 ASN.1 型別。',
       },
       { key: 'x400Address', winRaw: 'X.400 Address=', chromeZh: 'X.400 地址', chromeEn: 'X.400 Address' },
@@ -632,12 +613,11 @@ export const certFieldTables: FieldTable[] = [
         zh: '憑證廢止清冊（CRL）',
         winZh: '憑證撤銷清單',
         winEn: 'Certificate Revocation List',
-        warn: true,
       },
-      { key: 'thisUpdate', zh: '本次更新時間', winZh: '有效日期', winEn: 'Effective date', warn: true },
+      { key: 'thisUpdate', zh: '本次更新時間', winZh: '有效日期', winEn: 'Effective date' },
       { key: 'nextUpdate', zh: '下次更新時間', winZh: '下次更新', winEn: 'Next update' },
-      { key: 'revocationDate', zh: '廢止時間', winZh: '撤銷日期', winEn: 'Revocation date', warn: true },
-      { key: 'cRLNumber', oid: '2.5.29.20', zh: 'CRL 序號', winZh: 'CRL 數目', winEn: 'CRL Number', warn: true },
+      { key: 'revocationDate', zh: '廢止時間', winZh: '撤銷日期', winEn: 'Revocation date' },
+      { key: 'cRLNumber', oid: '2.5.29.20', zh: 'CRL 序號', winZh: 'CRL 數目', winEn: 'CRL Number' },
       {
         key: 'issuingDistributionPoint',
         oid: '2.5.29.28',
@@ -657,7 +637,6 @@ export const certFieldTables: FieldTable[] = [
         zh: 'CRL 廢止理由',
         winZh: 'CRL 理由代碼',
         winEn: 'CRL Reason Code',
-        warn: true,
       },
     ],
   },
@@ -676,7 +655,6 @@ export const certFieldTables: FieldTable[] = [
         winEn: 'Unspecified',
         chromeZh: '未使用',
         chromeEn: 'Unused',
-        warn: true,
         note: 'Chrome 於這個列舉值（代碼）的英文原文為 Unused，來自 RFC 5280 另一個型別 ReasonFlags 的第 0 個位元 unused；CRLReason 列舉值本身沒有 unused，值 7 則是保留不用。',
       },
       { key: 'keyCompromise（1）', winZh: '金鑰洩露', winEn: 'Key Compromise', chromeZh: '金鑰洩露', chromeEn: 'Key Compromise' },
@@ -720,7 +698,6 @@ export const certFieldTables: FieldTable[] = [
         winEn: 'Critical Extensions',
         chromeZh: '重要／非重要',
         chromeEn: 'Critical／Not Critical',
-        warn: true,
       },
       {
         key: '檢視器標題',
@@ -735,7 +712,6 @@ export const certFieldTables: FieldTable[] = [
         winRaw: 'Subject Type=CA, Path Length Constraint=None',
         chromeZh: '這是憑證授權單位／中繼 CA 數目上限：無限制',
         chromeEn: 'Is a Certification Authority／Maximum number of intermediate CAs: unlimited',
-        warn: true,
       },
       {
         key: '憑證用途指示文字',
@@ -767,7 +743,7 @@ export const certFieldGaps: Gap[] = [
     body: '本站翻譯為「擴充欄位」、Windows「延伸」、Chrome「擴充功能」。Chrome 的翻譯跟瀏覽器外掛功能同名，會以為在講外掛（Plugins）。',
   },
   {
-    title: 'Windows 的「增強金鑰使用方法 (內容)」不是 RFC 5280 憑證欄位',
+    title: 'Windows 的「增強金鑰使用方法 (內容)」不是 RFC 5280 憑證的擴充欄位',
     body: 'extKeyUsage 在 Windows 稱作「增強金鑰使用方法」（Enhanced Key Usage，微軟的舊稱），Chrome 與本站的翻譯為「擴充金鑰使用方法」。Windows certmgr.msc 於根憑證的詳細資料頁中，另有一項加上括號「(內容)」的同名項目；那是 Windows 憑證存放區的可編輯設定，用來限縮根憑證的金鑰用途，非 RFC 5280 規範的憑證內容。若發現有人的增強金鑰使用方法內容，跟您的 RFC 5280 知識不同，請先確認對方是在哪裡點開憑證檢視器。',
   },
   {

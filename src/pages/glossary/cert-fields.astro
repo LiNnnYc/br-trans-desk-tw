@@ -13,7 +13,7 @@ import {
 } from '../../config/cert-field-mappings';
 
 /** 該表是否需要「備註」欄 */
-const hasNotes = (rows: FieldRow[]) => rows.some((r) => r.note || r.warn);
+const hasNotes = (rows: FieldRow[]) => rows.some((r) => r.note);
 
 /**
  * 表格用 table-fixed + colgroup 指定欄寬比例。
@@ -168,17 +168,7 @@ function columnWidths(showZh: boolean, notes: boolean): string[] {
                         </td>
                         {notes && (
                           <td class="px-4 py-3 text-xs leading-relaxed text-slate-500">
-                            <div>
-                              {row.warn && (
-                                <span
-                                  aria-label="三邊講法不一致"
-                                  class="mr-1 inline-flex items-center rounded bg-amber-50 px-1.5 py-0.5 font-medium text-amber-700"
-                                >
-                                  ⚠️ 不一致
-                                </span>
-                              )}
-                              {row.note}
-                            </div>
+                            <div>{row.note}</div>
                           </td>
                         )}
                       </tr>
