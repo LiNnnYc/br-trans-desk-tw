@@ -36,7 +36,7 @@
 
 ## 聯絡方式
 
-- 請參照 [聯絡方式] 頁面
+- 請參照 [聯絡方式](https://tls.brdesk.tw/contact/) 頁面
 - GitHub Issues：見上方參與貢獻段落
 
 ## 授權

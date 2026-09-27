@@ -9,8 +9,8 @@ export const siteConfig = {
   description:
     'WebPKI 相關文件的非官方繁體中文翻譯',
   repoUrl: 'https://github.com/LiNnnYc/br-trans-desk-tw',
-  // 結構化資料（schema.org）等絕對網址用；M0-3 部署網域定案時更新（含或不含 /repo-name 由 astro.config base 決定）
-  siteUrl: 'https://br-zh-tw.github.io',
+  // 結構化資料（schema.org）等絕對網址用；須與 astro.config.mjs 的 site 一致
+  siteUrl: 'https://tls.brdesk.tw',
   contactEmail: 'linnnyc5252@gmail.com',
   // spec §4.1 版本徽章資料來源。**不再手動維護**——由 src/lib/version.ts 推導：
   //   version      = 本站發布版（src/config/br-versions.ts 的 brVersions[0]）

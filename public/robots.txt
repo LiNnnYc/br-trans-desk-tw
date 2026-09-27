@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://tls.brdesk.tw/sitemap-index.xml

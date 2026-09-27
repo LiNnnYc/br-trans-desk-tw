@@ -1,6 +1,7 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
+import sitemap from '@astrojs/sitemap';
 import remarkCjkFriendly from 'remark-cjk-friendly';
 import { remarkCodeFigure } from './scripts/remark-code-figure.mjs';
 import { remarkTableNowrap } from './scripts/remark-table-nowrap.mjs';
@@ -12,7 +13,13 @@ import { rehypeSectionLinks } from './scripts/rehype-section-links.mjs';
 
 // https://astro.build/config
 export default defineConfig({
-  // 站台 URL 之後接到 GitHub Pages 時再補上 site/base
+  // 自訂網域（GitHub Pages）：站台在網域根目錄，不需要 base。
+  // 改網域時一併改 src/config/site.ts 的 siteUrl 與 public/robots.txt。
+  site: 'https://tls.brdesk.tw',
+  integrations: [
+    // 404 頁不進 sitemap
+    sitemap({ filter: (page) => !page.endsWith('/404/') }),
+  ],
   i18n: {
     defaultLocale: 'zh-TW',
     locales: ['zh-TW'],
