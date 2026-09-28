@@ -53,9 +53,9 @@ import { siteConfig } from '../config/site';
 
       <h2>管理者與聯絡資訊</h2>
       <p>本站管理者：LiNnnYc（單人作業）。</p>
-      <p>勘誤請聯絡
-        <a href={`mailto:${siteConfig.contactEmail}`}>{siteConfig.contactEmail}</a>
-        或 GitHub Issue 回報，詳見 <a href="/contact/">聯絡方式</a>。
+      <p>勘誤請使用
+        <a href={`${siteConfig.repoUrl}/issues/new/choose`} target="_blank" rel="noopener noreferrer">GitHub Issue 回報</a>
+        ，或詳見 <a href="/contact/">聯絡方式</a>。
       </p>
 
       <h2>無社群網站帳號聲明</h2>
@@ -63,17 +63,25 @@ import { siteConfig } from '../config/site';
         本站不使用 GitHub 以外的社群網站，若於其他社群網站發現假藉本站名義活動之帳號，<strong>應視為假帳號</strong>，請謹慎應對。
       </p>
 
-      <h2>無法繼續聲明（Dead man's switch）</h2>
+      <h2>無法繼續機制（Dead man's switch）</h2>
       <p>
         若本站連續 <strong>6 個月以上無任何更新</strong>，即視為停止維護。歡迎社群 fork 接手翻譯與維運；原 repo 將保留歷史內容以供參考。
       </p>
 
       <h2>分析工具</h2>
       <p>
-        本站採用 <a href="https://www.goatcounter.com/" target="_blank" rel="noopener noreferrer">GoatCounter</a> 進行匿名訪客流量統計，
+        本站採用 <a href="https://www.goatcounter.com/" target="_blank" rel="noopener noreferrer">GoatCounter</a>（站內）及 <a href="https://search.google.com/search-console/about" target="_blank" rel="noopener noreferrer">Google Search Console</a>（搜尋引擎）進行匿名訪客流量統計，
         <strong>不使用 cookie、不跨站追蹤、不與 Google Analytics 等第三方共享</strong>；
-        統計資料僅用於評估翻譯內容是否被實際引用。GoatCounter 不儲存 IP 位址與完整的瀏覽器識別字串，詳見其<a href="https://www.goatcounter.com/help/privacy" target="_blank" rel="noopener noreferrer">隱私權政策</a>。
+        統計資料僅用於評估翻譯內容是否被實際引用。
       </p>
+      <ul>
+        <li>
+          GoatCounter 不儲存 IP 位址與完整的瀏覽器識別字串，詳見其<a href="https://www.goatcounter.com/help/privacy" target="_blank" rel="noopener noreferrer">隱私權政策</a>。
+        </li>
+        <li>
+          Google Search Console 資料使用方式，詳見 <a href="https://support.google.com/webmasters/answer/96568?hl=zh-Hant&ref_topic=9459871&sjid=7398744859347671905-NC" target="_blank" rel="noopener noreferrer">Search Console 資料簡介</a>。
+        </li>
+      </ul>
     </div>
 
   </article>

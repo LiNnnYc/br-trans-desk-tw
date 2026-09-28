@@ -36,6 +36,8 @@
 
 ## 聯絡方式
 
+本專案管理者：LiNnnYc
+
 - 請參照 [聯絡方式](https://tls.brdesk.tw/contact/) 頁面
 - GitHub Issues：見上方參與貢獻段落
 
@@ -51,7 +53,7 @@
 - **靜態產生器**：Astro 5（TypeScript strict + Tailwind 4）
 - **搜尋**：Pagefind
 - **部署**：GitHub Pages（GitHub Actions）
-- **分析**：GoatCounter（隱私友善、無 cookie）
+- **分析**：GoatCounter、Google Search Console（隱私友善、無 cookie）
 
 ## 專案目錄結構
 
@@ -62,18 +64,18 @@
 | `src/config/` | 版本表、憑證欄位譯名對照等資料 |
 | `public/archive/` | 各版全文下載檔（HTML／PDF／Markdown），由 `scripts/build_downloads.mjs` 產生 |
 | `scripts/` | remark／rehype plugin、lint、匯出與升版工具 |
-| `upstream/BR.md` | 上游英文原文（現行版），**建置時會讀取**，不可刪除 |
-| `upstream/BR_archive/` | 上游原文的歷史版本快照，升版比對用 |
-| `upstream/BR_側邊欄/` | 側邊欄四頁的上游原文 |
+| `upstream/BR.md` | 官方英文原文（現行版），**建置時會讀取**，不可刪除 |
+| `upstream/BR_archive/` | 官方原文的歷史版本快照，升版比對用 |
+| `upstream/BR_側邊欄/` | 官方 TLS BR 側邊欄四個子頁面的原文 |
 
-## 專案無法繼續聲明（Dead man's switch）
+## 專案無法繼續機制（Dead man's switch）
 
-本專案目前由單一維護者推進。
+本專案目前為單人作業。
 
 > 若本 repository 連續 **6 個月未更新**（無 commit、無 Issue 回覆、無 PR 處理），視為**停止維護**。
 > 本翻譯採 CC BY 4.0 授權，任何人皆可 fork 接手繼續維護，無須額外授權。
 
-這是刻意設計的「死人開關」聲明：避免網站翻譯文件持續處於過時狀態卻沒有人能正當地接手。
+上述為刻意設計的「死人開關」聲明：避免網站翻譯文件持續處於過時狀態卻沒有人能正當地接手。
 
 ## 相關文件
 
