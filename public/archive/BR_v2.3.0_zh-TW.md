@@ -1,6 +1,6 @@
 # CA/Browser Forum《Baseline Requirements for the Issuance and Management of Publicly-Trusted TLS Server Certificates》非官方繁體中文翻譯
 
-對應原文版本 `2.3.0` · 匯出日期 2026-09-27 · 本檔僅含中文翻譯，未附英文原文。
+對應原文版本 `2.3.0` · 匯出日期 2026-09-28 · 本檔僅含中文翻譯，未附英文原文。
 
 ⚠️ 本站為 Web PKI 相關文件的非官方繁體中文翻譯，由社群維護。發生爭議時以原文內容為準。本網站內容不構成法律意見。
 本檔為參考用途，非 CA/Browser Forum 官方文件；原文請見 <https://cabforum.org/working-groups/server/baseline-requirements/documents/>。
@@ -578,7 +578,7 @@ CA/Browser Forum《網路與憑證系統安全要求》（Network and Certificat
 
 不含時間戳記之請求符記僅供單次使用，CA **不得（SHALL NOT）**於後續驗證中重複使用（re-use）。
 
-該繫結機制**應（SHALL）**至少使用與憑證請求簽章所用之同等強度數位簽章演算法或密碼學雜湊演算法。
+該繫結機制**應（SHALL）**至少使用與憑證請求簽章所用之同等強度的數位簽章演算法或密碼學雜湊演算法。
 
 **註**：請求符記之範例，包括但不限於：
 
@@ -5208,4 +5208,4 @@ DNS TXT 紀錄**應（MUST）**置於待驗證網域名稱的「`_validation-con
 
 ⚠️ 本站為 Web PKI 相關文件的非官方繁體中文翻譯，由社群維護。發生爭議時以原文內容為準。本網站內容不構成法律意見。
 
-本檔由「BR 翻譯小站」原始碼於 2026-09-27 匯出。翻譯狀態與後續修訂以站台版本為準。
+本檔由「BR 翻譯小站」原始碼於 2026-09-28 匯出。翻譯狀態與後續修訂以站台版本為準。
