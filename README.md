@@ -28,9 +28,9 @@
 
 歡迎透過 GitHub Issue 回報勘誤或提出建議：
 
-- **錯字／誤譯** → `bug-report` 模板
-- **功能建議** → `feature-request` 模板
-- **Ballot 跟進**（新通過的 CABF Ballot） → `ballot-followup` 模板
+- **錯字／誤譯** → `bug-report`
+- **功能建議** → `feature-request`
+- **Ballot 跟進**（新通過的 CABF Ballot） → `ballot-followup`
 
 重大爭議走 Discussions。社群 PR 由維護者審核後合併。
 
