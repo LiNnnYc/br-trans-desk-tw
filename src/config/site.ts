@@ -11,7 +11,7 @@ export const siteConfig = {
   repoUrl: 'https://github.com/LiNnnYc/br-trans-desk-tw',
   // 結構化資料（schema.org）等絕對網址用；須與 astro.config.mjs 的 site 一致
   siteUrl: 'https://tls.brdesk.tw',
-  contactEmail: 'linnnyc5252@gmail.com',
+  contactEmail: 'tls@brdesk.tw',
   // spec §6.3 GoatCounter 站台代碼（https://<code>.goatcounter.com）。空字串＝不載入統計 script；
   // 只在 production build 載入（見 BaseLayout），本機 dev 不計數。
   goatcounterCode: 'brdesk',
