@@ -20,7 +20,7 @@
 
 不翻譯：EV Guidelines、Code Signing BR、S/MIME BR、Baseline Requirements 歷史版本。
 
-- 本站翻譯的 TLS BR 全文下載（v2.3.0）：[PDF](./public/archive/BR_v2.3.0_zh-TW.pdf)｜[Markdown](./public/archive/BR_v2.3.0_zh-TW.md)｜[HTML](./public/archive/BR_v2.3.0_zh-TW.html)（HTML 請下載後以瀏覽器開啟）
+- 本站翻譯的 TLS BR 全文下載（v2.3.1）：[PDF](./public/archive/BR_v2.3.1_zh-TW.pdf)｜[Markdown](./public/archive/BR_v2.3.1_zh-TW.md)｜[HTML](./public/archive/BR_v2.3.1_zh-TW.html)（HTML 請下載後以瀏覽器開啟）
 - 官方原文：[cabforum.org](https://cabforum.org/working-groups/server/baseline-requirements/requirements/)
 - 發生爭議時**以原文內容為準**。本專案內容不構成法律意見。
 
