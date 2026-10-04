@@ -4,6 +4,7 @@
 
 ```
 BR_archive/BR-v2.2.7.md    ← TLS BR v2.2.7 原文（2026-05-19）
+BR_archive/BR-v2.3.0.md    ← TLS BR v2.3.0 原文（2026-09-07）
 ```
 
 ## 為什麼現行檔不帶版本號

@@ -36,6 +36,7 @@ export const brVersions: BrVersionEntry[] = [
     date: '2026-09-07',
     ballot: 'SC100',
     translatedAt: '2026-09-13',
+    gitTag: 'br-v2.3.0',
     archive: 'BR_v2.3.0_zh-TW',
   },
   {
