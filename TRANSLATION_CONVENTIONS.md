@@ -147,6 +147,10 @@ inline `` `code` `` 另有 `.clause-body td code { white-space: nowrap }` 保護
 | `OPTIONAL` | `**選用（OPTIONAL）**` |
 | `NOT REQUIRED` | `**非必要（NOT REQUIRED）**` |
 
+**表格儲存格也一樣加粗**（2026-10-04 定版）：憑證剖繪等表的「必要性」欄（`**應（MUST）**`、`**不建議（NOT RECOMMENDED）**`…）、
+§1.2.1 版本表的 Ballot 名稱等，只要原文是全大寫關鍵字就加粗，與內文同一規則。只加粗關鍵字本身，前後的符號不包進去
+（`**應（MUST）**／**得（MAY）**`）。英文 blockquote 側照抄原文，不加粗。第 7 章原本有 250 處未加粗、240 處已加粗，已一次補齊。
+
 ### 3.2 小寫 = 描述性，不加粗
 
 原文若是小寫 `shall` / `may` / `must` / `should` / `optional` 等，**屬於一般描述用詞**（如 "shall be interpreted"、"this method may only be used"、"CAA checking is optional"），中譯只用「應／得／必須」等普通動詞，**不加粗**、**不括註英文**。
