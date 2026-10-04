@@ -4,7 +4,7 @@ section_id: "appendix-a.2.1"
 parent: "appendix-a.2"
 order: 423
 original_url: "https://cabforum.org/working-groups/server/baseline-requirements/requirements/#a21-dns-txt-record-email-contact"
-original_version: "2.3.0"
+original_version: "2.3.1"
 ballot_refs: []
 translator: "Claude (Sonnet) 初譯 + ChatGPT (Instant) 潤稿 + LiNnnYc 審閱"
 last_updated: 2026-09-12

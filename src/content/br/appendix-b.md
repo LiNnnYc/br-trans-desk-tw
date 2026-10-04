@@ -3,7 +3,7 @@ title: "對 Onion 網域名稱簽發憑證"
 section_id: "appendix-b"
 order: 425
 original_url: "https://cabforum.org/working-groups/server/baseline-requirements/requirements/#appendix-b--issuance-of-certificates-for-onion-domain-names"
-original_version: "2.3.0"
+original_version: "2.3.1"
 ballot_refs: []
 translator: "Claude (Opus) + LiNnnYc 審閱"
 last_updated: 2026-09-20

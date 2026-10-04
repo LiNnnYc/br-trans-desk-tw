@@ -32,6 +32,13 @@ export interface BrVersionEntry {
 /** 最新的排在最前面；`[0]` 即本站目前發布的版本。 */
 export const brVersions: BrVersionEntry[] = [
   {
+    version: '2.3.1',
+    date: '2026-10-04',
+    ballot: 'SC104',
+    translatedAt: '2026-10-04',
+    archive: 'BR_v2.3.1_zh-TW',
+  },
+  {
     version: '2.3.0',
     date: '2026-09-07',
     ballot: 'SC100',
