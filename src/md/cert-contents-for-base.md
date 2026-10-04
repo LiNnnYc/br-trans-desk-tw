@@ -108,7 +108,7 @@
 
   除下述 stapling 情形外，此擴充欄位**應（MUST）**存在。該擴充欄位**不得（MUST NOT）**標記為關鍵，且**應（MUST）**包含簽發憑證機構（issuing CA）之 OCSP 回應伺服器的 HTTP URL（accessMethod = 1.3.6.1.5.5.7.48.1）。該擴充欄位亦**宜（SHOULD）**包含簽發憑證機構（issuing CA）憑證的 HTTP URL（accessMethod = 1.3.6.1.5.5.7.48.2）。詳見第 13.2.1 節。若用戶於其 TLS 連線交握中對該憑證進行 OCSP stapling \[RFC4366\]，則簽發憑證機構（issuing CA）之 OCSP 回應伺服器的 HTTP URL **得（MAY）**省略。
 
-**編按**：上兩段的「第 13.2.1 節」為《基本要求》1.0 版章節編號，**現行版本並無第 13 章**（最高為第 9 章）。另外，現行[第 7.1.2.7.7 節](#71277-subscriber-certificate-authority-information-access)已將 `id-ad-ocsp`（OCSP 回應伺服器 URL）改為**得（MAY）**，不再是必要欄位；CRL 與 OCSP 之簽發與可用性規定見[第 4.9.7 節](#497-crl-issuance-frequency)與[第 4.9.9 節](#499-on-line-revocationstatus-checking-availability)。`certificatePolicies` 之現行規定見[第 7.1.2.7.9 節](#71279-subscriber-certificate-certificate-policies)。
+**編按**：上兩段的「第 13.2.1 節」為《基本要求》1.0 版章節編號，**現行版本並無第 13 章**（最高為第 9 章）。另外，自 2.3.1 版（SC-104）起，現行[第 7.1.2.7.6 節](#71276-subscriber-certificate-extensions)已將用戶憑證的 `authorityInformationAccess` 擴充欄位改為**宜（SHOULD）**存在，不再是必要擴充欄位；若存在，[第 7.1.2.7.7 節](#71277-subscriber-certificate-authority-information-access)亦已將 `id-ad-ocsp`（OCSP 回應伺服器 URL）改為**得（MAY）**，不再是必要欄位；CRL 與 OCSP 之簽發與可用性規定見[第 4.9.7 節](#497-crl-issuance-frequency)與[第 4.9.9 節](#499-on-line-revocationstatus-checking-availability)。`certificatePolicies` 之現行規定見[第 7.1.2.7.9 節](#71279-subscriber-certificate-certificate-policies)。
 
 > - **basicConstraints (optional)**
 >
