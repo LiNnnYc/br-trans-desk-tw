@@ -90,26 +90,24 @@ git config core.hooksPath .githooks
 git status                       # 必須乾淨——存檔要對應得上 commit
 ```
 
-1. `src/config/br-versions.ts` 現行版那列補上 `gitTag: 'br-v<舊版>'` 與
-   `archive: 'BR_v<舊版>_zh-TW.html'`。
+1. `src/config/br-versions.ts` 現行版那列補上 `gitTag: 'br-v<舊版>'`
+   （`archive` 在該版還是最新版時就已填好）。
 2. 封存英文原文（**檔名帶版本號，方便人找**）：
 
    ```sh
    cp upstream/BR.md upstream/BR_archive/BR-v<舊版>.md
    ```
 
-3. 產出中文離線存檔：
+3. 確認中文下載檔與現行內容一致（該版當最新版時已由 `node scripts/build_downloads.mjs` 產生）：
 
    ```sh
-   npm run build                  # ⚠️ 一定要在匯出「之前」重建
-   node scripts/export_chapters_html.mjs --chapters all      --out "public/archive/BR_v<舊版>_zh-TW.html"
+   python scripts/lint_downloads.py   # exit 0 就不用重出；不一致就先重跑 build_downloads.mjs 再 commit
    ```
 
-   > **⚠️ 匯出前一定要重建**：`export_chapters_html.mjs` 讀的是 `dist/`，不會自己 build。
-   > 若 `dist/` 是更早之前建的，匯出的存檔會是**某個既非 HEAD、也未被提交**的中間狀態
-   > ——看起來正常，但和 tag 對不起來。2026-09-07 建立 v2.2.7 存檔時就踩過這個坑。
+   > 2026-09-25 之前的做法是在這一步用 `export_chapters_html.mjs` 另外匯出離線存檔（v2.2.7 就是這樣做的）；
+   > 現在下載檔隨最新版維護，封存時只需確認。
 
-4. commit 上述三項，然後對**該 commit** 打 tag：
+4. commit 上述兩項（＋重出的下載檔，若有），然後對**該 commit** 打 tag：
 
    ```sh
    git tag -a br-v<舊版> -m "TLS BR v<舊版> 繁體中文翻譯（全文審閱完成）"
@@ -153,14 +151,22 @@ pre-push hook 擋下。
 2. 若升版有**新增章節**，`order` 依 `section_id` 自然排序（同 `src/lib/section.ts` 的
    `compareSectionId`）**從 1 起**重新連號。`order` 目前沒有程式讀取（排序走 `section_id`），
    但維持連號可避免日後誤用；新節插在中間時編號必然整片位移，建議與譯文分開 commit。
-3. `src/config/br-versions.ts` **最上面加一列**新版（`date` 從新的 BR.md 標頭抄過來）。
-   `gitTag` 與 `archive` 先不填——**要到下一次升版的步驟 0 封存時才補**。
+3. `src/config/br-versions.ts` **最上面加一列**新版（`date` 從新的 BR.md 標頭抄過來），
+   `archive` 填 `BR_v<新版>_zh-TW`（最新版也提供下載，`lint_downloads.py` 要求第一列必須有）。
+   `gitTag` 先不填——**要到下一次升版的步驟 0 封存時才補**。
 
 **步驟 5：確認可發布**
 
 ```sh
 python scripts/lint_version_consistency.py   # 要 exit 0
 ```
+
+接著：
+
+1. `node scripts/build_downloads.mjs` 產生新版下載檔，`public/archive/` 與 `src/config/downloads-stamp.json` 一起 commit。
+2. `README.md` 的全文下載連結寫死了版本號，改成新版。
+3. `/news/` 視需要新增「原文動態」「翻譯更新」（`src/content/news/`）。
+4. push 時連同步驟 0 的 tag：`git push origin main br-v<舊版>`。
 
 `/changelog/` 會自動把舊版移到「已歸檔版本」並列出存檔下載連結，站上的章節頁
 永遠只保留最新版（PRD §9：不做歷史版本翻譯，歷史以 git 與存檔留存）。
