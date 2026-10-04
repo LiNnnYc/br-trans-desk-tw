@@ -1,6 +1,6 @@
 # CA/Browser Forum《Baseline Requirements for the Issuance and Management of Publicly-Trusted TLS Server Certificates》非官方繁體中文翻譯
 
-對應原文版本 `2.3.1` · 匯出日期 2026-10-04 · 本檔僅含中文翻譯，未附英文原文。
+對應原文版本 `2.3.1` · 匯出日期 2026-10-05 · 本檔僅含中文翻譯，未附英文原文。
 
 ⚠️ 本站為 Web PKI 相關文件的非官方繁體中文翻譯，由社群維護。發生爭議時以原文內容為準。本網站內容不構成法律意見。
 本檔為參考用途，非 CA/Browser Forum 官方文件；原文請見 <https://cabforum.org/working-groups/server/baseline-requirements/documents/>。
@@ -3934,13 +3934,13 @@ OCSP 回應伺服器憑證**不得（MUST NOT）**為 CA 憑證。簽發憑證�
 | `id-qt-cps`（OID：1.3.6.1.5.5.7.2.1） | **得（MAY）** | `IA5String` | 簽發憑證機構（Issuing CA）之憑證政策（CP）、憑證實務作業基準（CPS）、信賴憑證者協議（Relying Party Agreement），或其他由簽發憑證機構提供的線上政策資訊之 HTTP 或 HTTPS URL。 |
 | 任何其他 qualifier | **不得（MUST NOT）** | - | - |
 
-**注意**：由於憑證原則擴充欄位可用於限制憑證的適用用途，若憑證原則設定不正確，可能導致 OCSP 回應伺服器憑證無法通過驗證，進而造成 OCSP 回應無效。包含 `anyPolicy` 政策識別碼可降低此風險，但會增加用戶端處理的複雜度，並可能造成交互運作問題。
+**注意**：由於憑證原則擴充欄位可用於限制憑證的適用用途，若憑證原則設定不正確，可能導致 OCSP 回應伺服器憑證無法通過驗證，進而造成 OCSP 回應無效。包含 `anyPolicy` 政策識別碼可降低此風險，但會增加客戶端處理的複雜度，並可能造成交互運作問題。
 
 <a id="7129-precertificate-profile"></a>
 
 ##### 7.1.2.9 預簽憑證（Precertificate）剖繪
 
-預簽憑證（Precertificate）係一種經簽章之資料結構，如 [RFC 6962](https://datatracker.ietf.org/doc/html/rfc6962) 所定義，可提出至憑證透明度（Certificate Transparency）記錄系統。預簽憑證在結構上與有效憑證相同，惟其 `extensions` 欄位中包含一特殊之關鍵性 poison 擴充欄位，其 OID 為 1.3.6.1.4.1.11129.2.4.3。此擴充欄位可確保遵循 [RFC 5280](https://datatracker.ietf.org/doc/html/rfc5280) 之用戶端不會將預簽憑證接受為有效憑證。經簽章之預簽憑證的存在，可視為相對應有效憑證亦存在之證據，因該簽章代表 CA 對可能簽發此憑證做出具有約束力之承諾。
+預簽憑證（Precertificate）係一種經簽章之資料結構，如 [RFC 6962](https://datatracker.ietf.org/doc/html/rfc6962) 所定義，可提出至憑證透明度（Certificate Transparency）記錄系統。預簽憑證在結構上與有效憑證相同，惟其 `extensions` 欄位中包含一特殊之關鍵性 poison 擴充欄位，其 OID 為 1.3.6.1.4.1.11129.2.4.3。此擴充欄位可確保遵循 [RFC 5280](https://datatracker.ietf.org/doc/html/rfc5280) 之客戶端不會將預簽憑證接受為有效憑證。經簽章之預簽憑證的存在，可視為相對應有效憑證亦存在之證據，因該簽章代表 CA 對可能簽發此憑證做出具有約束力之承諾。
 
 預簽憑證是於 CA 決定簽發憑證之後，但在實際簽章該有效憑證之前建立。CA **得（MAY）**建構並簽章與該有效憑證相對應之預簽憑證，以提出至憑證透明度記錄系統。CA **得（MAY）**使用所回傳之已簽章憑證時間戳記（Signed Certificate Timestamps，SCT），於簽章該有效憑證之前修改憑證之 `extensions` 欄位，新增如[第 7.1.2.11.3 節](#712113-signed-certificate-timestamp-list)所定義且為相關剖繪所允許之已簽章憑證時間戳記（SCT）清單。
 
@@ -4038,7 +4038,7 @@ OCSP 回應伺服器憑證**不得（MUST NOT）**為 CA 憑證。簽發憑證�
 | `authorityCertIssuer` | **不得（MUST NOT）**存在 |
 | `authorityCertSerialNumber` | **不得（MUST NOT）**存在 |
 
-**注意**：[RFC 6962](https://datatracker.ietf.org/doc/html/rfc6962) 描述如何轉換預簽憑證中的 `authorityKeyIdentifier`，使其包含預簽憑證簽章憑證機構的 `authorityKeyIdentifier` 擴充欄位值（即反映實際簽發者憑證的 `keyIdentifier`），從而使其在用戶端驗證時與相對應有效憑證相符。本《基本要求》**建議（RECOMMENDED）**由預簽憑證簽章憑證機構簽發之預簽憑證，其 `authorityKeyIdentifier` 使用該簽章憑證機構之 `authorityKeyIdentifier` 擴充欄位中的 `keyIdentifier`，以確保憑證鏈中所有憑證之 `subjectKeyIdentifier` 與 `authorityKeyIdentifier` 具有一致性。雖然 [RFC 5280](https://datatracker.ietf.org/doc/html/rfc5280) 並未嚴格要求此種一致性，但已有若干用戶端實作會對憑證強制執行此種一致性檢查，而採用上述作法可避免因憑證透明度記錄系統（Certificate Transparency Log）錯誤實作此類檢查而產生的風險。
+**注意**：[RFC 6962](https://datatracker.ietf.org/doc/html/rfc6962) 描述如何轉換預簽憑證中的 `authorityKeyIdentifier`，使其包含預簽憑證簽章憑證機構的 `authorityKeyIdentifier` 擴充欄位值（即反映實際簽發者憑證的 `keyIdentifier`），從而使其在客戶端驗證時與相對應有效憑證相符。本《基本要求》**建議（RECOMMENDED）**由預簽憑證簽章憑證機構簽發之預簽憑證，其 `authorityKeyIdentifier` 使用該簽章憑證機構之 `authorityKeyIdentifier` 擴充欄位中的 `keyIdentifier`，以確保憑證鏈中所有憑證之 `subjectKeyIdentifier` 與 `authorityKeyIdentifier` 具有一致性。雖然 [RFC 5280](https://datatracker.ietf.org/doc/html/rfc5280) 並未嚴格要求此種一致性，但已有若干客戶端實作會對憑證強制執行此種一致性檢查，而採用上述作法可避免因憑證透明度記錄系統（Certificate Transparency Log）錯誤實作此類檢查而產生的風險。
 
 <a id="71210-common-ca-fields"></a>
 
@@ -5199,7 +5199,7 @@ DNS TXT 紀錄**應（MUST）**置於待驗證網域名稱的「`_validation-con
 
 [^name_constraints]: 有關此擴充欄位之進一步要求，包括是否標記為關鍵（critical）的相關要求，參見[第 7.1.2.10.8 節](#712108-ca-certificate-name-constraints)。
 
-[^first_policy_note]: 雖然 [RFC 5280](https://datatracker.ietf.org/doc/html/rfc5280) 允許 `PolicyInformation` 以任意順序出現，但部分用戶端實作所採用的程式邏輯會考量符合特定篩選條件的 `policyIdentifier`。因此，確保含有保留憑證政策識別碼（Reserved Certificate Policy Identifier）之 `PolicyInformation` 位於首位，可降低發生交互運作問題之風險。
+[^first_policy_note]: 雖然 [RFC 5280](https://datatracker.ietf.org/doc/html/rfc5280) 允許 `PolicyInformation` 以任意順序出現，但部分客戶端實作所採用的程式邏輯會考量符合特定篩選條件的 `policyIdentifier`。因此，確保含有保留憑證政策識別碼（Reserved Certificate Policy Identifier）之 `PolicyInformation` 位於首位，可降低發生交互運作問題之風險。
 
 [^ocsp_signing]: 若 CA 憑證未設定 `digitalSignature` 旗標位元，CA 私密金鑰**不得（MUST NOT）**用於簽章 OCSP 回應。更多資訊詳見[第 7.3 節](#73-ocsp-profile)。
 
@@ -5209,4 +5209,4 @@ DNS TXT 紀錄**應（MUST）**置於待驗證網域名稱的「`_validation-con
 
 ⚠️ 本站為 Web PKI 相關文件的非官方繁體中文翻譯，由社群維護。發生爭議時以原文內容為準。本網站內容不構成法律意見。
 
-本檔由「BR 翻譯小站」原始碼於 2026-10-04 匯出。翻譯狀態與後續修訂以站台版本為準。
+本檔由「BR 翻譯小站」原始碼於 2026-10-05 匯出。翻譯狀態與後續修訂以站台版本為準。
