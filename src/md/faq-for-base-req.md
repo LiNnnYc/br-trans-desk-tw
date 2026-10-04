@@ -54,7 +54,7 @@
 
 《基本要求》第 9.3.4 節載明，CA 須揭露其所簽發、且包含《基本要求》所指定之政策識別碼（policy identifier）的憑證，均依本文件要求規定管理。CA 須於其憑證政策（CP）或憑證實務作業基準（CPS）中聲明其遵循《基本要求》規定；此外，各主要稽核架構的稽核準則均會查核該 CA 是否依其所揭露之實務作業執行。CA 可使用 CA/Browser Forum 提供的憑證政策物件識別碼（CP OID），標示其依《基本要求》簽發之憑證。CP OID 通常位於憑證的「詳細資料」分頁，可點選網址列的鎖頭圖示與「檢視憑證」連結後，向下捲動至「憑證原則（Certificate Policies）」查看。CP OID 在憑證中的顯示方式，與下方取自 Internet Explorer 的範例類似。
 
-**編按**：本段所引之**第 9.3.4 節在現行《基本要求》（v2.2.7）中已不存在**（第 9.3 節僅有 9.3.1–9.3.3）；保留憑證政策識別碼之規定見[第 7.1.6.1 節](#7161-reserved-certificate-policy-identifiers)。原文所稱「下方取自 Internet Explorer 的範例」為原頁面的圖片，本翻譯未收錄；Internet Explorer 亦已終止支援，實際操作請參考所使用瀏覽器的憑證檢視介面。
+**編按**：本段所引之**第 9.3.4 節在現行《基本要求》中已不存在**（第 9.3 節僅有 9.3.1–9.3.3）；保留憑證政策識別碼之規定見[第 7.1.6.1 節](#7161-reserved-certificate-policy-identifiers)。原文所稱「下方取自 Internet Explorer 的範例」為原頁面的圖片，本翻譯未收錄；Internet Explorer 亦已終止支援，實際操作請參考所使用瀏覽器的憑證檢視介面。
 
 > **6. How do I know the Baseline Requirements CP OID for a particular CA?**
 
