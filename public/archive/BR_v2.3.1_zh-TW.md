@@ -1,6 +1,6 @@
 # CA/Browser Forum《Baseline Requirements for the Issuance and Management of Publicly-Trusted TLS Server Certificates》非官方繁體中文翻譯
 
-對應原文版本 `2.3.1` · 匯出日期 2026-10-05 · 本檔僅含中文翻譯，未附英文原文。
+對應原文版本 `2.3.1` · 匯出日期 2026-10-09 · 本檔僅含中文翻譯，未附英文原文。
 
 ⚠️ 本站為 Web PKI 相關文件的非官方繁體中文翻譯，由社群維護。發生爭議時以原文內容為準。本網站內容不構成法律意見。
 本檔為參考用途，非 CA/Browser Forum 官方文件；原文請見 <https://cabforum.org/working-groups/server/baseline-requirements/documents/>。
@@ -345,7 +345,7 @@ CA **應（SHALL）**透過契約要求該企業註冊中心遵守上述限制�
 
 #### 1.3.5 其他參與者
 
-曾參與本文件制定之其他團體包括 AICPA／CICA 之「WebTrust for Certification Authorities」工作小組與 ETSI ESI。此等團體的參與並不代表其對最終成果之背書、推薦或核可。
+曾參與本文件制定之其他團體包括 AICPA／CICA 之「WebTrust for Certification Authorities」工作小組與 ETSI ESI。此等團體的參與並不代表其對最終成果之背書、推薦或認可。
 
 <a id="14-certificate-usage"></a>
 
@@ -5209,4 +5209,4 @@ DNS TXT 紀錄**應（MUST）**置於待驗證網域名稱的「`_validation-con
 
 ⚠️ 本站為 Web PKI 相關文件的非官方繁體中文翻譯，由社群維護。發生爭議時以原文內容為準。本網站內容不構成法律意見。
 
-本檔由「BR 翻譯小站」原始碼於 2026-10-05 匯出。翻譯狀態與後續修訂以站台版本為準。
+本檔由「BR 翻譯小站」原始碼於 2026-10-09 匯出。翻譯狀態與後續修訂以站台版本為準。
