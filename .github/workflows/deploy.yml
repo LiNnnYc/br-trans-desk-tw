@@ -19,7 +19,11 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      # 完整歷史：sitemap 的 lastmod 用 git log 取各頁最後修改日（scripts/sitemap-lastmod.mjs），
+      # 淺 clone 會讓每一頁都拿到最新 commit 的日期
       - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
 
       # 與本機 .githooks/pre-push 相同的兩項把關：混版、下載檔沒重出
       - name: 版本一致性與下載檔檢查

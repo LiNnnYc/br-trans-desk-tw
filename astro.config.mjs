@@ -10,15 +10,27 @@ import { rehypeTableCaption } from './scripts/rehype-table-caption.mjs';
 import { rehypeFootnotes } from './scripts/rehype-footnotes.mjs';
 import { rehypeTableIndent } from './scripts/rehype-table-indent.mjs';
 import { rehypeSectionLinks } from './scripts/rehype-section-links.mjs';
+import { buildLastmodMap } from './scripts/sitemap-lastmod.mjs';
+
+const SITE = 'https://tls.brdesk.tw';
+const lastmod = buildLastmodMap(SITE);
 
 // https://astro.build/config
 export default defineConfig({
   // 自訂網域（GitHub Pages）：站台在網域根目錄，不需要 base。
   // 改網域時一併改 src/config/site.ts 的 siteUrl 與 public/robots.txt。
-  site: 'https://tls.brdesk.tw',
+  site: SITE,
   integrations: [
-    // 404 頁不進 sitemap
-    sitemap({ filter: (page) => !page.endsWith('/404/') }),
+    // 404 頁不進 sitemap；lastmod 取自 front-matter（見 scripts/sitemap-lastmod.mjs），
+    // 沒有可靠日期的頁面不輸出 lastmod
+    sitemap({
+      filter: (page) => !page.endsWith('/404/'),
+      serialize(item) {
+        const date = lastmod.get(item.url);
+        if (date) item.lastmod = date;
+        return item;
+      },
+    }),
   ],
   i18n: {
     defaultLocale: 'zh-TW',
