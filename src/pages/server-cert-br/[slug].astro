@@ -48,7 +48,7 @@ const ancestorEntries = ancestorIds.map((id) => ({
 
 const breadcrumbItems = [
   { label: '首頁', href: '/' },
-  { label: '基本要求', href: '/server-cert-br/' },
+  { label: 'TLS BR', href: '/server-cert-br/' },
   ...ancestorEntries.map((a) => ({
     label: a.entry
       ? `${sectionIdToLabel(a.id)} ${a.entry.data.title.replace(/^\s*\d+(?:\.\d+)*\s*[、：:.\-—]?\s*/, '').trim()}`
@@ -84,14 +84,15 @@ const statusToneCls: Record<typeof d.status, string> = {
 };
 
 const sectionLabel = sectionIdToLabel(d.section_id);
-const pageTitle = `${sectionLabel} ${cleanTitle}`;
+// <title> 前綴「TLS BR」：2026-10-13 依使用者指示加上業界慣用簡稱（搜尋用語考量）。
+const pageTitle = `TLS BR ${sectionLabel} ${cleanTitle}`;
 const isoUpdated =
   d.last_updated instanceof Date
     ? d.last_updated.toISOString().slice(0, 10)
     : String(d.last_updated);
 ---
 
-<BaseLayout title={pageTitle} description={`${sectionLabel} ${cleanTitle}（CA/Browser Forum Baseline Requirements 非官方繁體中文翻譯）`}>
+<BaseLayout title={pageTitle} description={`${sectionLabel} ${cleanTitle}：CA/Browser Forum TLS Baseline Requirements（TLS BR，《基本要求》）非官方繁體中文翻譯，附英文原文對照。`}>
   <Breadcrumb slot="breadcrumb" items={breadcrumbItems} />
 
   <article class="cabf-card bg-white border border-slate-200 rounded p-5 sm:p-7">

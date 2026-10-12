@@ -15,6 +15,7 @@ import BrSidebarSubmenu from '../../components/BrSidebarSubmenu.astro';
 import BrAnchorNav from '../../components/BrAnchorNav.astro';
 import BrAnchorNavMobile from '../../components/BrAnchorNavMobile.astro';
 import DocVersionBadge from '../../components/DocVersionBadge.astro';
+import { siteConfig } from '../../config/site';
 import { getCollection, render } from 'astro:content';
 import { sectionIdToPath } from '../../lib/citation';
 import { compareSectionId, sectionIdDepth, sectionIdToLabel } from '../../lib/section';
@@ -151,12 +152,12 @@ for (const item of items) {
 ---
 
 <BaseLayout
-  title="《基本要求》全文"
-  description="CA/Browser Forum TLS Baseline Requirements 非官方繁體中文翻譯（全文）。"
+  title="TLS BR《基本要求》繁體中文全文"
+  description={`CA/Browser Forum TLS Baseline Requirements（TLS BR，《基本要求》）非官方繁體中文翻譯全文，對應原文 v${siteConfig.upstream.version}。`}
 >
   <Breadcrumb
     slot="breadcrumb"
-    items={[{ label: '首頁', href: '/' }, { label: '基本要求' }]}
+    items={[{ label: '首頁', href: '/' }, { label: 'TLS BR' }]}
   />
 
   <BrAnchorNavMobile />
