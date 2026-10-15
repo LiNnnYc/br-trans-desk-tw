@@ -1,6 +1,6 @@
 # BR 翻譯小站（BR TRANS DESK）
 
-[https://tls.brdesk.tw](https://tls.brdesk.tw)
+[https://tls.brdesk.tw](https://tls.brdesk.tw)\
 提供 Web PKI 相關文件的非官方繁體中文翻譯網站。
 
 > ⚠️ 所有文件皆為**非官方翻譯**，由社群維護。發生爭議時以**原文內容為準**
