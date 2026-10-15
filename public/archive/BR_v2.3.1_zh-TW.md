@@ -1,9 +1,9 @@
 # CA/Browser Forum《Baseline Requirements for the Issuance and Management of Publicly-Trusted TLS Server Certificates》非官方繁體中文翻譯
 
-對應原文版本 `2.3.1` · 匯出日期 2026-10-09 · 本檔僅含中文翻譯，未附英文原文。
+對應原文版本 `2.3.1` · 產出日期 2026-10-16 · 本文件僅含中文翻譯，未附英文原文。
 
-⚠️ 本站為 Web PKI 相關文件的非官方繁體中文翻譯，由社群維護。發生爭議時以原文內容為準。本網站內容不構成法律意見。
-本檔為參考用途，非 CA/Browser Forum 官方文件；原文請見 <https://cabforum.org/working-groups/server/baseline-requirements/documents/>。
+⚠️ 「[BR 翻譯小站](https://tls.brdesk.tw)」提供 Web PKI 相關文件的非官方繁體中文翻譯，由社群維護貢獻。\
+本文件非 CA/Browser Forum 官方文件，翻譯內容僅作為參考用途，不構成法律意見，發生爭議時以原文內容為準；原文請見 <https://cabforum.org/working-groups/server/baseline-requirements/documents/>。
 
 ## 目錄
 
@@ -4278,7 +4278,7 @@ CRL 發布點擴充欄位**不得（MUST NOT）**存在於：
 
 ###### 7.1.2.11.5 其他擴充欄位
 
-所有適用之憑證剖繪未直接規範的擴充欄位及擴充欄位值：
+適用之憑證剖繪，其未直接規範的所有擴充欄位及擴充欄位值：
 
 1. **應（MUST）**適用於公共網際網路，除非：\
    a. 擴充欄位 OID 位於申請者能證明擁有其所有權之 OID arc 範圍內，或\
@@ -5207,6 +5207,6 @@ DNS TXT 紀錄**應（MUST）**置於待驗證網域名稱的「`_validation-con
 
 ---
 
-⚠️ 本站為 Web PKI 相關文件的非官方繁體中文翻譯，由社群維護。發生爭議時以原文內容為準。本網站內容不構成法律意見。
+⚠️ 本文件為非官方繁體中文翻譯，發生爭議時以原文內容為準。翻譯內容不構成法律意見。
 
-本檔由「BR 翻譯小站」原始碼於 2026-10-09 匯出。翻譯狀態與後續修訂以站台版本為準。
+本檔案由「[BR 翻譯小站](https://tls.brdesk.tw)」於 2026-10-16 產出，僅含英文原文的翻譯內容。即時翻譯、後續修訂與其他內容，請以「[BR 翻譯小站](https://tls.brdesk.tw)」網站為準。

@@ -157,9 +157,9 @@ const blocks = sections.map((s) => {
 // ---- 組檔 --------------------------------------------------------------------
 const today = new Date().toLocaleDateString('sv-SE'); // 本地日期 yyyy-mm-dd（理由見 export_chapters_html.mjs）
 
-// 與 src/components/SiteFooter.astro 同一套文案
-const DISCLAIMER =
-  '本站為 Web PKI 相關文件的非官方繁體中文翻譯，由社群維護。發生爭議時以原文內容為準。本網站內容不構成法律意見。';
+// 與 export_chapters_html.mjs 同一套下載檔文案（2026-10-16 起不再沿用 SiteFooter.astro 的措辭）
+const SITE_LINK = '「[BR 翻譯小站](https://tls.brdesk.tw)」';
+const DISCLAIMER = '本文件為非官方繁體中文翻譯，發生爭議時以原文內容為準。翻譯內容不構成法律意見。';
 
 const toc = sections
   .filter((s) => s.id.split('.').length <= 2)
@@ -172,10 +172,10 @@ const toc = sections
 
 const md = `# CA/Browser Forum《Baseline Requirements for the Issuance and Management of Publicly-Trusted TLS Server Certificates》非官方繁體中文翻譯
 
-對應原文版本 \`${version}\` · 匯出日期 ${today} · 本檔僅含中文翻譯，未附英文原文。
+對應原文版本 \`${version}\` · 產出日期 ${today} · 本文件僅含中文翻譯，未附英文原文。
 
-⚠️ ${DISCLAIMER}
-本檔為參考用途，非 CA/Browser Forum 官方文件；原文請見 <https://cabforum.org/working-groups/server/baseline-requirements/documents/>。
+⚠️ ${SITE_LINK}提供 Web PKI 相關文件的非官方繁體中文翻譯，由社群維護貢獻。\\
+本文件非 CA/Browser Forum 官方文件，翻譯內容僅作為參考用途，不構成法律意見，發生爭議時以原文內容為準；原文請見 <https://cabforum.org/working-groups/server/baseline-requirements/documents/>。
 
 ## 目錄
 
@@ -191,7 +191,7 @@ ${
 
 ⚠️ ${DISCLAIMER}
 
-本檔由「BR 翻譯小站」原始碼於 ${today} 匯出。翻譯狀態與後續修訂以站台版本為準。
+本檔案由${SITE_LINK}於 ${today} 產出，僅含英文原文的翻譯內容。即時翻譯、後續修訂與其他內容，請以${SITE_LINK}網站為準。
 `;
 
 writeFileSync(outPath, md, 'utf8');

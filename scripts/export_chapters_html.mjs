@@ -247,11 +247,13 @@ const chapterLabel = wantAll
     : `第 ${chFrom}–${chTo} 章`;
 const title = `CA/Browser Forum 基本要求 非官方繁體中文翻譯（${chapterLabel}）`;
 
-// 與全站 footer（src/components/SiteFooter.astro）同一套文案；那邊改了這裡要跟著改。
+// 下載檔專用的免責文案（2026-10-16 起與全站 footer 分開措辭，以「本文件」為主詞）；
+// export_markdown.mjs 有同一套，改了要一起改。
 // 2026-09-25 以前是「本翻譯為非官方翻譯，發生爭議時以 CA/Browser Forum 英文原文為準。」，
 // v2.2.7 的離線存檔沒有重出（內容維持當時的快照），同日直接在檔內換成新文案。
-const DISCLAIMER =
-  '本站為 Web PKI 相關文件的非官方繁體中文翻譯，由社群維護。發生爭議時以原文內容為準。本網站內容不構成法律意見。';
+const SITE_URL = 'https://tls.brdesk.tw';
+const SITE_LINK = `「<a href="${SITE_URL}" target="_blank" rel="noopener noreferrer">BR 翻譯小站</a>」`;
+const DISCLAIMER = '本文件為非官方繁體中文翻譯，發生爭議時以原文內容為準。翻譯內容不構成法律意見。';
 
 const html = `<!doctype html>
 <html lang="zh-Hant-TW">
@@ -294,12 +296,11 @@ ${css}
         CA/Browser Forum<br>《Baseline Requirements for the Issuance and Management of Publicly-Trusted TLS Server Certificates》<br>非官方繁體中文翻譯 — ${chapterLabel}
       </h1>
       <p style="margin-top:0.75rem; font-size:0.875rem; color:#475569; line-height:1.8;">
-        對應原文版本 <code>${version}</code>　·　匯出日期 ${today}　·　本檔僅含中文翻譯，未附英文原文。<br>
-        內容範圍：${chapterLabel}（已完成人工審閱之章節）。
+        對應原文版本 <code>${version}</code>　·　產出日期 ${today}　·　本文件僅含中文翻譯，未附英文原文。
       </p>
       <p class="export-notice" style="margin-top:1rem;">
-        ⚠️ ${DISCLAIMER}<br>
-        本檔為參考用途，非 CA/Browser Forum 官方文件；原文請見
+        ⚠️ ${SITE_LINK}提供 Web PKI 相關文件的非官方繁體中文翻譯，由社群維護貢獻。<br>
+        本文件非 CA/Browser Forum 官方文件，翻譯內容僅作為參考用途，不構成法律意見，發生爭議時以原文內容為準；原文請見
         <a href="https://cabforum.org/working-groups/server/baseline-requirements/documents/" target="_blank" rel="noopener noreferrer">cabforum.org</a>。
       </p>
     </header>
@@ -318,7 +319,7 @@ ${keptFootnotes > 0 ? parse5.serializeOuter(footnotesSection) : ''}
 
     <footer class="export-foot">
       <p>⚠️ ${DISCLAIMER}</p>
-      <p>本檔由「BR 翻譯小站」原始碼於 ${today} 匯出，僅含${chapterLabel}。翻譯狀態、後續修訂與其餘章節以站台版本為準。</p>
+      <p>本檔案由${SITE_LINK}於 ${today} 產出，僅含英文原文的翻譯內容。即時翻譯、後續修訂與其他內容，請以${SITE_LINK}網站為準。</p>
     </footer>
   </div>
 </div>
