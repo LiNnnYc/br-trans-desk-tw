@@ -28,6 +28,14 @@ const fullTitle = title.includes(siteConfig.name)
   ? title
   : `${title}｜${siteConfig.name}`;
 
+// 自我指向 canonical：一律帶結尾斜線（GitHub Pages 會把無斜線網址 301 到有斜線版），
+// 讓 Google 不必自行猜正本。404 頁會在任意網址上回傳，不輸出 canonical。
+const isNotFound = /^\/404(\.html|\/)?$/.test(Astro.url.pathname);
+const canonicalPath = Astro.url.pathname.endsWith('/')
+  ? Astro.url.pathname
+  : `${Astro.url.pathname}/`;
+const canonicalUrl = new URL(canonicalPath, siteConfig.siteUrl).href;
+
 const hasSidebar = Astro.slots.has('sidebar');
 const hasBreadcrumb = Astro.slots.has('breadcrumb');
 ---
@@ -40,6 +48,7 @@ const hasBreadcrumb = Astro.slots.has('breadcrumb');
     <meta name="generator" content={Astro.generator} />
     <meta name="description" content={description} />
     <title>{fullTitle}</title>
+    {!isNotFound && <link rel="canonical" href={canonicalUrl} />}
     {/* 站台 icon（scripts/build_logo.py 一併產生，只有「BR」兩個字）：
         SVG 給支援的瀏覽器、ICO 給舊瀏覽器與 Windows 捷徑、180 PNG 給 iOS 加入主畫面。
         ⚠️ 日後若替 GitHub Pages 加上 astro.config 的 base，這些絕對路徑要一起改
